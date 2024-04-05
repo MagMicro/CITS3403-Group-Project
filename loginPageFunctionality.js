@@ -9,11 +9,13 @@ function notifyEmpty(id){
 function changeVisibilty(){
     if($("#visibility").attr("class") == "fas fa-eye-slash"){
         $("#visibility").attr("class", "fas fa-eye");
+        $("#visibility").attr("title", "Hide");
         $("#visibility").css("color", "green");
         $("#passwordField").attr("type", "text");
     }
     else{
         $("#visibility").attr("class", "fas fa-eye-slash");
+        $("#visibility").attr("title", "View");
         $("#visibility").css("color", "red");
         $("#passwordField").attr("type", "password");
     }
