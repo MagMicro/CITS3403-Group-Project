@@ -1,9 +1,7 @@
 body{
     background-color: midnightblue;
 }
-#LoginBoard{
-    top:100px;
-    height: 550px;
+.board{
     position:relative;
     margin:auto;
     background-color: white;
@@ -11,8 +9,16 @@ body{
     text-align:center;
     border: 2px solid black;
     box-shadow:10px 10px rgba(0, 0, 0, 0.2);
+    margin-top:5%;
+    margin-bottom:5%;
 }
-#inputFields input{
+#Login{
+    height:500px;
+}
+#Creation{
+    height: 700px;
+}
+.inputFields [type = "text"], [type = "password"], [type = "email"]{
     display:block;
     border-radius: 15px;
     border-width:2px;
@@ -20,27 +26,33 @@ body{
     margin-bottom:20px;
     box-shadow: 2px 2px grey;
 }
-#inputFields input:hover{
+.inputFields input:hover{
     border-color: aqua;
 }
-label{
+.fieldName{
     display: block;
     text-align: left;
     margin-bottom: 10px;
     font-weight:bold;
 }
 
-#inputFields{
+#TOSMessage{
+    font-size:12px;
+    font-style:italic;
+}
+
+.inputFields{
     margin:auto;
     padding: 30px;
     border-radius: 20px;
 }
 
-#creationPrompt{
-    display: inline;
+#redirectionPrompt{
+    display: inline-block;
     border: none;
     width: 350px;
-    position:relative;
+    margin-top:10px;
+    margin-bottom:10px;
 }
 #submitButton{
     margin-top:20px;
@@ -54,6 +66,7 @@ label{
 hr{
     margin:auto;
 }
+
 a{
     text-decoration:none;
 }
