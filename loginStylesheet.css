@@ -82,3 +82,33 @@ a{
 #visibility{
     color:red;
 }
+
+#banner{
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    list-style-type:none;
+    background-color: rgb(62, 64, 76);
+}
+
+#banner td{
+    display: inline-block;
+    color: white;
+    border-right:1px;
+    border-color:rgb(103, 103, 103);
+    border-style:solid;
+    padding: 8px;  
+}
+#home{
+    text-align: center;
+}
+#search{
+    display: inline-block;
+    text-align:right;
+}
+#searchbar{
+    padding-left: 10px;
+}
+#searchbar{
+    border-radius: 15px;
+}
