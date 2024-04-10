@@ -5,6 +5,16 @@ function checkEmail(email){
     }
     return false;
 }
+
+function verifyEmail(id){
+    let email = $(id).val();
+    if(!checkEmail(email)){
+        $(id + "+ #emailNotification").css("display", "block");
+    }
+    else{
+        $(id + "+ #emailNotification").css("display", "none");
+    }
+}
 function checkPassword(password){
     let pattern = new RegExp("[a-z]+[A-Z]+[0-9]+[~`!@#$%^&*()-_+=|\\,.<>?/]+");
     if(pattern.test(password) && password.length >= 12){
@@ -62,6 +72,7 @@ function fillUsername (){
 function init(){
     $("#usernameField").blur(() => {notifyEmpty("#usernameField");});
     $("#passwordField").blur(() => {notifyEmpty("#passwordField");});
+    $("#emailField").blur(() => {verifyEmail("#emailField")});
     $("#visibility").click(() => {changeVisibilty();});
     $("#inputFields").submit(() => {createCookie();})
 }

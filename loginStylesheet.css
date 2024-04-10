@@ -70,10 +70,10 @@ hr{
 a{
     text-decoration:none;
 }
-.notify{
+.notify, #emailNotification{
     color:red;
     font-size:12px;
-    text-align: center;
+    text-align: left;
     display:none;
     position:relative;
     top: -10px;
