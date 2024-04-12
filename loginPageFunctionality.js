@@ -74,7 +74,7 @@ function init(){
     $("#passwordField").blur(() => {notifyEmpty("#passwordField");});
     $("#emailField").blur(() => {verifyEmail("#emailField")});
     $("#visibility").click(() => {changeVisibilty();});
-    $("#inputFields").submit(() => {createCookie();})
+    $(".inputFields").submit(() => {createCookie();})
 }
 $(document).ready(init);
 fillUsername();
