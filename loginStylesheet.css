@@ -97,14 +97,14 @@ a{
     border-right:1px;
     border-color:rgb(103, 103, 103);
     border-style:solid;
-    padding: 8px;  
-}
-#home{
+    padding: 8px;
     text-align: center;
 }
-#search{
-    display: inline-block;
-    text-align:right;
+#home:hover{
+    background-color:rgb(41, 42, 50);
+}
+#account:hover{
+    background-color:rgb(41, 42, 50);
 }
 #searchbar{
     padding-left: 10px;
