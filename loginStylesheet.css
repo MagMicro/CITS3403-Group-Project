@@ -72,12 +72,7 @@ a{
 }
 .notify, #emailNotification{
     color:red;
-    font-size:12px;
-    text-align: left;
     display:none;
-    position:relative;
-    top: -10px;
-    margin: 0%;
 }
 #visibility{
     color:red;
@@ -113,7 +108,5 @@ a{
 }
 #searchbar{
     padding-left: 10px;
-}
-#searchbar{
     border-radius: 15px;
 }

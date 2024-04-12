@@ -15,12 +15,44 @@ function verifyEmail(id){
         $(id + "+ #emailNotification").css("display", "none");
     }
 }
+
 function checkPassword(password){
-    let pattern = new RegExp("[a-z]+[A-Z]+[0-9]+[~`!@#$%^&*()-_+=|\\,.<>?/]+");
-    if(pattern.test(password) && password.length >= 12){
-        return true;
+    let lowercase = new RegExp("[a-z]+");
+    let uppercase = new RegExp("[A-Z]+");
+    let number = new RegExp("[0-9]+");
+    let symbol = new RegExp("[~`!@#$%^&*()-+=|,<>?/\\\.'\"]+");
+    if(!lowercase.test(password)){
+        return "Password needs one or more lowercase letters.";
     }
-    return false;
+    else if(!uppercase.test(password)){
+        return "Password needs one or more uppercase letters.";
+    }
+    else if(!number.test(password)){
+        return "Password needs one or more numbers.";
+    }
+    else if(!symbol.test(password)){
+        return "Password needs one or more symbols.";
+    }
+    else if(password.length < 12){
+        return "Password needs to be atleast 12 characters long.";
+    }
+    else{
+        return "Valid password.";
+    }
+}
+
+function verifyPassword(id){
+    let password = $(id).val();
+    let response = checkPassword(password);
+    $(id + "+ #passwordNotification").css("display", "block");
+    if(response == "Valid password."){
+        $(id + "+ #passwordNotification").html("<span class = 'fas fa-check'></span> " + response);
+        $(id + "+ #passwordNotification").css("color", "green");
+    }
+    else{
+        $(id + "+ #passwordNotification").html("<span class = 'fas fa-exclamation'></span> " + response);
+        $(id + "+ #passwordNotification").css("color", "red");
+    }
 }
 
 function notifyEmpty(id){
@@ -73,6 +105,7 @@ function init(){
     $("#usernameField").blur(() => {notifyEmpty("#usernameField");});
     $("#passwordField").blur(() => {notifyEmpty("#passwordField");});
     $("#emailField").blur(() => {verifyEmail("#emailField")});
+    $("#passwordField").blur(() => {verifyPassword("#passwordField")});
     $("#visibility").click(() => {changeVisibilty();});
     $(".inputFields").submit(() => {createCookie();})
 }
