@@ -8,7 +8,7 @@ body{
     border-radius: 20px;;
     text-align:center;
     border: 2px solid black;
-    box-shadow:10px 10px rgba(0, 0, 0, 0.2);
+    box-shadow:20px 20px rgba(0, 0, 0, 0.2);
     margin-top:10%;
     margin-bottom:5%;
 }
@@ -88,7 +88,7 @@ a{
     padding: 0px;
     list-style-type:none;
     background-color: rgb(62, 64, 76);
-    box-shadow: 0px 2px 20px black;
+    box-shadow: 0px 10px rgba(0, 0, 0, 0.2);
 }
 
 #banner td{
@@ -134,3 +134,7 @@ a{
         transform: translate3d(3000px, 0, 0);
     }
   }
+#logo{
+    display:inline-block;
+
+}
