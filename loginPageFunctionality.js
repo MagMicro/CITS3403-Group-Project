@@ -100,6 +100,22 @@ function fillUsername (){
         $("#usernameField").val(username);
     }
 }
+function removeWord(word){
+    $(word).remove();
+}
+function makeWord(){
+    let offset = Math.random() * 1000;
+    let size = Math.random() * 15 + 10;
+    //Random match-ups list
+    let names = ["Batman vs. Superman", "Cookies vs. Cake", "Bugs vs. Fish", "Basketball vs. Hockey", "Pencil vs. Pen", "Coke vs. Pepsi", "Red vs. Blue", "Chemistry vs. Physics"];
+    //Modify the multiply for number of options(-1)
+    let randomName = names[Math.round(Math.random()*7)];
+    let word = $("<div id = 'word'>" +randomName +"</div>");
+    word.css("bottom",offset + "px")
+    word.css("font-size", size+"px")
+    $("body").append(word);
+    setTimeout(()=>{removeWord(word);}, 8000);
+}
 
 function init(){
     $("#usernameField").blur(() => {notifyEmpty("#usernameField");});
@@ -108,6 +124,7 @@ function init(){
     $("#passwordField").blur(() => {verifyPassword("#passwordField")});
     $("#visibility").click(() => {changeVisibilty();});
     $(".inputFields").submit(() => {createCookie();})
+    setInterval(()=>{makeWord();}, 600);
 }
 $(document).ready(init);
 fillUsername();

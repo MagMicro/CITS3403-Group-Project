@@ -88,6 +88,7 @@ a{
     padding: 0px;
     list-style-type:none;
     background-color: rgb(62, 64, 76);
+    box-shadow: 0px 2px 20px black;
 }
 
 #banner td{
@@ -110,3 +111,26 @@ a{
     padding-left: 10px;
     border-radius: 15px;
 }
+#word{
+    animation: slide 15s linear;
+    position:fixed;
+    z-index:-1;
+    font-family: "times new roman";
+    text-shadow:2px 2px 5px;
+}
+
+@keyframes slide{
+    0% {
+      transform: translate3d(0, 0, 0);
+      color:rgba(255, 255, 255, 0);
+    }
+    10%{
+        color:white;
+    }
+    90% {
+      color:rgba(255, 255, 255, 0);
+    }
+    100%{
+        transform: translate3d(3000px, 0, 0);
+    }
+  }
