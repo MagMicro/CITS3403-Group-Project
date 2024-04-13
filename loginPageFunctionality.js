@@ -124,7 +124,7 @@ function init(){
     $("#passwordField").blur(() => {verifyPassword("#passwordField")});
     $("#visibility").click(() => {changeVisibilty();});
     $(".inputFields").submit(() => {createCookie();})
-    setInterval(()=>{makeWord();}, 600);
+    setInterval(()=>{makeWord();}, 700);
 }
 $(document).ready(init);
 fillUsername();
