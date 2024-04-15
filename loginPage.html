@@ -10,7 +10,7 @@
     <body>
         <table id = "banner">
             <tr>
-                <td class = "col-3"><img src="Logo.png" id = "logo" class = "col-5"></td>
+                <td class = "col-3"><img src="Logo.png" id = "website-white" class = "col-5"></td>
                 <td id = "home" class = "col-2"><div class = "fas fa-home"></div> Home</td>
                 <td id = "search" class = "col-5"><div class = "fas fa-search"></div> <input id = "searchbar" type = "text" placeholder = "Search" class = "col-10"></td>
                 <td id = "account" class = "col-2"><div class = "fas fa-user"></div> Account</td>
@@ -19,13 +19,14 @@
         <div id = "Login" class="board col-8 col-m-6 col-lg-4">
             <h1>Login Page</h1>
             <hr class = "col-sm-9">
+            <img id = "logo" src="icon.png">
             <form  class = "inputFields col-sm-10">
                 <label class = "fieldName" for = usernameField>Username: <span class = "fas fa-user"></span></label>
                 <input type = "text" id = "usernameField" name = "username" placeholder = "Username" class = "col-sm-12">
-                <p class = "notify">*This field cannot be empty</p>
+                <p class = "notify"><span class = "fas fa-exclamation"></span> This field cannot be empty</p>
                 <label class = "fieldName" for = passwordField>Password: <span  id = "visibility" class="fas fa-eye-slash" title = "View"></span></label>
                 <input type = "password" id = "passwordField" name = "password" placeholder = "Password" class = "col-sm-12">
-                <p class = "notify">*This field cannot be empty</p>
+                <p class = "notify"><span class = "fas fa-exclamation"></span> This field cannot be empty</p>
                 <button type = "submit" class = "col-9" id ="submitButton"  class = "btn btn-primary ">Login</button>
             </form>
             <hr class = "col-sm-9">

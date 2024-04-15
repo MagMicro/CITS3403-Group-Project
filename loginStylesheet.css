@@ -13,17 +13,17 @@ body{
     margin-bottom:5%;
 }
 #Login{
-    height:500px;
+    height:600px;
 }
 #Creation{
-    height: 700px;
+    height: 800px;
 }
 .inputFields [type = "text"], [type = "password"], [type = "email"]{
     display:block;
     border-radius: 15px;
     border-width:2px;
     padding:10px;
-    margin-bottom:20px;
+    margin-bottom:10px;
     box-shadow: 2px 2px grey;
 }
 .inputFields input:hover{
@@ -73,6 +73,7 @@ a{
 .notify, #emailNotification{
     color:red;
     display:none;
+    margin:2px;
 }
 #visibility{
     color:red;
@@ -135,6 +136,5 @@ a{
     }
   }
 #logo{
-    display:inline-block;
-
+    margin:30px;
 }
