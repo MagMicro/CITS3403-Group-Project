@@ -20,6 +20,7 @@
             <h1>Login Page</h1>
             <hr class = "col-sm-9">
             <form  class = "inputFields col-sm-10" method="post" action="/login">
+                <p style="color: red;">{{ message }}</p>
                 <label class = "fieldName" for = usernameField>Username: <span class = "fas fa-user"></span></label>
                 <input type = "text" id = "usernameField" name = "username" placeholder = "Username" class = "col-sm-12">
                 <p class = "notify">*This field cannot be empty</p>

@@ -21,6 +21,7 @@
             <p>(Please fill out the following details)</p>
             <hr class = "col-sm-9">
             <form class = "inputFields" method="POST" action="/create_account">
+                <p style="color: red;">{{ message }}</p>
                 <label class = "fieldName" for = usernameField>New Username: <span class = "fas fa-user"></span></label>
                 <input type = "text" id = "usernameField" name = "username" placeholder = "Username" class = "col-sm-12">
                 <label class = "fieldName" for = emailField>Register Email: <span class = "fas fa-envelope"></span></label>
