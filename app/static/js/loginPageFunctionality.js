@@ -20,7 +20,7 @@ function checkPassword(password){
     let lowercase = new RegExp("[a-z]+");
     let uppercase = new RegExp("[A-Z]+");
     let number = new RegExp("[0-9]+");
-    let symbol = new RegExp("[~`!@#$%^&*()-+=|,<>?/\\\.'\"]+");
+    let symbol = new RegExp("[-~`!@#\$%\^&\*()\+=|,<>\?/\\\.\'\"\_]+");
     if(!lowercase.test(password)){
         return "Password needs one or more lowercase letters.";
     }
@@ -68,18 +68,18 @@ function changeVisibilty(){
         $("#visibility").attr("class", "fas fa-eye");
         $("#visibility").attr("title", "Hide");
         $("#visibility").css("color", "green");
-        $("#passwordField").attr("type", "text");
+        $("#password").attr("type", "text");
     }
     else{
         $("#visibility").attr("class", "fas fa-eye-slash");
         $("#visibility").attr("title", "View");
         $("#visibility").css("color", "red");
-        $("#passwordField").attr("type", "password");
+        $("#password").attr("type", "password");
     }
 }
 
 function createCookie(){
-    let value = $("#usernameField").val();
+    let value = $("#username").val();
     const current_time = new Date();
     //Expires in a month (31 days)
     const offset = (31 *24 *60 *60 *1000);
@@ -118,10 +118,10 @@ function makeWord(){
 }
 
 function init(){
-    $("#usernameField").blur(() => {notifyEmpty("#usernameField");});
-    $("#passwordField").blur(() => {notifyEmpty("#passwordField");});
-    $("#emailField").blur(() => {verifyEmail("#emailField")});
-    $("#passwordField").blur(() => {verifyPassword("#passwordField")});
+    $("#username").blur(() => {notifyEmpty("#username");});
+    $("#password").blur(() => {notifyEmpty("#password");});
+    $("#email").blur(() => {verifyEmail("#email")});
+    $("#password").blur(() => {verifyPassword("#password")});
     $("#visibility").click(() => {changeVisibilty();});
     $(".inputFields").submit(() => {createCookie();})
     setInterval(()=>{makeWord();}, 700);

@@ -9,27 +9,28 @@
     <img id = "logo" src="static/icon.png">
 
     <form class = "inputFields" method="POST" action="/create_account">
+        {{form.hidden_tag()}}
         <p style="color: red;">{{ message }}</p>
 
-        <label class = "fieldName" for = usernameField>New Username: <span class = "fas fa-user"></span></label>
-        <input type = "text" id = "usernameField" name = "username" placeholder = "Username" class = "col-sm-12">
+        <label class = "fieldName" for = username>New Username: <span class = "fas fa-user"></span></label>
+        {{form.username(class = "col-12", placeholder = "Username")}}
 
-        <label class = "fieldName" for = emailField>Register Email: <span class = "fas fa-envelope"></span></label>
-        <input type = "email" id = "emailField" name = "email" placeholder = "someone@gmail.com" class = "col-sm-12">
+        <label class = "fieldName" for = email>Register Email: <span class = "fas fa-envelope"></span></label>
+        {{form.email(class = "col-12", placeholder = "someone@email.com")}}
         <p id = "emailNotification"><span class = "fas fa-exclamation"></span> Invalid Email</p>
 
-        <label class = "fieldName" for = passwordField>New Password: <span  id = "visibility" class="fas fa-eye-slash" title = "View"></span></label>
-        <input type = "password" id = "passwordField" name = "password" placeholder = "Password" class = "col-sm-12">
+        <label class = "fieldName" for = password>New Password: <span  id = "visibility" class="fas fa-eye-slash" title = "View"></span></label>
+        {{form.password(placeholder = "Password", class = "col-12")}}
         <p id = "passwordNotification"></p>
         
-        <input id = "TOS_box" type="checkbox" name = "TOS">
+        {{form.TOS()}}
         <label id = "TOSMessage" for = TOS_box>* I accept the Terms of Service</label>
 
-        <button type = "submit" class = "col-9" id ="submitButton"  class = "btn btn-primary ">Register Account</button>
+        {{form.submit(class = "btn btn-primary col-9")}}
     </form>
 
     <hr class = "col-sm-9">
-    <p id = "redirectionPrompt">Already have an account? <a href="/login_page">Login here</a></p>
-    <hr class = "col-sm-9">
+    <p id = "redirectionPrompt">Already have an account? <a href={{ url_for('login') }}>Login here</a></p>
+    <hr class = "col-sm-9"><br>
 </div>
 {% endblock %}

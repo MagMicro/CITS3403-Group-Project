@@ -8,21 +8,22 @@
     <img id = "logo" src="static/icon.png">
 
     <form  class = "inputFields col-sm-10" method="post" action="/login">
+        {{form.hidden_tag()}}
         <p style="color: red;">{{ message }}</p>
 
-        <label class = "fieldName" for = usernameField>Username: <span class = "fas fa-user"></span></label>
-        <input type = "text" id = "usernameField" name = "username" placeholder = "Username" class = "col-sm-12">
+        <label class = "fieldName" for = username>Username: <span class = "fas fa-user"></span></label>
+        {{form.username(class = "col-sm-12", placeholder = "Username")}}
         <p class = "notify"><span class = "fas fa-exclamation"></span> This field cannot be empty</p>
 
-        <label class = "fieldName" for = passwordField>Password: <span  id = "visibility" class="fas fa-eye-slash" title = "View"></span></label>
-        <input type = "password" id = "passwordField" name = "password" placeholder = "Password" class = "col-sm-12">
+        <label class = "fieldName" for = password>Password: <span  id = "visibility" class="fas fa-eye-slash" title = "View"></span></label>
+        {{form.password(class = "col-sm-12", placeholder = "Password")}}
         <p class = "notify"><span class = "fas fa-exclamation"></span> This field cannot be empty</p>
 
-        <button type = "submit" class = "col-9" id ="submitButton"  class = "btn btn-primary ">Login</button>
+        {{form.submit(value = "Login", class = "col-9")}}
     </form>
     
     <hr class = "col-sm-9">
-    <p id = "redirectionPrompt"> Don't have an account? <a href = "/create_account_page">Create new account</a></p>
-    <hr class = "col-sm-9">
+    <p id = "redirectionPrompt"> Don't have an account? <a href = "{{ url_for('create_account') }}">Create new account</a></p>
+    <hr class = "col-sm-9"><br>
 </div>
 {% endblock %}

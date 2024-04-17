@@ -14,12 +14,12 @@ body{
     animation: appear 0.5s;
 }
 #Login{
-    height:600px;
+    height:100%;
 }
 #Creation{
-    height: 800px;
+    height: 100%;
 }
-.inputFields [type = "text"], [type = "password"], [type = "email"]{
+#username, #password, #email{
     display:block;
     border-radius: 15px;
     border-width:2px;
@@ -27,7 +27,7 @@ body{
     margin-bottom:10px;
     box-shadow: 2px 2px grey;
 }
-.inputFields input:hover{
+#username:hover, #password:hover{
     border-color: aqua;
 }
 .fieldName{
@@ -55,7 +55,7 @@ body{
     margin-top:10px;
     margin-bottom:10px;
 }
-#submitButton{
+#submitButton, #submit{
     margin-top:20px;
     border-radius: 10px;
     position:relative;
@@ -74,7 +74,7 @@ a{
 .notify, #emailNotification{
     color:red;
     display:none;
-    margin:2px;
+    margin:10px;
 }
 #visibility{
     color:red;
