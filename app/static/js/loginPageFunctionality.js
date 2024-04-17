@@ -10,9 +10,12 @@ function verifyEmail(id){
     let email = $(id).val();
     if(!checkEmail(email)){
         $(id + "+ #emailNotification").css("display", "block");
+        $(id + "+ #emailNotification").html("<span class = 'fas fa-exclamation'></span> Invalid Email");
+        $(id + "+ #emailNotification").css("color", "red");
     }
     else{
-        $(id + "+ #emailNotification").css("display", "none");
+        $(id + "+ #emailNotification").html("<span class = 'fas fa-check'></span> " + "Valid Email");
+        $(id + "+ #emailNotification").css("color", "green");
     }
 }
 
@@ -58,6 +61,7 @@ function verifyPassword(id){
 function notifyEmpty(id){
     if($(id).val() == ""){
         $(id + "+ .notify").css("display", "block");
+        $(id + "+ .notify").html("<span class = 'fas fa-exclamation'></span> This field cannot be empty");
     }
     else{
         $(id + "+ .notify").css("display", "none");
@@ -120,7 +124,9 @@ function makeWord(){
 function init(){
     $("#username").blur(() => {notifyEmpty("#username");});
     $("#password").blur(() => {notifyEmpty("#password");});
+    $("#email").keydown(() => {verifyEmail("#email")});
     $("#email").blur(() => {verifyEmail("#email")});
+    $("#password").keydown(() => {verifyPassword("#password")});
     $("#password").blur(() => {verifyPassword("#password")});
     $("#visibility").click(() => {changeVisibilty();});
     $(".inputFields").submit(() => {createCookie();})

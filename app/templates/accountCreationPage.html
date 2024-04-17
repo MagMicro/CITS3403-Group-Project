@@ -14,10 +14,11 @@
 
         <label class = "fieldName" for = username>New Username: <span class = "fas fa-user"></span></label>
         {{form.username(class = "col-12", placeholder = "Username")}}
+        <p class = "notify"></p>
 
         <label class = "fieldName" for = email>Register Email: <span class = "fas fa-envelope"></span></label>
         {{form.email(class = "col-12", placeholder = "someone@email.com")}}
-        <p id = "emailNotification"><span class = "fas fa-exclamation"></span> Invalid Email</p>
+        <p class = "notify" id = "emailNotification"></p>
 
         <label class = "fieldName" for = password>New Password: <span  id = "visibility" class="fas fa-eye-slash" title = "View"></span></label>
         {{form.password(placeholder = "Password", class = "col-12")}}
