@@ -1,3 +1,27 @@
+function checkUsername(username){
+    if(username.length < 5){
+        return "username must be longer than 5 characters."
+    }
+    else if(username.length > 20){
+        return "max username length exceeded (20 characters)"
+    }
+    else{
+        return "Valid username."
+    }
+}
+function verifyUsername(id){
+    let username = $(id).val();
+    $(id + "+ #usernameNotification").css("display", "block");
+    response = checkUsername(username);
+    if(response == "Valid username."){
+        $(id + "+ #usernameNotification").html("<span class = 'fas fa-check'></span> " + response);
+        $(id + "+ #usernameNotification").css("color", "green");
+    }
+    else{
+        $(id + "+ #usernameNotification").html("<span class = 'fas fa-exclamation'></span> " + response);
+        $(id + "+ #usernameNotification").css("color", "red");
+    }
+}
 function checkEmail(email){
     let pattern = new RegExp("^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{3}$");
     if(pattern.test(email)){
@@ -8,8 +32,8 @@ function checkEmail(email){
 
 function verifyEmail(id){
     let email = $(id).val();
+    $(id + "+ #emailNotification").css("display", "block");
     if(!checkEmail(email)){
-        $(id + "+ #emailNotification").css("display", "block");
         $(id + "+ #emailNotification").html("<span class = 'fas fa-exclamation'></span> Invalid Email");
         $(id + "+ #emailNotification").css("color", "red");
     }
@@ -128,8 +152,11 @@ function init(){
     $("#email").blur(() => {verifyEmail("#email")});
     $("#password").keydown(() => {verifyPassword("#password")});
     $("#password").blur(() => {verifyPassword("#password")});
+    $("#username").keydown(() => {verifyUsername("#username")});
+    $("#username").blur(() => {verifyUsername("#username")});
     $("#visibility").click(() => {changeVisibilty();});
-    $(".inputFields").submit(() => {createCookie();})
+    $(".inputFields").submit(() => {createCookie();});
+    $("#creationForm").submit((event) => {if(!(checkUsername($("#username").val()) == "Valid username." && checkEmail($("#email").val()) == true && checkPassword($("#password").val()) == "Valid password.")){event.preventDefault();}});
     setInterval(()=>{makeWord();}, 700);
 }
 $(document).ready(init);

@@ -8,17 +8,17 @@
 
     <img id = "logo" src="static/icon.png">
 
-    <form class = "inputFields" method="POST" action="/create_account">
+    <form id = "creationForm"class = "inputFields" method="POST" action="/create_account">
         {{form.hidden_tag()}}
         <p style="color: red;">{{ message }}</p>
 
         <label class = "fieldName" for = username>New Username: <span class = "fas fa-user"></span></label>
         {{form.username(class = "col-12", placeholder = "Username")}}
-        <p class = "notify"></p>
+        <p id = "usernameNotification"></p>
 
         <label class = "fieldName" for = email>Register Email: <span class = "fas fa-envelope"></span></label>
         {{form.email(class = "col-12", placeholder = "someone@email.com")}}
-        <p class = "notify" id = "emailNotification"></p>
+        <p id = "emailNotification"></p>
 
         <label class = "fieldName" for = password>New Password: <span  id = "visibility" class="fas fa-eye-slash" title = "View"></span></label>
         {{form.password(placeholder = "Password", class = "col-12")}}
