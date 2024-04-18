@@ -146,6 +146,13 @@ function makeWord(){
 }
 
 function init(){
+    fillUsername();
+    $("#home").click(() => {
+        $("#homeDropdown").animate({height:"toggle"});
+    });
+    $("#account").click(() => {
+        $("#accountDropdown").animate({height:"toggle"});
+    });
     $("#username").blur(() => {notifyEmpty("#username");});
     $("#password").blur(() => {notifyEmpty("#password");});
     $("#email").keydown(() => {verifyEmail("#email")});
@@ -160,4 +167,3 @@ function init(){
     setInterval(()=>{makeWord();}, 700);
 }
 $(document).ready(init);
-fillUsername();

@@ -85,7 +85,6 @@ a{
     top:0px;
     z-index:1;
     width:100%;
-    height:5%;
     margin: 0px;
     padding: 0px;
     list-style-type:none;
@@ -93,20 +92,18 @@ a{
     box-shadow: 0px 10px rgba(0, 0, 0, 0.2);
 }
 
-#banner td{
+#banner .entry{
     display: inline-block;
     color: white;
     border-right:1px;
     border-color:rgb(103, 103, 103);
     border-style:solid;
-    padding: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     text-align: center;
     height:45px;
 }
-#home:hover{
-    background-color:rgb(41, 42, 50);
-}
-#account:hover{
+#home:hover, #account:hover, #create:hover{
     background-color:rgb(41, 42, 50);
 }
 #searchbar{
@@ -143,4 +140,18 @@ a{
   }
 #logo{
     margin:30px;
+}
+.dropdown{
+    color:white;
+    background-color: rgb(100, 104, 122);
+    top: 14px;
+    display: none;
+}
+.dropdown span{
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+    display:inline-block;
+    width:100%;
+    text-align: center;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
