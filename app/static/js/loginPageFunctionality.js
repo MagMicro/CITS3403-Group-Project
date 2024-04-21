@@ -149,9 +149,15 @@ function init(){
     fillUsername();
     $("#home").click(() => {
         $("#homeDropdown").animate({height:"toggle"});
+        if($("#accountDropdown").css("display") != "none"){
+            $("#accountDropdown").animate({height:"toggle"});
+        }
     });
     $("#account").click(() => {
         $("#accountDropdown").animate({height:"toggle"});
+        if($("#homeDropdown").css("display") != "none"){
+            $("#homeDropdown").animate({height:"toggle"});
+        }
     });
     $("#username").blur(() => {notifyEmpty("#username");});
     $("#password").blur(() => {notifyEmpty("#password");});
