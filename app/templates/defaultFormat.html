@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>  
-        <title>Account Creation</title>
+        <title>Split Dif</title>
         <link rel = "icon" type="image/x-icon" href="static/favicon.ico">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/Stylesheet.css') }}">
@@ -12,7 +12,7 @@
             <tr>
                 <td class = "entry col-2"><img src="static/Logo.png" id = "website-white" class = "col-5"></td>
                 <td id = "home" class = "entry col-2">
-                    <div class = "fas fa-home"></div> Home
+                    <a href="{{ url_for('home') }}"><div class = "fas fa-home"></div> Home</a>
                     <div id = "homeDropdown" class = "dropdown col-12">
                         <span><div class = "fas fa-lightbulb"></div> About</span><br>
                         <span><div class = "fas fa-arrow-trend-up"></div> Most Popular</span><br>
@@ -23,10 +23,14 @@
                 <td id = "search" class = "entry col-4"><div class = "fas fa-search"></div> <input id = "searchbar" type = "text" placeholder = "Search" class = "col-10"></td>
                 <td id = "account" class = "entry col-2">
                     <div class = "fas fa-user"></div> Account
-                    <div id = "accountDropdown" class = "dropdown col-12">
-                        <span><div class = "fas fa-id-card"></div> Profile</span><br>
-                        <span><div class = "fas fa-arrow-right-from-bracket"></div> Log-out</span><br>
-                    </div>
+                    {% if 'username' in session %}
+                        <div id = "accountDropdown" class = "dropdown col-12">
+                            <a href="{{ url_for('account') }}"><div class = "fas fa-id-card"></div> Profile</a><br>
+                            <span><div class = "fas fa-arrow-right-from-bracket"></div> Log-out</span><br>
+                        </div>
+                    {% else %}
+                        <a href="{{ url_for('login') }}">Login</a>
+                    {% endif %}
                 </td>
             </tr>
         </table>

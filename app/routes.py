@@ -1,5 +1,5 @@
 from app import app
-from flask import request, render_template, g
+from flask import request, render_template, g, session, redirect, url_for
 from app.forms import *
 import sqlite3
 
@@ -19,9 +19,12 @@ def close_db(e=None):
 
 @app.route('/')
 def index():
-    print("User accessed the index page")
-    form = LoginForm()
-    return render_template('loginPage.html', form = form)
+    username = session.get('username', 'Guest')
+    return render_template('home.html', username=username)
+
+@app.route('/home')
+def home():
+    return render_template('home.html')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -39,7 +42,9 @@ def login():
             return render_template('loginPage.html', form = form, message="Invalid username or password")
         else:
             print("Login successful")
-            return render_template('home.html', user_ID=user[0], username=user[1])
+            session['user_ID'] = user[0]
+            session['username'] = user[1]
+            return render_template('home.html')
         
     print("User accessed the login page")
     return render_template('loginPage.html', form = form)
@@ -77,3 +82,12 @@ def create_account():
     
     print("User accessed the Account Creation page")
     return render_template('accountCreationPage.html', form = form)
+
+@app.route('/account', methods=['POST', 'GET'])
+def account():
+    #print session details to console
+    print(session)
+    if 'username' not in session:
+        return render_template(url_for('login'))
+    else:
+        return render_template('account.html')
