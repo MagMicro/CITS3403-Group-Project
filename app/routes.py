@@ -1,5 +1,5 @@
 from app import app
-from flask import request, render_template, g, session, redirect, url_for
+from flask import request, render_template, g, session, redirect, url_for, jsonify, abort
 from app.forms import *
 from .models import Users, Polls, VotePoll
 from app import db
@@ -8,8 +8,8 @@ from app import db
 def index():
     return redirect(url_for('home'))
 
-@app.route('/home')
-def home():
+@app.route('/api/polls', methods=['GET'])
+def get_polls():
     polls = Polls.query.all()
     user_votes = None
     polls_data = []
@@ -29,6 +29,7 @@ def home():
         votes2 = VotePoll.query.filter_by(poll_ID=poll.poll_ID, Vote_opt=2).count()
 
         poll_data = {
+            'id': poll.poll_ID,
             'author': author.username if author else 'Unknown',
             'option1': poll.Option1,
             'votes1': (votes1 / total_votes) * 100 if total_votes > 0 else 0,
@@ -38,7 +39,38 @@ def home():
         }
         polls_data.append(poll_data)
 
-    return render_template('home.html', polls=polls_data)
+    return jsonify(polls_data)
+
+@app.route('/api/polls/<int:poll_id>/vote', methods=['POST'])
+def vote(poll_id):
+    # Check if user is logged in
+    if 'user_ID' not in session:
+        return '', 401
+
+    # Get the selected option from the request body
+    data = request.get_json()
+    option = data.get('option')
+    if option not in ['1', '2']:
+        abort(400)
+
+    # Record the vote
+    vote = VotePoll(user_ID=session['user_ID'], poll_ID=poll_id, Vote_opt=int(option))
+    #print vote for debug
+    print(vote)
+
+    #check if user has already voted
+    user_vote = VotePoll.query.filter_by(user_ID=session['user_ID'], poll_ID=poll_id).first()
+    if user_vote is not None:
+        return '', 403
+    
+    db.session.add(vote)
+    db.session.commit()
+
+    return redirect(url_for('home'))
+
+@app.route('/home')
+def home():
+    return render_template('home.html')
 
 
 @app.route('/login', methods=['POST', 'GET'])
