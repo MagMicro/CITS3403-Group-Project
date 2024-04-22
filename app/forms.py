@@ -13,3 +13,8 @@ class CreationForm(FlaskForm):
     password = PasswordField("Password:", validators = [DataRequired()])
     TOS = BooleanField("TOS:")
     submit = SubmitField("Submit")
+
+class PollForm(FlaskForm):
+    option1 = StringField("Option 1:", validators = [DataRequired()])
+    option2 = StringField("Option 2:", validators = [DataRequired()])
+    sumbit = SubmitField("Submit")

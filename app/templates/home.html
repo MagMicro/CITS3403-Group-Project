@@ -1,14 +1,43 @@
 {% extends "defaultFormat.html" %}
-{%block content%}
-<div id = "Home" class="board col-8 col-m-6 col-lg-4" >
+{% block content %}
+<div id="Home" class="board col-8 col-m-6 col-lg-4">
     <h1>Home Page</h1>
 
+    <hr class="col-sm-9">
 
-    <hr class = "col-sm-9">
-    <h1>Welcome, {{ session.user_ID }}!</h1>
-    <h2>Your username is: {{ session.username }}</h2>
-    
-    <hr class = "col-sm-9">
+    {% if session.user_ID %}
+        <h1>Welcome, {{ session.user_ID }}!</h1>
+        <h2>Your username is: {{ session.username }}</h2>
+    {% else %}
+        <h1>Welcome, guest!</h1>
+    {% endif %}
 
+    <hr class="col-sm-9">
+
+    {% for poll in polls %}
+    <div class="poll">
+        <div class="options" style="display: flex; justify-content: space-between;">
+            <div class="option1">
+                <h3>{{ poll.option1 }}</h3>
+                <p>Votes: {{ poll.votes1 }}%</p>
+                {% if poll.has_voted %}
+                    <button disabled>Voted</button>
+                {% else %}
+                    <button>Vote</button>
+                {% endif %}
+            </div>
+            <div class="option2">
+                <h3>{{ poll.option2 }}</h3>
+                <p>Votes: {{ poll.votes2 }}%</p>
+                {% if poll.has_voted %}
+                    <button disabled>Voted</button>
+                {% else %}
+                    <button>Vote</button>
+                {% endif %}
+            </div>
+        </div>
+        <p>Author: {{ poll.author }}</p>
+    </div>
+    {% endfor %}
 </div>
 {% endblock %}

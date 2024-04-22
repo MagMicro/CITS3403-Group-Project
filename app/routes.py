@@ -6,12 +6,40 @@ from app import db
 
 @app.route('/')
 def index():
-    username = session.get('username', 'Guest')
-    return render_template('home.html', username=username)
+    return redirect(url_for('home'))
 
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    polls = Polls.query.all()
+    user_votes = None
+    polls_data = []
+
+    if 'user_ID' in session:
+        user_votes = VotePoll.query.filter_by(user_ID=session['user_ID']).all()
+
+    for poll in polls:
+        has_voted = False
+        if user_votes and poll.poll_ID in [vote.poll_ID for vote in user_votes]:
+            has_voted = True
+
+        author = Users.query.filter_by(user_ID=poll.pollAuthor_ID).first()
+
+        total_votes = VotePoll.query.filter_by(poll_ID=poll.poll_ID).count()
+        votes1 = VotePoll.query.filter_by(poll_ID=poll.poll_ID, Vote_opt=1).count()
+        votes2 = VotePoll.query.filter_by(poll_ID=poll.poll_ID, Vote_opt=2).count()
+
+        poll_data = {
+            'author': author.username if author else 'Unknown',
+            'option1': poll.Option1,
+            'votes1': (votes1 / total_votes) * 100 if total_votes > 0 else 0,
+            'option2': poll.Option2,
+            'votes2': (votes2 / total_votes) * 100 if total_votes > 0 else 0,
+            'has_voted': has_voted
+        }
+        polls_data.append(poll_data)
+
+    return render_template('home.html', polls=polls_data)
+
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -30,7 +58,8 @@ def login():
             print("Login successful")
             session['user_ID'] = user.user_ID
             session['username'] = user.username
-            return render_template('home.html')
+            polls = Polls.query.all()
+            return redirect(url_for('home'))
 
     print("User accessed the login page")
     return render_template('loginPage.html', form=form)
@@ -72,7 +101,7 @@ def account():
     #print session details to console
     print(session)
     if 'username' not in session:
-        return render_template(url_for('login'))
+        return redirect(url_for('login'))
     else:
         return render_template('account.html')
 
@@ -83,7 +112,7 @@ def about():
 @app.route('/logout', methods=['GET'])
 def logout():
     session.clear()
-    return render_template('home.html')
+    return redirect(url_for('home'))
 
 @app.route('/popular', methods=['GET'])
 def popular():
@@ -92,3 +121,27 @@ def popular():
 @app.route('/ranking', methods=['GET'])
 def ranking():
     return render_template('ranking.html')
+
+@app.route('/create', methods=['POST', 'GET'])
+def create():
+    
+    if 'user_ID' not in session:
+        return redirect(url_for('login'))
+    
+    form = PollForm()
+    if form.validate_on_submit():
+        userID = session.get('user_ID')
+        
+        option1 = form.option1.data
+        option2 = form.option2.data
+        
+        print(f"User attempting to create a poll with options: {option1}, {option2}")
+
+        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID)
+        db.session.add(new_poll)
+        db.session.commit()
+        print("Poll created")
+        
+        return redirect(url_for('home'))
+    print("User accessed the create page")
+    return render_template('create.html', form=form)

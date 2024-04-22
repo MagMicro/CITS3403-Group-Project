@@ -19,7 +19,7 @@
                         <span><a href="{{ url_for('ranking') }}"><div class = "fas fa-ranking-star"></div> User Rankings</span></a><br>
                     </div>
                 </td>
-                <td id = "create" class = "entry col-2"><div class = "fas fa-pen"></div> Create</td>
+                <td id = "create" class = "entry col-2"><a href="{{ url_for('create') }}"><div class = "fas fa-pen"></div> Create</a></td>
                 <td id = "search" class = "entry col-4"><div class = "fas fa-search"></div> <input id = "searchbar" type = "text" placeholder = "Search" class = "col-10"></td>
                 <td id = "account" class = "entry col-2">
                     {% if 'username' in session %}
