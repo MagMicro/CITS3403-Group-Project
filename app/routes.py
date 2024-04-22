@@ -91,3 +91,20 @@ def account():
         return render_template(url_for('login'))
     else:
         return render_template('account.html')
+
+@app.route('/about', methods=['GET'])
+def about():
+    return render_template('about.html')
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    session.clear()
+    return render_template('home.html')
+
+@app.route('/popular', methods=['GET'])
+def popular():
+    return render_template('popular.html')
+
+@app.route('/ranking', methods=['GET'])
+def ranking():
+    return render_template('ranking.html')
