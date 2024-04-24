@@ -1,0 +1,23 @@
+{% extends "defaultFormat.html" %}
+{% block content %}
+<div id="Create" class="board col-8 col-m-6 col-lg-4">
+    <h1>Create Page</h1>
+
+    <hr class="col-sm-9">
+
+    <img id="logo" src="static/icon.png">
+
+    <form id="newPoll" class="inputFields col-sm-10" method="post" action="/create">
+        {{form.hidden_tag()}}
+        
+        <label class="fieldName" for="option1">Option 1:</label>
+        {{form.option1(class = "col-sm-12", placeholder = "Option 1")}}
+
+        <label class="fieldName" for="option2">Option 2:</label>
+        {{form.option2(class = "col-sm-12", placeholder = "Option 2")}}
+        
+        <input type="submit" value="Submit">
+    </form>
+    
+</div>
+{% endblock %}

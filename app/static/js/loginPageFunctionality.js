@@ -106,6 +106,7 @@ function changeVisibilty(){
     }
 }
 
+// Unsure if this is required, as we use session in flask
 function createCookie(){
     let value = $("#username").val();
     const current_time = new Date();

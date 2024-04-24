@@ -1,79 +1,179 @@
 from app import app
-from flask import request, render_template, g
+from flask import request, render_template, g, session, redirect, url_for, jsonify, abort
 from app.forms import *
-import sqlite3
-
-DATABASE = 'app/static/database.db'
-
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-    return db
-
-@app.teardown_appcontext
-def close_db(e=None):
-    db = g.pop('db', None)
-    if db is not None:
-        db.close()
+from .models import Users, Polls, VotePoll
+from app import db
 
 @app.route('/')
 def index():
-    print("User accessed the index page")
-    form = LoginForm()
-    return render_template('loginPage.html', form = form)
+    return redirect(url_for('home'))
+
+@app.route('/api/polls', methods=['GET'])
+def get_polls():
+    polls = Polls.query.all()
+    user_votes = None
+    polls_data = []
+
+    if 'user_ID' in session:
+        user_votes = VotePoll.query.filter_by(user_ID=session['user_ID']).all()
+
+    for poll in polls:
+        has_voted = False
+        if user_votes and poll.poll_ID in [vote.poll_ID for vote in user_votes]:
+            has_voted = True
+
+        author = Users.query.filter_by(user_ID=poll.pollAuthor_ID).first()
+
+        total_votes = VotePoll.query.filter_by(poll_ID=poll.poll_ID).count()
+        votes1 = VotePoll.query.filter_by(poll_ID=poll.poll_ID, Vote_opt=1).count()
+        votes2 = VotePoll.query.filter_by(poll_ID=poll.poll_ID, Vote_opt=2).count()
+
+        poll_data = {
+            'id': poll.poll_ID,
+            'author': author.username if author else 'Unknown',
+            'option1': poll.Option1,
+            'votes1': (votes1 / total_votes) * 100 if total_votes > 0 else 0,
+            'option2': poll.Option2,
+            'votes2': (votes2 / total_votes) * 100 if total_votes > 0 else 0,
+            'has_voted': has_voted
+        }
+        polls_data.append(poll_data)
+
+    return jsonify(polls_data)
+
+@app.route('/api/polls/<int:poll_id>/vote', methods=['POST'])
+def vote(poll_id):
+    # Check if user is logged in
+    if 'user_ID' not in session:
+        return '', 401
+
+    # Get the selected option from the request body
+    data = request.get_json()
+    option = data.get('option')
+    if option not in ['1', '2']:
+        abort(400)
+
+    # Record the vote
+    vote = VotePoll(user_ID=session['user_ID'], poll_ID=poll_id, Vote_opt=int(option))
+    #print vote for debug
+    print(vote)
+
+    #check if user has already voted
+    user_vote = VotePoll.query.filter_by(user_ID=session['user_ID'], poll_ID=poll_id).first()
+    if user_vote is not None:
+        return '', 403
+    
+    db.session.add(vote)
+    db.session.commit()
+
+    return redirect(url_for('home'))
+
+@app.route('/home')
+def home():
+    return render_template('home.html')
+
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     form = LoginForm()
-    if(form.validate_on_submit()):
+    if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
         print(f"User attempted login with username: {username}, password: {password}")
-        db = get_db()
-        cur = db.cursor()
-        cur.execute('SELECT * FROM Users WHERE username = ? AND password = ?', (username, password))
-        user = cur.fetchone()
+
+        # Check if username and password match a user in the database
+        user = Users.query.filter_by(username=username, password=password).first()
         if user is None:
             print("Login failed")
-            return render_template('loginPage.html', form = form, message="Invalid username or password")
+            return render_template('loginPage.html', form=form, message="Invalid username or password")
         else:
             print("Login successful")
-            return render_template('home.html', user_ID=user[0], username=user[1])
-        
+            session['user_ID'] = user.user_ID
+            session['username'] = user.username
+            polls = Polls.query.all()
+            return redirect(url_for('home'))
+
     print("User accessed the login page")
-    return render_template('loginPage.html', form = form)
+    return render_template('loginPage.html', form=form)
 
 @app.route('/create_account', methods=['POST', 'GET'])
 def create_account():
     form = CreationForm()
-    if(form.validate_on_submit()):
+    if form.validate_on_submit():
         username = form.username.data
         email = form.email.data
         password = form.password.data
         print(f"User attempting account creation with username: {username}, email: {email}, password: {password}")
-        db = get_db()
-        cur = db.cursor()
-        #check if username is already taken
-        cur.execute('SELECT * FROM Users WHERE username = ?', (username,))
-        user = cur.fetchone()
+
+        # Check if username is already taken
+        user = Users.query.filter_by(username=username).first()
         if user is not None:
             print("Username already taken")
-            return render_template('accountCreationPage.html', form = form, message="Username already taken")
-    
-        #check if email is already taken
-        cur.execute('SELECT * FROM Users WHERE email = ?', (email,))
-        user = cur.fetchone()
+            return render_template('accountCreationPage.html', form=form, message="Username already taken")
+
+        # Check if email is already taken
+        user = Users.query.filter_by(email=email).first()
         if user is not None:
             print("Email already taken")
-            return render_template('accountCreationPage.html', form = form, message="Email already taken")
-    
-        #create account
-        cur.execute('INSERT INTO Users (username, email, password) VALUES (?, ?, ?)', (username, email, password))
-        db.commit()
+            return render_template('accountCreationPage.html', form=form, message="Email already taken")
+
+        # Create account
+        new_user = Users(username=username, email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
         print("Account created")
         form = LoginForm()
-        return render_template('loginPage.html', form = form, message="Account created successfully")
-    
+        return render_template('loginPage.html', form=form, message="Account created successfully")
+
     print("User accessed the Account Creation page")
-    return render_template('accountCreationPage.html', form = form)
+    return render_template('accountCreationPage.html', form=form)
+
+@app.route('/account', methods=['POST', 'GET'])
+def account():
+    #print session details to console
+    print(session)
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    else:
+        return render_template('account.html')
+
+@app.route('/about', methods=['GET'])
+def about():
+    return render_template('about.html')
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    session.clear()
+    return redirect(url_for('home'))
+
+@app.route('/popular', methods=['GET'])
+def popular():
+    return render_template('popular.html')
+
+@app.route('/ranking', methods=['GET'])
+def ranking():
+    return render_template('ranking.html')
+
+@app.route('/create', methods=['POST', 'GET'])
+def create():
+    
+    if 'user_ID' not in session:
+        return redirect(url_for('login'))
+    
+    form = PollForm()
+    if form.validate_on_submit():
+        userID = session.get('user_ID')
+        
+        option1 = form.option1.data
+        option2 = form.option2.data
+        
+        print(f"User attempting to create a poll with options: {option1}, {option2}")
+
+        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID)
+        db.session.add(new_poll)
+        db.session.commit()
+        print("Poll created")
+        
+        return redirect(url_for('home'))
+    print("User accessed the create page")
+    return render_template('create.html', form=form)
