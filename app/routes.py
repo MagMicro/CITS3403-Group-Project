@@ -70,7 +70,7 @@ def vote(poll_id):
 
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    return render_template('home.html', title = "Home")
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -94,7 +94,7 @@ def login():
             return redirect(url_for('home'))
 
     print("User accessed the login page")
-    return render_template('loginPage.html', form=form)
+    return render_template('loginPage.html', form=form, title = "Login")
 
 @app.route('/create_account', methods=['POST', 'GET'])
 def create_account():
@@ -109,13 +109,13 @@ def create_account():
         user = Users.query.filter_by(username=username).first()
         if user is not None:
             print("Username already taken")
-            return render_template('accountCreationPage.html', form=form, message="Username already taken")
+            return render_template('accountCreationPage.html', form=form, title = "Account Creation", message="Username already taken")
 
         # Check if email is already taken
         user = Users.query.filter_by(email=email).first()
         if user is not None:
             print("Email already taken")
-            return render_template('accountCreationPage.html', form=form, message="Email already taken")
+            return render_template('accountCreationPage.html', form=form, title = "account creation", message="Email already taken")
 
         # Create account
         new_user = Users(username=username, email=email, password=password)
@@ -123,7 +123,7 @@ def create_account():
         db.session.commit()
         print("Account created")
         form = LoginForm()
-        return render_template('loginPage.html', form=form, message="Account created successfully")
+        return render_template('loginPage.html', form=form, title = "Login", message="Account created successfully")
 
     print("User accessed the Account Creation page")
     return render_template('accountCreationPage.html', form=form)
@@ -135,11 +135,12 @@ def account():
     if 'username' not in session:
         return redirect(url_for('login'))
     else:
-        return render_template('account.html')
+        user = Users.query.filter_by(user_ID=session["user_ID"]).first()
+        return render_template('account.html', title = "account",  user=user)
 
 @app.route('/about', methods=['GET'])
 def about():
-    return render_template('about.html')
+    return render_template('about.html', title = "About")
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -148,15 +149,14 @@ def logout():
 
 @app.route('/popular', methods=['GET'])
 def popular():
-    return render_template('popular.html')
+    return render_template('popular.html', title = "Popular")
 
 @app.route('/ranking', methods=['GET'])
 def ranking():
-    return render_template('ranking.html')
+    return render_template('ranking.html', title = "Ranking")
 
 @app.route('/create', methods=['POST', 'GET'])
 def create():
-    
     if 'user_ID' not in session:
         return redirect(url_for('login'))
     
@@ -176,4 +176,4 @@ def create():
         
         return redirect(url_for('home'))
     print("User accessed the create page")
-    return render_template('create.html', form=form)
+    return render_template('create.html', form=form, title = "Create")

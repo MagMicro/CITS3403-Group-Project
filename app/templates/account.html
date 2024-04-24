@@ -1,13 +1,19 @@
 {% extends "defaultFormat.html" %}
 {%block content%}
-<div id = "Account" class="board col-8 col-m-6 col-lg-4" >
-    <h1>Account Page</h1>
-
-    <hr class = "col-sm-9">
-    <h1>Welcome, {{ session.user_ID }}!</h1>
-    <h2>Your username is: {{ session.username }}</h2>
-    
-    <hr class = "col-sm-9">
-
+<div id = "accountHeader" class="board col-8 col-m-6" >
+    <hr id = "profileDivider"class = "col-sm-12">
+    <div id = "userDetails">
+        <div id = "profilePic"></div>
+        <h1 id = "name">{{user.username}} #{{user.user_ID}}</h1>
+        <p id = "userContent">
+            <span class ="detailHeader">Email:</span> {{user.email}} <br> 
+            <span class ="detailHeader">Posts:</span> Insert Post num here<br>
+            <span class ="detailHeader">Average:</span> Insert average difference<br>
+            <span class ="detailHeader">Ranking:</span> Insert average difference<br>
+            <span class ="detailHeader">Joined:</span> Insert date here
+        </p>
+    </div>
+    <br>
+    <hr id = "profileDivider"class = "col-sm-12">
 </div>
 {% endblock %}

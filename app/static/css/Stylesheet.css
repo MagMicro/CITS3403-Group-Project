@@ -19,6 +19,9 @@ body{
 #Creation{
     height: 100%;
 }
+#accountHeader{
+    height: 20%;
+}
 #username, #password, #email{
     display:block;
     border-radius: 15px;
@@ -159,3 +162,30 @@ a{
 .dropdown > span:hover{
     background-color:rgb(84, 87, 103);
 }
+#profilePic{
+    width: 200px;
+    height: 200px;
+    border-radius:15px;
+    float:left;
+    border: 2px solid black;
+}
+#name, #userContent{
+    text-align: left;
+    position:relative;
+    left:20px;
+}
+#userDetails{
+    margin:10px;
+}
+#accountHeader{
+    padding:10px;
+}
+.detailHeader{
+    font-weight:bold;
+}
+#profileDivider{
+    clear:left;
+}
+a:link, a:visited{
+    color:white;
+ }
