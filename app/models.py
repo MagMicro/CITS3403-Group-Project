@@ -8,6 +8,7 @@ class Users(db.Model):
     username = db.Column(db.String, unique=True)
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String)
+    date = db.Column(db.String(10))
 
 class Polls(db.Model):
     __tablename__ = 'Polls'

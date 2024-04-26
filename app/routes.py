@@ -3,6 +3,7 @@ from flask import request, render_template, g, session, redirect, url_for, jsoni
 from app.forms import *
 from .models import Users, Polls, VotePoll
 from app import db
+from datetime import date
 
 @app.route('/')
 def index():
@@ -118,7 +119,8 @@ def create_account():
             return render_template('accountCreationPage.html', form=form, title = "account creation", message="Email already taken")
 
         # Create account
-        new_user = Users(username=username, email=email, password=password)
+        creation_date = date.today().strftime("%d/%m/%Y")
+        new_user = Users(username=username, email=email, password=password, date=creation_date)
         db.session.add(new_user)
         db.session.commit()
         print("Account created")
