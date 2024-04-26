@@ -186,6 +186,6 @@ a{
 #profileDivider{
     clear:left;
 }
-a:link, a:visited{
+#banner a:link, #banner a:visited{
     color:white;
  }
