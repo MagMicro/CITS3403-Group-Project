@@ -1,3 +1,9 @@
+html, body {
+    height: 100%; 
+    width: 100%; 
+    margin: 0; 
+}
+
 body{
     background-color: midnightblue;
 }
@@ -14,14 +20,22 @@ body{
     animation: appear 0.5s;
 }
 #Login{
-    height:100%;
+    height:90%;
 }
 #Creation{
-    height: 100%;
+    height: 115%;
+}
+#accountPosts{
+    height: 60%;
+    overflow: hidden;
+    padding-bottom: 20px;
 }
 #accountHeader{
-    height: 20%;
+    height: 40%;
+    overflow: hidden;
+    padding-bottom: 20px;
 }
+
 #username, #password, #email{
     display:block;
     border-radius: 15px;
@@ -163,6 +177,8 @@ a{
     background-color:rgb(84, 87, 103);
 }
 #profilePic{
+    display:block;
+    overflow:hidden;
     width: 200px;
     height: 200px;
     border-radius:15px;
@@ -176,9 +192,7 @@ a{
 }
 #userDetails{
     margin:10px;
-}
-#accountHeader{
-    padding:10px;
+    padding-bottom: 10px;
 }
 .detailHeader{
     font-weight:bold;
@@ -188,4 +202,12 @@ a{
 }
 #banner a:link, #banner a:visited{
     color:white;
- }
+}
+.header{
+    background-color: rgb(100, 104, 122);
+    color:white;
+    font-size: 30px;
+    box-shadow: 0px 5px rgba(0, 0, 0, 0.2);
+    margin-bottom:20px;
+    border-bottom: 2px solid black;
+}

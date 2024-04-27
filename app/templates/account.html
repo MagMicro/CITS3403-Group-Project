@@ -1,19 +1,22 @@
 {% extends "defaultFormat.html" %}
 {%block content%}
 <div id = "accountHeader" class="board col-8 col-m-6" >
-    <hr id = "profileDivider"class = "col-sm-12">
+    <div id = "profileHeader" class = "header col-12"> User Profile: <div class = "fas fa-id-card"></div></div>
     <div id = "userDetails">
-        <div id = "profilePic"></div>
+        <img id = "profilePic" src = "">
         <h1 id = "name">{{user.username}} #{{user.user_ID}}</h1>
         <p id = "userContent">
             <span class ="detailHeader">Email:</span> {{user.email}} <br> 
             <span class ="detailHeader">Posts:</span> Insert Post num here<br>
             <span class ="detailHeader">Average:</span> Insert average difference<br>
-            <span class ="detailHeader">Ranking:</span> Insert average difference<br>
+            <span class ="detailHeader">Ranking:</span> Insert ranking here<br>
             <span class ="detailHeader">Joined:</span> {{user.date}}
         </p>
     </div>
-    <br>
-    <hr id = "profileDivider"class = "col-sm-12">
+    <hr class = "col-11">
+</div>
+
+<div id = "accountPosts" class="board col-8 col-m-6" >
+    <div id = "postHeader" class = "header col-12">Posts: <div class = "fas fa-folder"></div></div>
 </div>
 {% endblock %}
