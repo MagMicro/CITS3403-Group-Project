@@ -13,15 +13,15 @@
         <p style="color: red;">{{ message }}</p>
 
         <label class = "fieldName" for = username>New Username: <span class = "fas fa-user"></span></label>
-        {{form.username(class = "col-12", placeholder = "Username")}}
+        {{form.username(class = "inputBox col-12", placeholder = "Username")}}
         <p id = "usernameNotification"></p>
 
         <label class = "fieldName" for = email>Register Email: <span class = "fas fa-envelope"></span></label>
-        {{form.email(class = "col-12", placeholder = "someone@email.com")}}
+        {{form.email(class = "inputBox col-12", placeholder = "someone@email.com")}}
         <p id = "emailNotification"></p>
 
         <label class = "fieldName" for = password>New Password: <span  id = "visibility" class="fas fa-eye-slash" title = "View"></span></label>
-        {{form.password(placeholder = "Password", class = "col-12")}}
+        {{form.password(class = "inputBox col-12", placeholder = "Password")}}
         <p id = "passwordNotification"></p>
         
         {{form.TOS()}}
@@ -31,7 +31,7 @@
     </form>
 
     <hr class = "col-sm-9">
-    <p id = "redirectionPrompt">Already have an account? <a href={{ url_for('login') }}>Login here</a></p>
+    <p id = "redirectionPrompt">Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
     <hr class = "col-sm-9"><br>
 </div>
 {% endblock %}

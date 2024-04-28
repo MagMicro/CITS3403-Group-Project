@@ -1,23 +1,52 @@
 {% extends "defaultFormat.html" %}
 {% block content %}
-<div id="Create" class="board col-8 col-m-6 col-lg-4">
-    <h1>Create Page</h1>
+<div id="postCreate" class="board col-10 col-m-8 col-lg-6">
+    <h1>Post Creation:</h1>
 
     <hr class="col-sm-9">
-
-    <img id="logo" src="static/icon.png">
 
     <form id="newPoll" class="inputFields col-sm-10" method="post" action="/create">
         {{form.hidden_tag()}}
         
-        <label class="fieldName" for="option1">Option 1:</label>
-        {{form.option1(class = "col-sm-12", placeholder = "Option 1")}}
-
-        <label class="fieldName" for="option2">Option 2:</label>
-        {{form.option2(class = "col-sm-12", placeholder = "Option 2")}}
+        <div id = "promptContainer">
+            {{form.prompt.label(class = "inputLabel")}}
+            {{form.prompt(class = "inputBox col-sm-12", placeholder = "Enter your prompt here:")}}
+        </div>
         
-        <input type="submit" value="Submit">
-    </form>
-    
+        <div id = "choices">
+            <div class = "col-sm-5">
+                {{form.option1.label(class = "inputLabel")}}
+                {{form.option1(class = "inputBox col-sm-12", placeholder = "Enter option here:")}}
+            </div>
+            <div class = "col-sm-5">
+                {{form.option2.label(class = "inputLabel")}}
+                {{form.option2(class = "inputBox col-sm-12", placeholder = "Enter option here:")}}
+            </div>
+        </div>
+        
+        <div id = "barBox" class = "col-12">
+            <div class = "bolt" id = "bolt1"></div>
+            <div class = "bolt" id = "bolt2"></div>
+            <div class = "bolt" id = "bolt3"></div>
+            <div class = "bolt" id = "bolt4"></div>
+
+            <div id = "lightray1" class = "lightray"></div>
+            <div id = "lightray2" class = "lightray"></div>
+            
+            <div id = "barContainer" class = "col-11">
+                <div class = " bar col-12">
+                    <div id = "left"><div class = "highlight"></div></div>
+                    <div id = "right"><div class = "highlight"></div></div>
+                </div>
+                <div id = "divider"></div>
+            </div>
+        </div>
+
+        <h4>Tags: (Select up to 3)</h4>           
+        <div id = "tagContainer">
+        </div>
+        
+        {{form.submit(class = "btn btn-primary col-9")}}
+    </form>   
 </div>
 {% endblock %}

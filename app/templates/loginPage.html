@@ -12,11 +12,11 @@
         <p style="color: red;">{{ message }}</p>
 
         <label class = "fieldName" for = username>Username: <span class = "fas fa-user"></span></label>
-        {{form.username(class = "col-sm-12", placeholder = "Username")}}
+        {{form.username(class = "inputBox col-sm-12", placeholder = "Username")}}
         <p class = "notify"></p>
 
         <label class = "fieldName" for = password>Password: <span  id = "visibility" class="fas fa-eye-slash" title = "View"></span></label>
-        {{form.password(class = "col-sm-12", placeholder = "Password")}}
+        {{form.password(class = "inputBox col-sm-12", placeholder = "Password")}}
         <p class = "notify"></p>
 
         {{form.submit(value = "Login", class = "col-9")}}

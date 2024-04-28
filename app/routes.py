@@ -116,7 +116,7 @@ def create_account():
         user = Users.query.filter_by(email=email).first()
         if user is not None:
             print("Email already taken")
-            return render_template('accountCreationPage.html', form=form, title = "account creation", message="Email already taken")
+            return render_template('accountCreationPage.html', form=form, title = "Account Creation", message="Email already taken")
 
         # Create account
         creation_date = date.today().strftime("%d/%m/%Y")
@@ -128,7 +128,7 @@ def create_account():
         return render_template('loginPage.html', form=form, title = "Login", message="Account created successfully")
 
     print("User accessed the Account Creation page")
-    return render_template('accountCreationPage.html', form=form)
+    return render_template('accountCreationPage.html', form=form, title="Account Creation")
 
 @app.route('/account', methods=['POST', 'GET'])
 def account():

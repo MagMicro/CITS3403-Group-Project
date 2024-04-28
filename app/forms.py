@@ -15,6 +15,7 @@ class CreationForm(FlaskForm):
     submit = SubmitField("Submit")
 
 class PollForm(FlaskForm):
+    prompt = StringField("Prompt: ", validators = [DataRequired()])
     option1 = StringField("Option 1:", validators = [DataRequired()])
     option2 = StringField("Option 2:", validators = [DataRequired()])
-    sumbit = SubmitField("Submit")
+    submit = SubmitField("Submit")
