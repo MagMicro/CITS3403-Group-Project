@@ -7,7 +7,7 @@
         <h1 id = "name">{{user.username}} #{{user.user_ID}}</h1>
         <p id = "userContent">
             <span class ="detailHeader">Email:</span> {{user.email}} <br> 
-            <span class ="detailHeader">Posts:</span> Insert Post num here<br>
+            <span class ="detailHeader">Posts:</span> {{user.count_posts()}}<br>
             <span class ="detailHeader">Average:</span> Insert average difference<br>
             <span class ="detailHeader">Ranking:</span> Insert ranking here<br>
             <span class ="detailHeader">Joined:</span> {{user.date}}

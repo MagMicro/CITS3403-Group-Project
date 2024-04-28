@@ -10,6 +10,9 @@ class Users(db.Model):
     password = db.Column(db.String)
     date = db.Column(db.String(10))
 
+    def count_posts(self):
+        return Polls.query.filter_by(pollAuthor_ID = self.user_ID).count()
+
 class Polls(db.Model):
     __tablename__ = 'Polls'
 
