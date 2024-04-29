@@ -53,7 +53,7 @@
             const val = $(e.currentTarget).text();
             if(!selected_tags.includes(val) && selected_tags.length <3){
                 selected_tags.push(val);
-                $(e.currentTarget).html("<span class = 'fas fa-minus'></span>" + val).css("background-color", "lime");
+                $(e.currentTarget).html("<span class = 'fas fa-minus'></span>" + val).css("background-color", "rgb(230, 230, 230)");
             }
             else if(selected_tags.includes(val)){
                 selected_tags.splice(selected_tags.indexOf(val), 1);
