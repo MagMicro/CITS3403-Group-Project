@@ -15,16 +15,13 @@ def get_polls():
     user_votes = None
     polls_data = []
 
-    if 'user_ID' in session:
-        user_votes = VotePoll.query.filter_by(user_ID=session['user_ID']).all()
-
     for poll in polls:
         has_voted = False
-        if user_votes and poll.poll_ID in [vote.poll_ID for vote in user_votes]:
+
+        if VotePoll.query.filter_by(user_ID = session['user_ID'], poll_ID = poll.poll_ID).first() is not None:
             has_voted = True
 
         author = Users.query.filter_by(user_ID=poll.pollAuthor_ID).first()
-
         total_votes = VotePoll.query.filter_by(poll_ID=poll.poll_ID).count()
         votes1 = VotePoll.query.filter_by(poll_ID=poll.poll_ID, Vote_opt=1).count()
         votes2 = VotePoll.query.filter_by(poll_ID=poll.poll_ID, Vote_opt=2).count()
@@ -167,7 +164,7 @@ def create():
         userID = session.get('user_ID')
         
         option1 = form.option1.data
-        option2 = form.option2.data
+        option2 = form.option2.data 
         
         print(f"User attempting to create a poll with options: {option1}, {option2}")
 
