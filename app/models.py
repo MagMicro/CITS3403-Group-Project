@@ -10,9 +10,22 @@ class Users(db.Model):
     password = db.Column(db.String)
     date = db.Column(db.String(10))
 
+    def posts(self):
+        return Polls.query.filter_by(pollAuthor_ID = self.user_ID)
+    
     def count_posts(self):
-        return Polls.query.filter_by(pollAuthor_ID = self.user_ID).count()
+        return self.posts().count()
+    
+    def average_dif(self):
+        user_total_left = 0
+        user_total_right = 0
+        for post in self.posts():
+            user_total_left += post.total_left()
+            user_total_right += post.total_right()
 
+        total = user_total_right + user_total_left
+        return abs(user_total_left - user_total_right)/total * 100
+    
 class Polls(db.Model):
     __tablename__ = 'Polls'
 
@@ -20,6 +33,12 @@ class Polls(db.Model):
     pollAuthor_ID = db.Column(db.Integer, db.ForeignKey('Users.user_ID'))
     Option1 = db.Column(db.String)
     Option2 = db.Column(db.String)
+
+    def total_left(self):
+        return VotePoll.query.filter_by(poll_ID = self.poll_ID, Vote_opt = 1).count()
+    
+    def total_right(self):
+        return VotePoll.query.filter_by(poll_ID = self.poll_ID, Vote_opt = 2).count()
 
 class VotePoll(db.Model):
     __tablename__ = 'VotePoll'
