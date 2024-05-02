@@ -24,8 +24,11 @@ class Users(db.Model):
             user_total_right += post.total_right()
 
         total = user_total_right + user_total_left
-        return abs(user_total_left - user_total_right)/total * 100
-    
+        if (total > 0):
+            return abs(user_total_left - user_total_right)/total * 100
+        else:
+            return 0
+
 class Polls(db.Model):
     __tablename__ = 'Polls'
 
