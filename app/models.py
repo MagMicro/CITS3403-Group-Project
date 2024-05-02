@@ -35,14 +35,21 @@ class Users(db.Model):
             return 100
         
     def rank(self):
-        users = Users.query.all()
-        users.sort(key=lambda x: x.average_dif(), reverse=False)
-        return users.index(self) + 1
-    
+        ranked = Users.get_ranks()
+        return ranked[self.user_ID]
+
     def get_ranks():
         users = Users.query.all()
         users.sort(key=lambda x: x.average_dif(), reverse=False)
-        return users
+        ranks = {}
+        rank = 1
+        prev_avg = users[0].average_dif() if users else None
+        for user in users:
+            if user.average_dif() != prev_avg:
+                rank += 1
+                prev_avg = user.average_dif()
+            ranks[user.user_ID] = rank
+        return ranks
 
 class Polls(db.Model):
     __tablename__ = 'Polls'

@@ -157,12 +157,19 @@ def ranking():
         return redirect(url_for('login'))
     else:
         user = Users.query.filter_by(user_ID=session["user_ID"]).first()
-        users = Users.get_ranks()
-        users = users[:10]
-        
+        ranked = Users.get_ranks()
+        rank_data = []
+        for i in range(min(10, len(ranked.keys()))):
+            key = list(ranked.keys())[i]
+            user_rank = {
+                'username': Users.query.filter_by(user_ID=key).first().username,
+                'rank': ranked[key],
+                'average': Users.query.filter_by(user_ID=key).first().average_dif(),
+                'posts': Users.query.filter_by(user_ID=key).first().count_posts()
+            }
+            rank_data.append(user_rank)
             
-
-        return render_template('ranking.html', title = "Ranking", user = user, users=users)
+        return render_template('ranking.html', title = "Ranking", user = user, rank_data = rank_data)
 
 @app.route('/create', methods=['POST', 'GET'])
 def create():
