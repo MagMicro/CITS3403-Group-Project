@@ -8,19 +8,24 @@
         <p id = "userContent">
             <span class ="detailHeader">Email:</span> {{user.email}} <br> 
             <span class ="detailHeader">Posts:</span> {{user.count_posts()}}<br>
-            <span class ="detailHeader">Average:</span> {{user.average_dif()}}%<br>
-            <span class ="detailHeader">Ranking:</span> Insert ranking here<br>
+            <span class ="detailHeader">Average Percent from 50-50:</span> {{user.average_dif()}}%<br>
+            <span class ="detailHeader">Ranking:</span> {{user.rank()}}<br>
             <span class ="detailHeader">Joined:</span> {{user.date}}
         </p>
     </div>
     <hr class = "col-11">
 </div>
 
+
+
 <div id="accountPosts" class="board col-8 col-m-6" style="display: flex; flex-direction: column;">
     <div id="postHeader" class="header col-12">Posts: <div class="fas fa-folder"></div></div>
     <div id="userPosts" style="flex-grow: 1;">
         {% for post in user.posts() %}
-        <div>{{ post.Option1 }} vs. {{ post.Option2 }} ({{ post.total_left() }} to {{ post.total_right() }})</div>
+            <div class="userPost">
+                Posted on: {{ post.date }} {% if post.tag1 != "N/A" %} In {{ post.tag1 }} {% endif %} {% if post.tag2 != "N/A" %} {{ post.tag2 }} {% endif %} {% if post.tag3 != "N/A" %} {{ post.tag3 }} {% endif %}<br>
+                {{ post.prompt }}: {{ post.Option1 }} ({{ post.left_percentage() }}%) vs {{ post.Option2 }} ({{ post.right_percentage() }}%)
+            </div>
         {% endfor %}
     </div>
 </div>

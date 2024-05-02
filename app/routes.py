@@ -153,7 +153,16 @@ def popular():
 
 @app.route('/ranking', methods=['GET'])
 def ranking():
-    return render_template('ranking.html', title = "Ranking")
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    else:
+        user = Users.query.filter_by(user_ID=session["user_ID"]).first()
+        users = Users.get_ranks()
+        users = users[:10]
+        
+            
+
+        return render_template('ranking.html', title = "Ranking", user = user, users=users)
 
 @app.route('/create', methods=['POST', 'GET'])
 def create():
@@ -178,7 +187,7 @@ def create():
         print(f"{creation_date}: User attempting to create a poll with options:{prompt}, {option1}, {option2} and tags: {tags}")
         
 
-        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID, tag1=tags[0], tag2=tags[1], tag3=tags[2], date=creation_date)
+        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID, tag1=tags[0], tag2=tags[1], tag3=tags[2], date=creation_date, prompt=prompt)
         db.session.add(new_poll)
         db.session.commit()
         print("Poll created")

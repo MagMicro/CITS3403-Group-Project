@@ -17,19 +17,32 @@ class Users(db.Model):
         return self.posts().count()
     
     def average_dif(self):
-        user_total_left = 0
-        user_total_right = 0
+        total_diff = 0
+        total_polls = 0
         for post in self.posts():
-            if post.total_left() == 0 and post.total_right() == 0:
+            if post.total_votes() == 0:
                 continue
-            user_total_left += post.total_left()
-            user_total_right += post.total_right()
+            total_polls += 1
+            total_votes = post.total_left() + post.total_right()
+            left_percentage = post.left_percentage()
+            right_percentage = post.right_percentage()
+            poll_diff = abs(left_percentage - right_percentage) / 100
+            total_diff += poll_diff
 
-        total = user_total_right + user_total_left
-        if (total > 0):
-            return abs(user_total_left - user_total_right)/total * 100
+        if total_polls > 0:
+            return round((total_diff / total_polls) * 100, 2)
         else:
-            return 0
+            return 100
+        
+    def rank(self):
+        users = Users.query.all()
+        users.sort(key=lambda x: x.average_dif(), reverse=False)
+        return users.index(self) + 1
+    
+    def get_ranks():
+        users = Users.query.all()
+        users.sort(key=lambda x: x.average_dif(), reverse=False)
+        return users
 
 class Polls(db.Model):
     __tablename__ = 'Polls'
@@ -42,13 +55,30 @@ class Polls(db.Model):
     tag2 = db.Column(db.String)
     tag3 = db.Column(db.String)
     date = db.Column(db.String)
-
+    prompt = db.Column(db.String)
     def total_left(self):
         return VotePoll.query.filter_by(poll_ID = self.poll_ID, Vote_opt = 1).count()
     
     def total_right(self):
         return VotePoll.query.filter_by(poll_ID = self.poll_ID, Vote_opt = 2).count()
 
+    def total_votes(self):
+        return self.total_left() + self.total_right()
+
+    def left_percentage(self):
+        total_votes = self.total_votes()
+        if self.total_left() != 0:
+            return round((self.total_left() / total_votes) * 100, 2)
+        else:
+            return 0
+        
+    def right_percentage(self):
+        total_votes = self.total_votes()
+        if self.total_right() != 0:
+            return round((self.total_right() / total_votes) * 100, 2)
+        else:
+            return 0
+        
 class VotePoll(db.Model):
     __tablename__ = 'VotePoll'
 

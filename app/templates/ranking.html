@@ -4,10 +4,31 @@
     <h1>Ranking Page</h1>
 
     <hr class = "col-sm-9">
-    <h1>Welcome, {{ session.user_ID }}!</h1>
-    <h2>Your username is: {{ session.username }}</h2>
-    
+        <h1>Welcome, {{ user.username }}!</h1>
+        <h2>Your rank is: {{ user.rank() }}</h2>
     <hr class = "col-sm-9">
 
+    <h2>Top 10 Users</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Rank</th>
+                <th scope="col">Username</th>
+                <th scope="col">Average Percent from 50-50</th>
+                <th scope="col">Posts</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <th scope="row">{{ user.rank() }}</th>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.average_dif() }}%</td>
+                    <td>{{ user.count_posts() }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
 </div>
 {% endblock %}
