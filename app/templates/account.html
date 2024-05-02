@@ -16,11 +16,11 @@
     <hr class = "col-11">
 </div>
 
-<div id = "accountPosts" class="board col-8 col-m-6" >
-    <div id = "postHeader" class = "header col-12">Posts: <div class = "fas fa-folder"></div></div>
-    <div id = "userPosts">
-        {%for post in user.posts()%}
-        <div>{{post.Option1}}  vs. {{post.Option2}} ({{post.total_left()}} to {{post.total_right()}})</div>
+<div id="accountPosts" class="board col-8 col-m-6" style="display: flex; flex-direction: column;">
+    <div id="postHeader" class="header col-12">Posts: <div class="fas fa-folder"></div></div>
+    <div id="userPosts" style="flex-grow: 1;">
+        {% for post in user.posts() %}
+        <div>{{ post.Option1 }} vs. {{ post.Option2 }} ({{ post.total_left() }} to {{ post.total_right() }})</div>
         {% endfor %}
     </div>
 </div>

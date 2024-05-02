@@ -4,6 +4,7 @@ from app.forms import *
 from .models import Users, Polls, VotePoll
 from app import db
 from datetime import date
+from datetime import datetime
 
 @app.route('/')
 def index():
@@ -172,7 +173,7 @@ def create():
         else:
             tags += ['N/A'] * (3 - len(tags))
 
-        creation_date = date.today().strftime("%d/%m/%Y")
+        creation_date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
         print(f"{creation_date}: User attempting to create a poll with options:{prompt}, {option1}, {option2} and tags: {tags}")
         
