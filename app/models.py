@@ -36,6 +36,10 @@ class Polls(db.Model):
     pollAuthor_ID = db.Column(db.Integer, db.ForeignKey('Users.user_ID'))
     Option1 = db.Column(db.String)
     Option2 = db.Column(db.String)
+    tag1 = db.Column(db.String)
+    tag2 = db.Column(db.String)
+    tag3 = db.Column(db.String)
+    date = db.Column(db.String(10))
 
     def total_left(self):
         return VotePoll.query.filter_by(poll_ID = self.poll_ID, Vote_opt = 1).count()

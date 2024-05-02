@@ -162,13 +162,22 @@ def create():
     form = PollForm()
     if form.validate_on_submit():
         userID = session.get('user_ID')
-        
+        prompt = form.prompt.data
         option1 = form.option1.data
         option2 = form.option2.data 
+        tags = form.tags.data.split(',')
         
-        print(f"User attempting to create a poll with options: {option1}, {option2}")
+        if len(tags) == 1 and tags[0] == '':
+            tags = ["N/A", "N/A", "N/A"]
+        else:
+            tags += ['N/A'] * (3 - len(tags))
 
-        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID)
+        creation_date = date.today().strftime("%d/%m/%Y")
+
+        print(f"{creation_date}: User attempting to create a poll with options:{prompt}, {option1}, {option2} and tags: {tags}")
+        
+
+        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID, tag1=tags[0], tag2=tags[1], tag3=tags[2], date=creation_date)
         db.session.add(new_poll)
         db.session.commit()
         print("Poll created")
