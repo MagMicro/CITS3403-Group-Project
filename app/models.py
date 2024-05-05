@@ -18,15 +18,11 @@ class Users(db.Model):
     
     def average_dif(self):
         total_diff = 0
-        total_polls = 0
+        total_polls = self.count_posts()
         for post in self.posts():
             if post.total_votes() == 0:
                 continue
-            total_polls += 1
-            total_votes = post.total_left() + post.total_right()
-            left_percentage = post.left_percentage()
-            right_percentage = post.right_percentage()
-            poll_diff = abs(left_percentage - right_percentage) / 100
+            poll_diff = abs(post.left_percentage() - post.right_percentage()) / 100
             total_diff += poll_diff
 
         if total_polls > 0:
@@ -73,16 +69,14 @@ class Polls(db.Model):
         return self.total_left() + self.total_right()
 
     def left_percentage(self):
-        total_votes = self.total_votes()
         if self.total_left() != 0:
-            return round((self.total_left() / total_votes) * 100, 2)
+            return round((self.total_left() / self.total_votes()) * 100, 2)
         else:
             return 0
         
     def right_percentage(self):
-        total_votes = self.total_votes()
         if self.total_right() != 0:
-            return round((self.total_right() / total_votes) * 100, 2)
+            return round((self.total_right() / self.total_votes()) * 100, 2)
         else:
             return 0
         

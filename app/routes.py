@@ -176,7 +176,9 @@ def create():
     if 'user_ID' not in session:
         return redirect(url_for('login'))
     
+    tags = ["Food", "Sports", "Fashion", "Subject", "Video Games", "Anime", "Board Games" , "Animals", "People", "Places", "Film", "TV", "Novels", "Abilities", "Historical"]
     form = PollForm()
+
     if form.validate_on_submit():
         userID = session.get('user_ID')
         prompt = form.prompt.data
@@ -201,4 +203,4 @@ def create():
         
         return redirect(url_for('home'))
     print("User accessed the create page")
-    return render_template('create.html', form=form, title = "Create")
+    return render_template('create.html', form=form, title = "Create", tags=tags)
