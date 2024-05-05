@@ -59,6 +59,22 @@ class Polls(db.Model):
     tag3 = db.Column(db.String)
     date = db.Column(db.String)
     prompt = db.Column(db.String)
+    def to_dict(self):
+        poll ={}
+        poll["ID"] = self.poll_ID
+        poll["Author"] = self.pollAuthor_ID
+        poll["option1"] = self.Option1
+        poll["option2"] = self.Option2
+        poll["tag1"] = self.tag1
+        poll["tag2"] = self.tag2
+        poll["tag3"] = self.tag3
+        poll["date"] = self.date
+        poll["prompt"] = self.prompt
+        poll["total"] = self.total_votes()
+        poll["left%"] = self.left_percentage()
+        poll["right%"] = self.right_percentage()
+        return poll
+
     def total_left(self):
         return VotePoll.query.filter_by(poll_ID = self.poll_ID, Vote_opt = 1).count()
     

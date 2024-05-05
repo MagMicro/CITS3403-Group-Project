@@ -1,0 +1,25 @@
+{% for post in posts %}
+<div class="userPost">
+    <div>
+        <p><span class="post-subheading">{{ post["prompt"] }}:</span> {{ post["option1"] }} ({{ post["left%"] }}%) vs {{ post["option2"] }} ({{ post["right%"] }}%)</p>
+    </div>
+
+    <div class="small-bar">
+        {%if post["left%"] == 100%}
+        <div style="width: 100%; background-color:red;"></div>
+        {%elif post["left%"] == 0%}
+        <div style="width: 100%; background-color:blue;"></div>
+        {%else%}
+        <div style="width: {{ post['left%'] }}%; background-color:red;"></div>
+        <div style="width: {{ post['right%']}}%; background-color:blue;"></div>
+        {%endif%}
+    </div>
+    <br>
+
+    <div><span class="post-subheading">Posted on:</span> {{ post["date"] }} </div>
+
+    <div>{% if post["tag1"] != "N/A" %}
+        <p><span class="post-subheading">Tags:</span> {{ post["tag1"] }} {% endif %} {% if post["tag2"] != "N/A" %} , {{ post["tag2"]}} {% endif %} {% if post["tag3"] != "N/A" %} , {{ post["tag3"] }} {% endif %}</p>
+    </div>
+</div>
+{% endfor %}

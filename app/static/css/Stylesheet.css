@@ -32,6 +32,9 @@ body{
     height: 60%;
     overflow: hidden;
     padding-bottom: 20px;
+    display: flex; 
+    flex-direction: column;
+    position:relative;
 }
 #accountHeader{
     height: 40%;
@@ -384,7 +387,9 @@ a{
 }
 
 #postHeader{
-    margin: 0;
+    position:relative;
+    padding:10px;
+    height:60px;
 }
 
 #userPosts > div{
@@ -405,4 +410,10 @@ a{
 
 .post-subheading{
     font-weight:bold;
+}
+
+#filterBox{
+    text-align: left;
+    padding:10px;
+    border-bottom: 1px solid black;
 }
