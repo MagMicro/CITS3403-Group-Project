@@ -172,5 +172,8 @@ function init(){
     $(".inputFields").submit(() => {createCookie();});
     $("#creationForm").submit((event) => {if(!(checkUsername($("#username").val()) == "Valid username." && checkEmail($("#email").val()) == true && checkPassword($("#password").val()) == "Valid password.")){event.preventDefault();}});
     setInterval(()=>{makeWord();}, 700);
+
+    $("#sortOption").change(() => {$("#userPosts").load("/GetUserPosts/" + $("#sortOption").val() + "/" + $("#sortOrder").val());});
+    $("#sortOrder").change(() => {$("#userPosts").load("/GetUserPosts/" + $("#sortOption").val() + "/" + $("#sortOrder").val());});
 }
 $(document).ready(init);

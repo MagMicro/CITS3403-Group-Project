@@ -39,27 +39,4 @@
     <script src = "https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='js/loginPageFunctionality.js') }}"></script>
-    <script>
-        const selected_tags = []
-        function tag_options(){
-            const tags = ["Food", "Sports", "Fashion", "Subject", "Video Games", "Anime", "Board Games" , "Animals", "People", "Places", "Film", "TV", "Novels", "Abilities", "Historical"];
-            for(tag of tags){
-                $("#tagContainer").append("<div class = 'tag'><span class = 'fas fa-plus'></span> " + tag + "</div>");
-            }
-        }
-        tag_options();
-
-        function tagSelection(e){
-            const val = $(e.currentTarget).text();
-            if(!selected_tags.includes(val) && selected_tags.length <3){
-                selected_tags.push(val);
-                $(e.currentTarget).html("<span class = 'fas fa-minus'></span>" + val).css("background-color", "rgb(230, 230, 230)");
-            }
-            else if(selected_tags.includes(val)){
-                selected_tags.splice(selected_tags.indexOf(val), 1);
-                $(e.currentTarget).html("<span class = 'fas fa-plus'></span>" + val).css("background-color", "white");
-            }
-        }
-        $(".tag").click((e) => {tagSelection(e)})
-    </script>
 </html>

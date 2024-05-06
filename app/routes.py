@@ -4,6 +4,7 @@ from app.forms import *
 from .models import Users, Polls, VotePoll
 from app import db
 from datetime import date
+from datetime import datetime
 
 @app.route('/')
 def index():
@@ -152,27 +153,77 @@ def popular():
 
 @app.route('/ranking', methods=['GET'])
 def ranking():
-    return render_template('ranking.html', title = "Ranking")
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    else:
+        user = Users.query.filter_by(user_ID=session["user_ID"]).first()
+        ranked = Users.get_ranks()
+        rank_data = []
+        for i in range(min(10, len(ranked.keys()))):
+            key = list(ranked.keys())[i]
+            user_rank = {
+                'username': Users.query.filter_by(user_ID=key).first().username,
+                'rank': ranked[key],
+                'average': Users.query.filter_by(user_ID=key).first().average_dif(),
+                'posts': Users.query.filter_by(user_ID=key).first().count_posts()
+            }
+            rank_data.append(user_rank)
+            
+        return render_template('ranking.html', title = "Ranking", user = user, rank_data = rank_data)
 
 @app.route('/create', methods=['POST', 'GET'])
 def create():
     if 'user_ID' not in session:
         return redirect(url_for('login'))
     
+    tags = ["Food", "Sports", "Fashion", "Subject", "Video Games", "Anime", "Board Games" , "Animals", "People", "Places", "Film", "TV", "Novels", "Abilities", "Historical"]
     form = PollForm()
+
     if form.validate_on_submit():
         userID = session.get('user_ID')
-        
+        prompt = form.prompt.data
         option1 = form.option1.data
         option2 = form.option2.data 
+        tags = form.tags.data.split(',')
         
-        print(f"User attempting to create a poll with options: {option1}, {option2}")
+        if len(tags) == 1 and tags[0] == '':
+            tags = ["N/A", "N/A", "N/A"]
+        else:
+            tags += ['N/A'] * (3 - len(tags))
 
-        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID)
+        creation_date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+        print(f"{creation_date}: User attempting to create a poll with options:{prompt}, {option1}, {option2} and tags: {tags}")
+        
+
+        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID, tag1=tags[0], tag2=tags[1], tag3=tags[2], date=creation_date, prompt=prompt)
         db.session.add(new_poll)
         db.session.commit()
         print("Poll created")
         
         return redirect(url_for('home'))
     print("User accessed the create page")
-    return render_template('create.html', form=form, title = "Create")
+    return render_template('create.html', form=form, title = "Create", tags=tags)
+
+
+@app.route('/GetUserPosts/<order>/<option>', methods = ["GET"])
+def generate_posts(order, option):
+    print(order, option)
+    posts = []
+    for post in Users.query.filter_by(user_ID=session["user_ID"]).first().posts():
+        posts.append(post.to_dict())
+    if option == "Ascending":
+        if order == "Popularity":
+            posts.sort(key = lambda user_post: user_post["total"] )
+        elif order == "Difference":
+            posts.sort(key = lambda user_post: abs(user_post["left%"] - user_post["right%"]))
+        elif order == "UploadDate":
+            posts.sort(key = lambda user_post: datetime.timestamp(datetime.strptime(user_post["date"], "%d/%m/%Y %H:%M:%S")))
+    else:
+        if order == "Popularity":
+            posts.sort(reverse=True, key = lambda user_post: user_post["total"] )
+        elif order == "Difference":
+            posts.sort(reverse=True, key = lambda user_post: abs(user_post["left%"] - user_post["right%"]))
+        elif order == "UploadDate":
+            posts.sort(reverse=True, key = lambda user_post: datetime.timestamp(datetime.strptime(user_post["date"], "%d/%m/%Y %H:%M:%S")))
+    return render_template("UserPosts.html", posts = posts)

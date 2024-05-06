@@ -17,17 +17,35 @@ class Users(db.Model):
         return self.posts().count()
     
     def average_dif(self):
-        user_total_left = 0
-        user_total_right = 0
+        total_diff = 0
+        total_polls = self.count_posts()
         for post in self.posts():
-            user_total_left += post.total_left()
-            user_total_right += post.total_right()
+            if post.total_votes() == 0:
+                continue
+            poll_diff = abs(post.left_percentage() - post.right_percentage()) / 100
+            total_diff += poll_diff
 
-        total = user_total_right + user_total_left
-        if (total > 0):
-            return abs(user_total_left - user_total_right)/total * 100
+        if total_polls > 0:
+            return round((total_diff / total_polls) * 100, 2)
         else:
-            return 0
+            return 100
+        
+    def rank(self):
+        ranked = Users.get_ranks()
+        return ranked[self.user_ID]
+
+    def get_ranks():
+        users = Users.query.all()
+        users.sort(key=lambda x: x.average_dif(), reverse=False)
+        ranks = {}
+        rank = 1
+        prev_avg = users[0].average_dif() if users else None
+        for user in users:
+            if user.average_dif() != prev_avg:
+                rank += 1
+                prev_avg = user.average_dif()
+            ranks[user.user_ID] = rank
+        return ranks
 
 class Polls(db.Model):
     __tablename__ = 'Polls'
@@ -36,6 +54,26 @@ class Polls(db.Model):
     pollAuthor_ID = db.Column(db.Integer, db.ForeignKey('Users.user_ID'))
     Option1 = db.Column(db.String)
     Option2 = db.Column(db.String)
+    tag1 = db.Column(db.String)
+    tag2 = db.Column(db.String)
+    tag3 = db.Column(db.String)
+    date = db.Column(db.String)
+    prompt = db.Column(db.String)
+    def to_dict(self):
+        poll ={}
+        poll["ID"] = self.poll_ID
+        poll["Author"] = self.pollAuthor_ID
+        poll["option1"] = self.Option1
+        poll["option2"] = self.Option2
+        poll["tag1"] = self.tag1
+        poll["tag2"] = self.tag2
+        poll["tag3"] = self.tag3
+        poll["date"] = self.date
+        poll["prompt"] = self.prompt
+        poll["total"] = self.total_votes()
+        poll["left%"] = self.left_percentage()
+        poll["right%"] = self.right_percentage()
+        return poll
 
     def total_left(self):
         return VotePoll.query.filter_by(poll_ID = self.poll_ID, Vote_opt = 1).count()
@@ -43,6 +81,21 @@ class Polls(db.Model):
     def total_right(self):
         return VotePoll.query.filter_by(poll_ID = self.poll_ID, Vote_opt = 2).count()
 
+    def total_votes(self):
+        return self.total_left() + self.total_right()
+
+    def left_percentage(self):
+        if self.total_left() != 0:
+            return round((self.total_left() / self.total_votes()) * 100, 2)
+        else:
+            return 0
+        
+    def right_percentage(self):
+        if self.total_right() != 0:
+            return round((self.total_right() / self.total_votes()) * 100, 2)
+        else:
+            return 0
+        
 class VotePoll(db.Model):
     __tablename__ = 'VotePoll'
 

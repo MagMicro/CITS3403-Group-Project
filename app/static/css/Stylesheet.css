@@ -32,6 +32,9 @@ body{
     height: 60%;
     overflow: hidden;
     padding-bottom: 20px;
+    display: flex; 
+    flex-direction: column;
+    position:relative;
 }
 #accountHeader{
     height: 40%;
@@ -229,7 +232,8 @@ a{
 #promptContainer{
     margin-bottom: 50px;
 }
-#tagContainer{
+#tagsContainer{
+    margin:auto;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -239,7 +243,7 @@ a{
     background-color: aliceblue;
 }
 
-.tag{
+.tag-button{
     border: 1px solid black;
     background-color: white;
     margin:5px;
@@ -251,7 +255,7 @@ a{
     font-size: 14px;
 }
 
-.tag:hover{
+.tag-button:hover{
     background-color: rgba(0, 0, 0, 0.2);
 }
 
@@ -383,7 +387,9 @@ a{
 }
 
 #postHeader{
-    margin: 0;
+    position:relative;
+    padding:10px;
+    height:60px;
 }
 
 #userPosts > div{
@@ -393,4 +399,21 @@ a{
 
 #userPosts > div:hover{
     background-color: rgba(0, 0, 0, 0.2);
+}
+
+.small-bar{
+    width: 25%;
+    height: 10px;
+    display: flex;
+    flex-direction:row;
+}
+
+.post-subheading{
+    font-weight:bold;
+}
+
+#filterBox{
+    text-align: left;
+    padding:10px;
+    border-bottom: 1px solid black;
 }

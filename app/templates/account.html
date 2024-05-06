@@ -8,20 +8,31 @@
         <p id = "userContent">
             <span class ="detailHeader">Email:</span> {{user.email}} <br> 
             <span class ="detailHeader">Posts:</span> {{user.count_posts()}}<br>
-            <span class ="detailHeader">Average:</span> {{user.average_dif()}}%<br>
-            <span class ="detailHeader">Ranking:</span> Insert ranking here<br>
+            <span class ="detailHeader">Average Percent from 50-50:</span> {{user.average_dif()}}%<br>
+            <span class ="detailHeader">Ranking:</span> {{user.rank()}}<br>
             <span class ="detailHeader">Joined:</span> {{user.date}}
         </p>
     </div>
     <hr class = "col-11">
 </div>
 
-<div id = "accountPosts" class="board col-8 col-m-6" >
-    <div id = "postHeader" class = "header col-12">Posts: <div class = "fas fa-folder"></div></div>
-    <div id = "userPosts">
-        {%for post in user.posts()%}
-        <div>{{post.Option1}}  vs. {{post.Option2}} ({{post.total_left()}} to {{post.total_right()}})</div>
-        {% endfor %}
+
+
+<div id="accountPosts" class="board col-8 col-m-6">
+    <div id="postHeader" class="header col-12">Posts: 
+        <div class="fas fa-folder"></div>
     </div>
+    <div id="filterBox"><div class = "fas fa-filter"></div> Filter By:
+        <select id="sortOption">
+            <option value="Popularity">Popularity</option>
+            <option value="Difference">Difference</option>
+            <option value="UploadDate">Upload Date</option>
+        </select>
+        <select id="sortOrder">
+            <option value="Ascending">Ascending</option>
+            <option value="Descending">Descending</option>
+        </select>
+    </div>
+    <div id="userPosts" style="flex-grow: 1;"></div>
 </div>
 {% endblock %}
