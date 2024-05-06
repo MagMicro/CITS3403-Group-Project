@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from app import db
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class Users(db.Model):
     __tablename__ = 'Users'
@@ -7,9 +8,17 @@ class Users(db.Model):
     user_ID = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True)
     email = db.Column(db.String, unique=True)
-    password = db.Column(db.String)
+    password = db.Column(db.String(128))
     date = db.Column(db.String(10))
 
+    #Methods for getting and checking hashed password
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+    
+    #Methods for gathering user posts & their data
     def posts(self):
         return Polls.query.filter_by(pollAuthor_ID = self.user_ID)
     

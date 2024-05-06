@@ -81,8 +81,8 @@ def login():
         print(f"User attempted login with username: {username}, password: {password}")
 
         # Check if username and password match a user in the database
-        user = Users.query.filter_by(username=username, password=password).first()
-        if user is None:
+        user = Users.query.filter_by(username=username).first()
+        if user is None or user.check_password(password) == False:
             print("Login failed")
             return render_template('loginPage.html', form=form, message="Invalid username or password")
         else:
@@ -118,7 +118,8 @@ def create_account():
 
         # Create account
         creation_date = date.today().strftime("%d/%m/%Y")
-        new_user = Users(username=username, email=email, password=password, date=creation_date)
+        new_user = Users(username=username, email=email, date=creation_date)
+        new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
         print("Account created")
