@@ -15,8 +15,8 @@ body{
     text-align:center;
     border: 2px solid black;
     box-shadow:20px 20px rgba(0, 0, 0, 0.2);
-    margin-top:5%;
-    margin-bottom:5%;
+    margin-top:10%;
+    margin-bottom:10%;
     animation: appear 0.5s;
 }
 #Login{
@@ -107,7 +107,7 @@ a{
 #banner{
     position:fixed;
     top:0px;
-    z-index:1;
+    z-index:2;
     width:100%;
     margin: 0px;
     padding: 0px;
@@ -416,4 +416,20 @@ a{
     text-align: left;
     padding:10px;
     border-bottom: 1px solid black;
+}
+
+#messageDisplay{
+    margin: auto;
+    text-align: center;
+    color: white;
+    background-color: rgb(120, 123, 137, 0.8);
+    position:fixed;
+    top:50px;
+    z-index:1;
+    height:50px;
+    width:100%;
+}
+
+#messageDisplay > *{
+    font-size: xx-large;
 }

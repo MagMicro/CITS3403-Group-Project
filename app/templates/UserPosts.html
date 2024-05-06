@@ -18,8 +18,8 @@
 
     <div><span class="post-subheading">Posted on:</span> {{ post["date"] }} </div>
 
-    <div>{% if post["tag1"] != "N/A" %}
-        <p><span class="post-subheading">Tags:</span> {{ post["tag1"] }} {% endif %} {% if post["tag2"] != "N/A" %} , {{ post["tag2"]}} {% endif %} {% if post["tag3"] != "N/A" %} , {{ post["tag3"] }} {% endif %}</p>
+    <div>{% if post["tag1"] != None %}
+        <p><span class="post-subheading">Tags:</span> {{ post["tag1"] }} {% endif %} {% if post["tag2"] != None %} , {{ post["tag2"]}} {% endif %} {% if post["tag3"] != None %} , {{ post["tag3"] }} {% endif %}</p>
     </div>
 </div>
 {% endfor %}

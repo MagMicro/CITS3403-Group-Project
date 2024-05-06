@@ -175,5 +175,6 @@ function init(){
 
     $("#sortOption").change(() => {$("#userPosts").load("/GetUserPosts/" + $("#sortOption").val() + "/" + $("#sortOrder").val());});
     $("#sortOrder").change(() => {$("#userPosts").load("/GetUserPosts/" + $("#sortOption").val() + "/" + $("#sortOrder").val());});
+    setTimeout(() => {$("#messageDisplay").animate({height:"toggle"});}, 3000);
 }
 $(document).ready(init);

@@ -1,15 +1,11 @@
 from app import app
-from flask import request, render_template, g, session, redirect, url_for, jsonify, abort
+from flask import request, render_template, g, session, redirect, url_for, jsonify, abort, flash
 from app.forms import *
 from .models import Users, Polls, VotePoll
 from app import db
 from datetime import date
 from datetime import datetime
 from flask_login import current_user, login_user, logout_user
-
-@app.route('/')
-def index():
-    return redirect(url_for('home'))
 
 @app.route('/api/polls', methods=['GET'])
 def get_polls():
@@ -19,9 +15,9 @@ def get_polls():
 
     for poll in polls:
         has_voted = False
-
-        if VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = poll.poll_ID).first() is not None:
-            has_voted = True
+        if current_user.is_authenticated:
+            if VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = poll.poll_ID).first() is not None:
+                has_voted = True
 
         author = Users.query.filter_by(user_ID=poll.pollAuthor_ID).first()
         total_votes = VotePoll.query.filter_by(poll_ID=poll.poll_ID).count()
@@ -68,6 +64,7 @@ def vote(poll_id):
 
     return redirect(url_for('home'))
 
+@app.route('/')
 @app.route('/home')
 def home():
     return render_template('home.html', title = "Home")
@@ -83,9 +80,14 @@ def login():
 
         # Check if username matches a user in the database
         user = Users.query.filter_by(username=username).first()
-        if user is None or user.check_password(password) == False:
-            print("Login failed")
-            return render_template('loginPage.html', form=form, message="Invalid username or password")
+        if user is None:
+            flash("Username does not exist. Please try again.")
+            return render_template('loginPage.html', form=form)
+        
+        elif user.check_password(password) == False:
+            flash("Invalid password. Please try again.")
+            return render_template('loginPage.html', form=form)
+        
         else:
             print("Login successful")
             login_user(user)
@@ -101,19 +103,20 @@ def create_account():
         username = form.username.data
         email = form.email.data
         password = form.password.data
+
         print(f"User attempting account creation with username: {username}, email: {email}, password: {password}")
 
         # Check if username is already taken
         user = Users.query.filter_by(username=username).first()
         if user is not None:
-            print("Username already taken")
-            return render_template('accountCreationPage.html', form=form, title = "Account Creation", message="Username already taken")
+            flash("Username is already taken.")
+            return render_template('accountCreationPage.html', form=form, title = "Account Creation")
 
         # Check if email is already taken
         user = Users.query.filter_by(email=email).first()
         if user is not None:
-            print("Email already taken")
-            return render_template('accountCreationPage.html', form=form, title = "Account Creation", message="Email already taken")
+            flash("Email is already taken.")
+            return render_template('accountCreationPage.html', form=form, title = "Account Creation")
 
         # Create account
         creation_date = date.today().strftime("%d/%m/%Y")
@@ -123,15 +126,14 @@ def create_account():
         db.session.commit()
         print("Account created")
         form = LoginForm()
-        return render_template('loginPage.html', form=form, title = "Login", message="Account created successfully")
+        flash("Account created successfully.")
+        return render_template('loginPage.html', form=form, title = "Login")
 
     print("User accessed the Account Creation page")
     return render_template('accountCreationPage.html', form=form, title="Account Creation")
 
 @app.route('/account', methods=['POST', 'GET'])
 def account():
-    #print session details to console
-    print(session)
     if current_user.is_anonymous:
         return redirect(url_for('login'))
     else:
@@ -184,19 +186,16 @@ def create():
         prompt = form.prompt.data
         option1 = form.option1.data
         option2 = form.option2.data 
-        tags = form.tags.data.split(',')
-        
-        if len(tags) == 1 and tags[0] == '':
-            tags = ["N/A", "N/A", "N/A"]
-        else:
-            tags += ['N/A'] * (3 - len(tags))
+        form_tags = form.tags.data.split(',')
 
         creation_date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
-        print(f"{creation_date}: User attempting to create a poll with options:{prompt}, {option1}, {option2} and tags: {tags}")
+        print(f"{creation_date}: User attempting to create a poll with options:{prompt}, {option1}, {option2} and tags: {form_tags}")
         
+        #Create new poll object
+        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID, date=creation_date, prompt=prompt)
+        new_poll.add_tags(form_tags)
 
-        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID, tag1=tags[0], tag2=tags[1], tag3=tags[2], date=creation_date, prompt=prompt)
         db.session.add(new_poll)
         db.session.commit()
         print("Poll created")

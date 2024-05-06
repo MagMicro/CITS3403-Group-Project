@@ -78,6 +78,18 @@ class Polls(db.Model):
     tag3 = db.Column(db.String)
     date = db.Column(db.String)
     prompt = db.Column(db.String)
+
+    #Adds tags to Polls model instance based on how many tags it received, default is N/A
+    def add_tags(self, tags):
+        if len(tags) >= 1 and tags[0] != '':
+            self.tag1 = tags[0]
+            if len(tags) >= 2:
+                self.tag2 = tags[1]
+            if len(tags) == 3:
+                self.tag2 = tags[2]
+            
+
+    # Creates a dictionary struture based on fields and function values, used by user profile page    
     def to_dict(self):
         poll ={}
         poll["ID"] = self.poll_ID
@@ -94,6 +106,7 @@ class Polls(db.Model):
         poll["right%"] = self.right_percentage()
         return poll
 
+    # Functions to calcuate the proportion of votes for each given poll instance
     def total_left(self):
         return VotePoll.query.filter_by(poll_ID = self.poll_ID, Vote_opt = 1).count()
     

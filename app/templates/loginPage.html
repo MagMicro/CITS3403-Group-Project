@@ -9,8 +9,6 @@
 
     <form  id = "loginForm" class = "inputFields col-sm-10" method="post" action="/login">
         {{form.hidden_tag()}}
-        <p style="color: red;">{{ message }}</p>
-
         <label class = "fieldName" for = username>Username: <span class = "fas fa-user"></span></label>
         {{form.username(class = "inputBox col-sm-12", placeholder = "Username")}}
         <p class = "notify"></p>
