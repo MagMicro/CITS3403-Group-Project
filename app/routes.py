@@ -5,6 +5,7 @@ from .models import Users, Polls, VotePoll
 from app import db
 from datetime import date
 from datetime import datetime
+from flask_login import current_user, login_user, logout_user
 
 @app.route('/')
 def index():
@@ -19,7 +20,7 @@ def get_polls():
     for poll in polls:
         has_voted = False
 
-        if VotePoll.query.filter_by(user_ID = session['user_ID'], poll_ID = poll.poll_ID).first() is not None:
+        if VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = poll.poll_ID).first() is not None:
             has_voted = True
 
         author = Users.query.filter_by(user_ID=poll.pollAuthor_ID).first()
@@ -43,7 +44,7 @@ def get_polls():
 @app.route('/api/polls/<int:poll_id>/vote', methods=['POST'])
 def vote(poll_id):
     # Check if user is logged in
-    if 'user_ID' not in session:
+    if current_user.is_anonymous:
         return '', 401
 
     # Get the selected option from the request body
@@ -53,12 +54,12 @@ def vote(poll_id):
         abort(400)
 
     # Record the vote
-    vote = VotePoll(user_ID=session['user_ID'], poll_ID=poll_id, Vote_opt=int(option))
+    vote = VotePoll(user_ID=current_user.user_ID, poll_ID=poll_id, Vote_opt=int(option))
     #print vote for debug
     print(vote)
 
     #check if user has already voted
-    user_vote = VotePoll.query.filter_by(user_ID=session['user_ID'], poll_ID=poll_id).first()
+    user_vote = VotePoll.query.filter_by(user_ID=current_user.user_ID, poll_ID=poll_id).first()
     if user_vote is not None:
         return '', 403
     
@@ -80,16 +81,14 @@ def login():
         password = form.password.data
         print(f"User attempted login with username: {username}, password: {password}")
 
-        # Check if username and password match a user in the database
+        # Check if username matches a user in the database
         user = Users.query.filter_by(username=username).first()
         if user is None or user.check_password(password) == False:
             print("Login failed")
             return render_template('loginPage.html', form=form, message="Invalid username or password")
         else:
             print("Login successful")
-            session['user_ID'] = user.user_ID
-            session['username'] = user.username
-            polls = Polls.query.all()
+            login_user(user)
             return redirect(url_for('home'))
 
     print("User accessed the login page")
@@ -133,10 +132,10 @@ def create_account():
 def account():
     #print session details to console
     print(session)
-    if 'username' not in session:
+    if current_user.is_anonymous:
         return redirect(url_for('login'))
     else:
-        user = Users.query.filter_by(user_ID=session["user_ID"]).first()
+        user = Users.query.filter_by(user_ID=current_user.user_ID).first()
         return render_template('account.html', title = "account",  user=user)
 
 @app.route('/about', methods=['GET'])
@@ -145,7 +144,7 @@ def about():
 
 @app.route('/logout', methods=['GET'])
 def logout():
-    session.clear()
+    logout_user()
     return redirect(url_for('home'))
 
 @app.route('/popular', methods=['GET'])
@@ -154,10 +153,10 @@ def popular():
 
 @app.route('/ranking', methods=['GET'])
 def ranking():
-    if 'username' not in session:
+    if current_user.is_anonymous:
         return redirect(url_for('login'))
     else:
-        user = Users.query.filter_by(user_ID=session["user_ID"]).first()
+        user = Users.query.filter_by(user_ID=current_user.user_ID).first()
         ranked = Users.get_ranks()
         rank_data = []
         for i in range(min(10, len(ranked.keys()))):
@@ -174,14 +173,14 @@ def ranking():
 
 @app.route('/create', methods=['POST', 'GET'])
 def create():
-    if 'user_ID' not in session:
+    if current_user.is_anonymous:
         return redirect(url_for('login'))
     
     tags = ["Food", "Sports", "Fashion", "Subject", "Video Games", "Anime", "Board Games" , "Animals", "People", "Places", "Film", "TV", "Novels", "Abilities", "Historical"]
     form = PollForm()
 
     if form.validate_on_submit():
-        userID = session.get('user_ID')
+        userID = current_user.user_ID
         prompt = form.prompt.data
         option1 = form.option1.data
         option2 = form.option2.data 
@@ -211,7 +210,7 @@ def create():
 def generate_posts(order, option):
     print(order, option)
     posts = []
-    for post in Users.query.filter_by(user_ID=session["user_ID"]).first().posts():
+    for post in Users.query.filter_by(user_ID=current_user.user_ID).first().posts():
         posts.append(post.to_dict())
     if option == "Ascending":
         if order == "Popularity":

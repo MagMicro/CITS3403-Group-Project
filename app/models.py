@@ -1,8 +1,14 @@
 from flask_sqlalchemy import SQLAlchemy
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from app import login
+from flask_login import UserMixin
 
-class Users(db.Model):
+@login.user_loader
+def get_user(id):
+    return Users.query.get(int(id))
+
+class Users(UserMixin, db.Model):
     __tablename__ = 'Users'
 
     user_ID = db.Column(db.Integer, primary_key=True)
@@ -10,7 +16,11 @@ class Users(db.Model):
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String(128))
     date = db.Column(db.String(10))
-
+    
+    #Override for finding the user ID
+    def get_id(self):
+        return self.user_ID
+    
     #Methods for getting and checking hashed password
     def set_password(self, password):
         self.password = generate_password_hash(password)
