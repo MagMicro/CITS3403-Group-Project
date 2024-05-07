@@ -1,5 +1,6 @@
 {% for post in posts %}
 <div class="userPost">
+    <div class = "fas fa-xmark postDelete"></div>
     <div>
         <p><span class="post-subheading">{{ post["prompt"] }}:</span> {{ post["option1"] }} ({{ post["left%"] }}%) vs {{ post["option2"] }} ({{ post["right%"] }}%)</p>
     </div>

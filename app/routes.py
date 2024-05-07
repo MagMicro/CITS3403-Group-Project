@@ -81,15 +81,15 @@ def login():
         # Check if username matches a user in the database
         user = Users.query.filter_by(username=username).first()
         if user is None:
-            flash("Username does not exist. Please try again.")
+            flash("Username does not exist. Please try again.", "error")
             return render_template('loginPage.html', form=form)
         
         elif user.check_password(password) == False:
-            flash("Invalid password. Please try again.")
+            flash("Invalid password. Please try again.", "error")
             return render_template('loginPage.html', form=form)
         
         else:
-            print("Login successful")
+            flash("Login Successful: Welcome " + user.username)
             login_user(user)
             return redirect(url_for('home'))
 
@@ -109,13 +109,13 @@ def create_account():
         # Check if username is already taken
         user = Users.query.filter_by(username=username).first()
         if user is not None:
-            flash("Username is already taken.")
+            flash("Username is already taken.", "error")
             return render_template('accountCreationPage.html', form=form, title = "Account Creation")
 
         # Check if email is already taken
         user = Users.query.filter_by(email=email).first()
         if user is not None:
-            flash("Email is already taken.")
+            flash("Email is already taken.", "error")
             return render_template('accountCreationPage.html', form=form, title = "Account Creation")
 
         # Create account
@@ -183,11 +183,23 @@ def create():
 
     if form.validate_on_submit():
         userID = current_user.user_ID
-        prompt = form.prompt.data
-        option1 = form.option1.data
-        option2 = form.option2.data 
+        prompt = form.prompt.data.capitalize()
+        option1 = form.option1.data.capitalize()
+        option2 = form.option2.data.capitalize()
         form_tags = form.tags.data.split(',')
 
+        #Make sure all submitted tags are valid
+        for tag in form_tags:
+            if tag not in tags:
+                flash("Unrecognised tag/s detected. Please try again.", "error")
+                return render_template('create.html', form=form, title = "Create", tags=tags)
+        
+        #Make sure the post is unique
+        for post in Polls.query.filter_by(prompt=prompt):
+            if (post.Option1 == option1 and post.Option2 == option2) or (post.Option1 == option2 and post.Option2 == option1):
+                flash("Post already exists. Please try something else.", "error")
+                return render_template('create.html', form=form, title = "Create", tags=tags)
+        
         creation_date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
         print(f"{creation_date}: User attempting to create a poll with options:{prompt}, {option1}, {option2} and tags: {form_tags}")
@@ -199,7 +211,7 @@ def create():
         db.session.add(new_poll)
         db.session.commit()
         print("Poll created")
-        
+        flash("Poll has been created successfully.")
         return redirect(url_for('home'))
     print("User accessed the create page")
     return render_template('create.html', form=form, title = "Create", tags=tags)
@@ -217,7 +229,7 @@ def generate_posts(order, option):
     elif option == "Descending":
         mode = True
     else:
-        flash("Invalid sort order detected. Please try again.")
+        flash("Invalid sort order detected. Please try again.", "error")
         redirect(url_for("account"))
 
     if order == "Popularity":
@@ -227,7 +239,7 @@ def generate_posts(order, option):
     elif order == "UploadDate":
         posts.sort(reverse=mode, key = lambda user_post: datetime.timestamp(datetime.strptime(user_post["date"], "%d/%m/%Y %H:%M:%S")))
     else:
-        flash("Invalid sort option detected. Please try again.")
+        flash("Invalid sort option detected. Please try again.", "error")
         redirect(url_for("account"))
         
     return render_template("UserPosts.html", posts = posts)

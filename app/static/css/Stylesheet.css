@@ -15,8 +15,7 @@ body{
     text-align:center;
     border: 2px solid black;
     box-shadow:20px 20px rgba(0, 0, 0, 0.2);
-    margin-top:10%;
-    margin-bottom:10%;
+    margin-top:5%;
     animation: appear 0.5s;
 }
 #Login{
@@ -384,6 +383,8 @@ a{
     overflow-y:auto;
     text-align:left;
     height: 50%;
+    padding-left:10px;
+    padding-right:10px;
 }
 
 #postHeader{
@@ -414,7 +415,8 @@ a{
 
 #filterBox{
     text-align: left;
-    padding:10px;
+    padding-bottom:10px;
+    padding-left:10px;
     border-bottom: 1px solid black;
 }
 
@@ -432,4 +434,23 @@ a{
 
 #messageDisplay > *{
     font-size: xx-large;
+}
+
+.postDelete{
+    position:absolute;
+    font-size: 20px;
+    top:10px;
+    right:10px;
+}
+.postDelete:hover{
+    color:red;
+}
+
+.userPost{
+    position:relative;
+}
+#sortOption, #sortOrder{
+    border-radius: 10px;
+    padding:2px;
+    box-shadow: 2px 2px grey;
 }
