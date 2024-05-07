@@ -211,18 +211,23 @@ def generate_posts(order, option):
     posts = []
     for post in Users.query.filter_by(user_ID=current_user.user_ID).first().posts():
         posts.append(post.to_dict())
+
     if option == "Ascending":
-        if order == "Popularity":
-            posts.sort(key = lambda user_post: user_post["total"] )
-        elif order == "Difference":
-            posts.sort(key = lambda user_post: abs(user_post["left%"] - user_post["right%"]))
-        elif order == "UploadDate":
-            posts.sort(key = lambda user_post: datetime.timestamp(datetime.strptime(user_post["date"], "%d/%m/%Y %H:%M:%S")))
+        mode = False
+    elif option == "Descending":
+        mode = True
     else:
-        if order == "Popularity":
-            posts.sort(reverse=True, key = lambda user_post: user_post["total"] )
-        elif order == "Difference":
-            posts.sort(reverse=True, key = lambda user_post: abs(user_post["left%"] - user_post["right%"]))
-        elif order == "UploadDate":
-            posts.sort(reverse=True, key = lambda user_post: datetime.timestamp(datetime.strptime(user_post["date"], "%d/%m/%Y %H:%M:%S")))
+        flash("Invalid sort order detected. Please try again.")
+        redirect(url_for("account"))
+
+    if order == "Popularity":
+        posts.sort(reverse=mode, key = lambda user_post: user_post["total"] )
+    elif order == "Difference":
+        posts.sort(reverse=mode, key = lambda user_post: abs(user_post["left%"] - user_post["right%"]))
+    elif order == "UploadDate":
+        posts.sort(reverse=mode, key = lambda user_post: datetime.timestamp(datetime.strptime(user_post["date"], "%d/%m/%Y %H:%M:%S")))
+    else:
+        flash("Invalid sort option detected. Please try again.")
+        redirect(url_for("account"))
+        
     return render_template("UserPosts.html", posts = posts)
