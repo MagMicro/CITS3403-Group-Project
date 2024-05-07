@@ -79,6 +79,12 @@ class Polls(db.Model):
     date = db.Column(db.String)
     prompt = db.Column(db.String)
 
+    #Deleted all votes associated with a given poll
+    def delete_votes(self):
+        votes = VotePoll.query.filter_by(poll_ID=self.poll_ID)
+        for vote in votes:
+            db.session.delete(vote)
+
     #Adds tags to Polls model instance based on how many tags it received, default is N/A
     def add_tags(self, tags):
         if len(tags) >= 1 and tags[0] != '':
@@ -86,7 +92,7 @@ class Polls(db.Model):
             if len(tags) >= 2:
                 self.tag2 = tags[1]
             if len(tags) == 3:
-                self.tag2 = tags[2]
+                self.tag3 = tags[2]
             
 
     # Creates a dictionary struture based on fields and function values, used by user profile page    

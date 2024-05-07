@@ -1,9 +1,8 @@
 {% for post in posts %}
 <div class="userPost">
-    <div class = "fas fa-xmark postDelete"></div>
-    <div>
-        <p><span class="post-subheading">{{ post["prompt"] }}:</span> {{ post["option1"] }} ({{ post["left%"] }}%) vs {{ post["option2"] }} ({{ post["right%"] }}%)</p>
-    </div>
+    <div class = "fas fa-xmark postDelete" id = "{{post['ID']}}"></div>
+    <p><span class="post-subheading">ID: </span>{{post["ID"]}}</p>
+    <p><span class="post-subheading">{{ post["prompt"] }}:</span> {{ post["option1"] }} ({{ post["left%"] }}%) vs {{ post["option2"] }} ({{ post["right%"] }}%)</p>
 
     <div class="small-bar">
         {%if post["left%"] == 100%}
@@ -24,3 +23,4 @@
     </div>
 </div>
 {% endfor %}
+<script>$(".postDelete").click(function() {$.get("/DeletePost/" + $(this).attr("id"), function (data) {window.location.replace(data)})})</script>

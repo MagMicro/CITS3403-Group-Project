@@ -5,7 +5,7 @@ from .models import Users, Polls, VotePoll
 from app import db
 from datetime import date
 from datetime import datetime
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, login_required
 
 @app.route('/api/polls', methods=['GET'])
 def get_polls():
@@ -230,7 +230,7 @@ def generate_posts(order, option):
         mode = True
     else:
         flash("Invalid sort order detected. Please try again.", "error")
-        redirect(url_for("account"))
+        return redirect(url_for("account"))
 
     if order == "Popularity":
         posts.sort(reverse=mode, key = lambda user_post: user_post["total"] )
@@ -240,6 +240,27 @@ def generate_posts(order, option):
         posts.sort(reverse=mode, key = lambda user_post: datetime.timestamp(datetime.strptime(user_post["date"], "%d/%m/%Y %H:%M:%S")))
     else:
         flash("Invalid sort option detected. Please try again.", "error")
-        redirect(url_for("account"))
+        return redirect(url_for("account"))
         
     return render_template("UserPosts.html", posts = posts)
+
+@app.route('/DeletePost/<int:id>', methods = ['GET'])
+@login_required
+def delete_user_post(id):
+    if(current_user.is_authenticated):
+        deleted_post = Polls.query.get(id)
+
+        if deleted_post is None:
+            flash("Could not delete post. Post does not exist.")
+        
+        elif deleted_post.pollAuthor_ID != current_user.get_id():
+            flash("You are not authorized to delete someone elses post.")
+
+        else:
+            deleted_post.delete_votes()
+            db.session.delete(deleted_post)
+            db.session.commit()
+            flash("Post was successfully deleted.")
+        return url_for("account")
+
+    return url_for("login")
