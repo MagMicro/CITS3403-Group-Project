@@ -110,6 +110,14 @@ class Polls(db.Model):
         poll["total"] = self.total_votes()
         poll["left%"] = self.left_percentage()
         poll["right%"] = self.right_percentage()
+
+        hours = int(self.date.split(" ")[1][0:2])
+        time = self.date.split(" ")[1][2:5]
+        time_date = self.date.split(" ")[0]
+        if(hours // 12 >= 1):
+            poll["date_readable"] = time_date + " " + str(hours % 12) + time + " PM"
+        else:
+            poll["date_readable"] = self.date + " " + hours + time + " AM" 
         return poll
 
     # Functions to calcuate the proportion of votes for each given poll instance

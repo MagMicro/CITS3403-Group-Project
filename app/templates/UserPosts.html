@@ -16,7 +16,7 @@
     </div>
     <br>
 
-    <div><span class="post-subheading">Posted on:</span> {{ post["date"] }} </div>
+    <div><span class="post-subheading">Posted on:</span> {{ post["date_readable"] }} </div>
 
     <div>{% if post["tag1"] != None %}
         <p><span class="post-subheading">Tags:</span> {{ post["tag1"] }} {% endif %} {% if post["tag2"] != None %} , {{ post["tag2"]}} {% endif %} {% if post["tag3"] != None %} , {{ post["tag3"] }} {% endif %}</p>
