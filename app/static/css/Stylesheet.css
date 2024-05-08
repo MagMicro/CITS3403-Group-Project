@@ -440,7 +440,7 @@ a{
     top:10px;
     right:10px;
 }
-.postDelete:hover{
+.postDelete:hover, #notificationClose:hover{
     color:red;
 }
 
@@ -451,4 +451,34 @@ a{
     border-radius: 10px;
     padding:2px;
     box-shadow: 2px 2px grey;
+}
+
+#confirmMsg{
+    display:none;
+    margin:auto;
+    text-align: center;
+    position:fixed;
+    top:0;
+    width: 100%;
+    height:100%;
+    z-index:3;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+#confirmMsg > .board{
+    position: relative;
+    height:200px;
+}
+
+#confirm{
+    display:block;
+    position:absolute;
+    bottom:10px;
+    left:25%;
+}
+
+#notificationClose{
+    position:absolute;
+    top:10px;
+    right:20px;
+    font-size: 25px;
 }

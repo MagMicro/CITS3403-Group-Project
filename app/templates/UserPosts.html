@@ -23,4 +23,18 @@
     </div>
 </div>
 {% endfor %}
-<script>$(".postDelete").click(function() {$.get("/DeletePost/" + $(this).attr("id"), function (data) {window.location.replace(data)})})</script>
+<script>
+    function delete_post(id){
+        $.get("/DeletePost/" + id, function (data) {window.location.replace(data)});
+    };
+    let id;
+    $(".postDelete").click(
+        function() 
+        {
+            id = $(this).attr("id");
+            $("#confirmMsg").css("display", "block");
+        }
+    )
+    $("#notificationClose").click(()=>{$("#confirmMsg").css("display", "none");});
+    $("#confirm").click(()=>{delete_post(id);});
+</script>
