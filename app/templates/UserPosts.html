@@ -32,9 +32,9 @@
         function() 
         {
             id = $(this).attr("id");
-            $("#confirmMsg").css("display", "block");
+            $("#postConfirmMsg").css("display", "block");
         }
     )
-    $("#notificationClose").click(()=>{$("#confirmMsg").css("display", "none");});
+    $("#postNotificationClose").click(()=>{$("#postConfirmMsg").css("display", "none");});
     $("#confirm").click(()=>{delete_post(id);});
 </script>

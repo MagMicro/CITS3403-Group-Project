@@ -138,7 +138,8 @@ def account():
         return redirect(url_for('login'))
     else:
         user = Users.query.filter_by(user_ID=current_user.user_ID).first()
-        return render_template('account.html', title = "account",  user=user)
+        form = AccountDeletion()
+        return render_template('account.html', title = "account",  user=user, form=form)
 
 @app.route('/about', methods=['GET'])
 def about():
@@ -188,8 +189,16 @@ def create():
         option2 = form.option2.data.capitalize()
         form_tags = form.tags.data.split(',')
 
+        #Check that a valid prompt, and associated options are present
+        if prompt == "" or option1 == "" or option2 == "":
+                flash("Please make sure to fill in every field.", "error")
+                return render_template('create.html', form=form, title = "Create", tags=tags)
+        
         #Make sure all submitted tags are valid
         for tag in form_tags:
+            if tag == "":
+                flash("Need to use one or more tags. Please try again.", "error")
+                return render_template('create.html', form=form, title = "Create", tags=tags)
             if tag not in tags:
                 flash("Unrecognised tag/s detected. Please try again.", "error")
                 return render_template('create.html', form=form, title = "Create", tags=tags)
@@ -264,3 +273,33 @@ def delete_user_post(id):
         return url_for("account")
 
     return url_for("login")
+
+@app.route("/DeleteAccount", methods = ["POST"])
+@login_required
+def delete_account():
+    form = AccountDeletion()
+    if(form.validate_on_submit()):
+        password = form.password.data
+
+        #Verify the user's provided password
+        if(current_user.check_password(password)):
+            #Delete all content associated with a user and their posts
+            for post in current_user.posts():
+                post.delete_votes()
+                db.session.delete(post)
+    
+            current = Users.query.get(current_user.user_ID)
+            logout_user()
+
+            db.session.delete(current)
+            db.session.commit()
+            flash("Account Successfully Deleted.")
+            return redirect(url_for("login"))
+        
+        #Incorrect password provided
+        else:
+            flash("Invalid password. Please try again", "error")
+            return redirect(url_for("account"))
+        
+    flash("Something went wrong. Please try again", "error")
+    return redirect(url_for("account"))

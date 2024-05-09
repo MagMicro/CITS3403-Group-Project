@@ -214,7 +214,7 @@ a{
     background-color: rgb(100, 104, 122);
     color:white;
     font-size: 30px;
-    box-shadow: 0px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 10px rgba(0, 0, 0, 0.2);
     margin-bottom:20px;
     border-bottom: 2px solid black;
 }
@@ -442,7 +442,7 @@ a{
     top:10px;
     right:10px;
 }
-.postDelete:hover, #notificationClose:hover{
+.fa-xmark:hover{
     color:red;
 }
 
@@ -455,7 +455,7 @@ a{
     box-shadow: 2px 2px grey;
 }
 
-#confirmMsg{
+#postConfirmMsg, #accountConfirmMsg{
     display:none;
     margin:auto;
     text-align: center;
@@ -466,7 +466,13 @@ a{
     z-index:3;
     background-color: rgba(0, 0, 0, 0.5);
 }
-#confirmMsg > .board{
+
+#accountConfirmMsg > .board{
+    position: relative;
+    height:300px;
+}
+
+#postConfirmMsg > .board{
     position: relative;
     height:200px;
 }
@@ -478,9 +484,16 @@ a{
     left:25%;
 }
 
-#notificationClose{
+#postNotificationClose, #accountNotificationClose{
     position:absolute;
     top:10px;
     right:20px;
     font-size: 25px;
+}
+
+#accountDelete{
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 30px;
 }
