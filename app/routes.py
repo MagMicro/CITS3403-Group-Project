@@ -3,8 +3,10 @@ from flask import request, render_template, g, session, redirect, url_for, jsoni
 from app.forms import *
 from .models import Users, Polls, VotePoll
 from app import db
-from datetime import date
-from datetime import datetime
+from datetime import date, datetime
+import random
+
+
 from flask_login import current_user, login_user, logout_user, login_required
 
 @app.route('/api/polls', methods=['GET'])
@@ -304,35 +306,43 @@ def display_vote_page():
 
 @app.route('/api/poll/random', methods=['GET'])
 def random_poll():
-    if 'user_ID' not in session:
-        return '', 401
+    if current_user.is_anonymous:
+        available_polls = Polls.query.all()
+        random_poll = random.choice(available_polls)
+        return jsonify(random_poll.to_dict()), 200
 
-    voted_polls = [vote.poll_ID for vote in VotePoll.query.filter_by(user_ID=session['user_ID']).all()]
-    available_polls = Polls.query.filter(Polls.poll_ID.notin_(voted_polls)).all()
+    else:
+        voted_polls = [vote.poll_ID for vote in VotePoll.query.filter_by(user_ID=current_user.user_ID).all()]
+        available_polls = Polls.query.filter(Polls.poll_ID.notin_(voted_polls)).all()
 
-    if not available_polls:
-        return jsonify({"message": "No available polls"}), 404
+        if not available_polls:
+            return jsonify({"message": "No available polls"}), 404
 
-    random_poll = random.choice(available_polls)
-    return jsonify(random_poll.to_dict())
+        random_poll = random.choice(available_polls)
+        return jsonify(random_poll.to_dict()), 200
 
 @app.route('/api/poll/vote', methods=['POST'])
 def cast_vote():
-    if 'user_ID' not in session:
-        return '', 401
-
+    # redirect anonymous users to the login page
+    if current_user.is_anonymous:
+        flash("You need to log in to vote.")
+        return url_for("login"), 404
+    
     data = request.get_json()
     poll_id = data.get('poll_id')
     option = data.get('option')
 
+    # Invalid options are sent to the server.
     if not poll_id or option not in ['1', '2']:
-        abort(400)
+        flash("Invalid voting option detected. Please try again.")
+        return "", 400
 
-    user_vote = VotePoll.query.filter_by(user_ID=session['user_ID'], poll_ID=poll_id).first()
+    # User cannot vote on their own post.
+    user_vote = VotePoll.query.filter_by(user_ID=current_user.user_ID, poll_ID=poll_id).first()
     if user_vote is not None:
         return '', 403
 
-    new_vote = VotePoll(user_ID=session['user_ID'], poll_ID=poll_id, Vote_opt=int(option))
+    new_vote = VotePoll(user_ID=current_user.user_ID, poll_ID=poll_id, Vote_opt=int(option))
     db.session.add(new_vote)
     db.session.commit()
 
@@ -340,4 +350,4 @@ def cast_vote():
     if not poll:
         abort(404)
 
-    return jsonify(poll.to_dict())
+    return jsonify(poll.to_dict()), 200

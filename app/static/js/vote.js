@@ -10,25 +10,28 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function loadRandomPoll() {
-    fetch("/api/poll/random")
-        .then((response) => response.json())
-        .then((poll) => {
-            if (poll.message) {
-                document.getElementById("polls-container").innerHTML = `<p>${poll.message}</p>`;
-            } else {
-                displayPoll(poll);
-            }
-        })
-        .catch((error) => {
-            console.error("Error loading polls:", error);
-        });
+    const xhttp = new XMLHttpRequest();
+    xhttp.open("GET", "/api/poll/random");
+    xhttp.onload = function(){
+        const response = JSON.parse(xhttp.responseText);
+        switch(xhttp.status){
+            // Case that the vote was successfully logged in the system
+            case 200:
+                displayPoll(response);
+                break;
+            case 404:
+                document.getElementById("polls-container").innerHTML = `<p>${response.message}</p>`;
+                break;
+        }
+    }
+    xhttp.send();
 }
 
 function displayPoll(poll) {
     const pollContainer = document.getElementById("polls-container");
     pollContainer.innerHTML = `
         <div class="poll">
-            <h3>${poll.title}</h3>
+            <h3>${poll.prompt}</h3>
             <form id="poll-form">
                 <div class="poll-options">
                     <label>
@@ -64,21 +67,27 @@ function displayPoll(poll) {
     });
 }
 
+
 function voteOnPoll(pollId, option) {
-    fetch(`/api/poll/vote`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ poll_id: pollId, option: option }),
-    })
-        .then((response) => response.json())
-        .then((updatedPoll) => {
-            showResults(updatedPoll);
-        })
-        .catch((error) => {
-            console.error("Error submitting vote:", error);
-        });
+    const xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "/api/poll/vote");
+    xhttp.setRequestHeader("Content-Type", "application/json");
+    xhttp.onload = function(){
+        switch(xhttp.status){
+            // Case that the user is not logged in, send them to login page
+            case 404:
+                window.location.replace(xhttp.responseText);
+                break;
+
+            // Case that the vote was successfully logged in the system
+            case 200:
+                showResults(JSON.parse(xhttp.responseText));
+                break;
+        }
+
+    }
+    // Send the field values as JSON to the server
+    xhttp.send(JSON.stringify({ poll_id: pollId, option: option }));
 }
 
 function showResults(poll) {
