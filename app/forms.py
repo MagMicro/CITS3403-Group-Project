@@ -20,5 +20,10 @@ class PollForm(FlaskForm):
     option2 = StringField("Option 2:", validators = [DataRequired()])
     tags = StringField("Tags:")
     submit = SubmitField("Submit")
+
+    
+class AccountDeletion(FlaskForm):
+    password = PasswordField("Password:", validators = [DataRequired()])
+    submit = SubmitField("Submit")
     
     

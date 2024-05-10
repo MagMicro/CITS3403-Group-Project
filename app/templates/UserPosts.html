@@ -1,8 +1,8 @@
 {% for post in posts %}
 <div class="userPost">
-    <div>
-        <p><span class="post-subheading">{{ post["prompt"] }}:</span> {{ post["option1"] }} ({{ post["left%"] }}%) vs {{ post["option2"] }} ({{ post["right%"] }}%)</p>
-    </div>
+    <div class = "fas fa-xmark postDelete" id = "{{post['ID']}}"></div>
+    <p><span class="post-subheading">ID: </span>{{post["ID"]}}</p>
+    <p><span class="post-subheading">{{ post["prompt"] }}:</span> {{ post["option1"] }} ({{ post["left%"] }}%) vs {{ post["option2"] }} ({{ post["right%"] }}%)</p>
 
     <div class="small-bar">
         {%if post["left%"] == 100%}
@@ -16,10 +16,25 @@
     </div>
     <br>
 
-    <div><span class="post-subheading">Posted on:</span> {{ post["date"] }} </div>
+    <div><span class="post-subheading">Posted on:</span> {{ post["date_readable"] }} </div>
 
-    <div>{% if post["tag1"] != "N/A" %}
-        <p><span class="post-subheading">Tags:</span> {{ post["tag1"] }} {% endif %} {% if post["tag2"] != "N/A" %} , {{ post["tag2"]}} {% endif %} {% if post["tag3"] != "N/A" %} , {{ post["tag3"] }} {% endif %}</p>
+    <div>{% if post["tag1"] != None %}
+        <p><span class="post-subheading">Tags:</span> {{ post["tag1"] }} {% endif %} {% if post["tag2"] != None %} , {{ post["tag2"]}} {% endif %} {% if post["tag3"] != None %} , {{ post["tag3"] }} {% endif %}</p>
     </div>
 </div>
 {% endfor %}
+<script>
+    function delete_post(id){
+        $.get("/DeletePost/" + id, function (data) {window.location.replace(data)});
+    };
+    let id;
+    $(".postDelete").click(
+        function() 
+        {
+            id = $(this).attr("id");
+            $("#postConfirmMsg").css("display", "block");
+        }
+    )
+    $("#postNotificationClose").click(()=>{$("#postConfirmMsg").css("display", "none");});
+    $("#confirm").click(()=>{delete_post(id);});
+</script>

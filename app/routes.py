@@ -1,14 +1,70 @@
-from app import app, db
-from flask import request, render_template, g, session, redirect, url_for, jsonify, abort
-from datetime import date, datetime
+from app import app
+from flask import request, render_template, g, session, redirect, url_for, jsonify, abort, flash
 from app.forms import *
 from .models import Users, Polls, VotePoll
-import random
+from app import db
+from datetime import date
+from datetime import datetime
+from flask_login import current_user, login_user, logout_user, login_required
 
-@app.route('/')
-def index():
+@app.route('/api/polls', methods=['GET'])
+def get_polls():
+    polls = Polls.query.all()
+    user_votes = None
+    polls_data = []
+
+    for poll in polls:
+        has_voted = False
+        if current_user.is_authenticated:
+            if VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = poll.poll_ID).first() is not None:
+                has_voted = True
+
+        author = Users.query.filter_by(user_ID=poll.pollAuthor_ID).first()
+        total_votes = VotePoll.query.filter_by(poll_ID=poll.poll_ID).count()
+        votes1 = VotePoll.query.filter_by(poll_ID=poll.poll_ID, Vote_opt=1).count()
+        votes2 = VotePoll.query.filter_by(poll_ID=poll.poll_ID, Vote_opt=2).count()
+
+        poll_data = {
+            'id': poll.poll_ID,
+            'author': author.username if author else 'Unknown',
+            'option1': poll.Option1,
+            'votes1': (votes1 / total_votes) * 100 if total_votes > 0 else 0,
+            'option2': poll.Option2,
+            'votes2': (votes2 / total_votes) * 100 if total_votes > 0 else 0,
+            'has_voted': has_voted
+        }
+        polls_data.append(poll_data)
+
+    return jsonify(polls_data)
+
+@app.route('/api/polls/<int:poll_id>/vote', methods=['POST'])
+def vote(poll_id):
+    # Check if user is logged in
+    if current_user.is_anonymous:
+        return '', 401
+
+    # Get the selected option from the request body
+    data = request.get_json()
+    option = data.get('option')
+    if option not in ['1', '2']:
+        abort(400)
+
+    # Record the vote
+    vote = VotePoll(user_ID=current_user.user_ID, poll_ID=poll_id, Vote_opt=int(option))
+    #print vote for debug
+    print(vote)
+
+    #check if user has already voted
+    user_vote = VotePoll.query.filter_by(user_ID=current_user.user_ID, poll_ID=poll_id).first()
+    if user_vote is not None:
+        return '', 403
+    
+    db.session.add(vote)
+    db.session.commit()
+
     return redirect(url_for('home'))
 
+@app.route('/')
 @app.route('/home')
 def home():
     return render_template('home.html', title="Home")
@@ -21,14 +77,19 @@ def login():
         password = form.password.data
         print(f"User attempted login with username: {username}, password: {password}")
 
-        user = Users.query.filter_by(username=username, password=password).first()
+        # Check if username matches a user in the database
+        user = Users.query.filter_by(username=username).first()
         if user is None:
-            print("Login failed")
-            return render_template('loginPage.html', form=form, message="Invalid username or password")
+            flash("Username does not exist. Please try again.", "error")
+            return render_template('loginPage.html', form=form)
+        
+        elif user.check_password(password) == False:
+            flash("Invalid password. Please try again.", "error")
+            return render_template('loginPage.html', form=form)
+        
         else:
-            print("Login successful")
-            session['user_ID'] = user.user_ID
-            session['username'] = user.username
+            flash("Login Successful: Welcome " + user.username)
+            login_user(user)
             return redirect(url_for('home'))
 
     print("User accessed the login page")
@@ -41,35 +102,40 @@ def create_account():
         username = form.username.data
         email = form.email.data
         password = form.password.data
+
         print(f"User attempting account creation with username: {username}, email: {email}, password: {password}")
 
         user = Users.query.filter_by(username=username).first()
         if user is not None:
-            print("Username already taken")
-            return render_template('accountCreationPage.html', form=form, title="Account Creation", message="Username already taken")
+            flash("Username is already taken.", "error")
+            return render_template('accountCreationPage.html', form=form, title = "Account Creation")
 
         user = Users.query.filter_by(email=email).first()
         if user is not None:
-            print("Email already taken")
-            return render_template('accountCreationPage.html', form=form, title="Account Creation", message="Email already taken")
+            flash("Email is already taken.", "error")
+            return render_template('accountCreationPage.html', form=form, title = "Account Creation")
 
         creation_date = date.today().strftime("%d/%m/%Y")
-        new_user = Users(username=username, email=email, password=password, date=creation_date)
+        new_user = Users(username=username, email=email, date=creation_date)
+        new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
         print("Account created")
-        return render_template('loginPage.html', form=LoginForm(), title="Login", message="Account created successfully")
+        form = LoginForm()
+        flash("Account created successfully.")
+        return render_template('loginPage.html', form=form, title = "Login")
 
     print("User accessed the Account Creation page")
     return render_template('accountCreationPage.html', form=form, title="Account Creation")
 
 @app.route('/account', methods=['POST', 'GET'])
 def account():
-    if 'username' not in session:
+    if current_user.is_anonymous:
         return redirect(url_for('login'))
     else:
-        user = Users.query.filter_by(user_ID=session["user_ID"]).first()
-        return render_template('account.html', title="account", user=user)
+        user = Users.query.filter_by(user_ID=current_user.user_ID).first()
+        form = AccountDeletion()
+        return render_template('account.html', title = "account",  user=user, form=form)
 
 @app.route('/about', methods=['GET'])
 def about():
@@ -77,7 +143,7 @@ def about():
 
 @app.route('/logout', methods=['GET'])
 def logout():
-    session.clear()
+    logout_user()
     return redirect(url_for('home'))
 
 @app.route('/popular', methods=['GET'])
@@ -86,10 +152,10 @@ def popular():
 
 @app.route('/ranking', methods=['GET'])
 def ranking():
-    if 'username' not in session:
+    if current_user.is_anonymous:
         return redirect(url_for('login'))
     else:
-        user = Users.query.filter_by(user_ID=session["user_ID"]).first()
+        user = Users.query.filter_by(user_ID=current_user.user_ID).first()
         ranked = Users.get_ranks()
         rank_data = []
         for i in range(min(10, len(ranked.keys()))):
@@ -106,33 +172,51 @@ def ranking():
 
 @app.route('/create', methods=['POST', 'GET'])
 def create():
-    if 'user_ID' not in session:
+    if current_user.is_anonymous:
         return redirect(url_for('login'))
     
     tags = ["Food", "Sports", "Fashion", "Subject", "Video Games", "Anime", "Board Games" , "Animals", "People", "Places", "Film", "TV", "Novels", "Abilities", "Historical"]
     form = PollForm()
 
     if form.validate_on_submit():
-        userID = session.get('user_ID')
-        prompt = form.prompt.data
-        option1 = form.option1.data
-        option2 = form.option2.data
-        tags = form.tags.data.split(',')
+        userID = current_user.user_ID
+        prompt = form.prompt.data.capitalize()
+        option1 = form.option1.data.capitalize()
+        option2 = form.option2.data.capitalize()
+        form_tags = form.tags.data.split(',')
 
-        if len(tags) == 1 and tags[0] == '':
-            tags = ["N/A", "N/A", "N/A"]
-        else:
-            tags += ['N/A'] * (3 - len(tags))
-
+        #Check that a valid prompt, and associated options are present
+        if prompt == "" or option1 == "" or option2 == "":
+                flash("Please make sure to fill in every field.", "error")
+                return render_template('create.html', form=form, title = "Create", tags=tags)
+        
+        #Make sure all submitted tags are valid
+        for tag in form_tags:
+            if tag == "":
+                flash("Need to use one or more tags. Please try again.", "error")
+                return render_template('create.html', form=form, title = "Create", tags=tags)
+            if tag not in tags:
+                flash("Unrecognised tag/s detected. Please try again.", "error")
+                return render_template('create.html', form=form, title = "Create", tags=tags)
+        
+        #Make sure the post is unique
+        for post in Polls.query.filter_by(prompt=prompt):
+            if (post.Option1 == option1 and post.Option2 == option2) or (post.Option1 == option2 and post.Option2 == option1):
+                flash("Post already exists. Please try something else.", "error")
+                return render_template('create.html', form=form, title = "Create", tags=tags)
+        
         creation_date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
-        print(f"{creation_date}: User attempting to create a poll with options: {prompt}, {option1}, {option2} and tags: {tags}")
+        print(f"{creation_date}: User attempting to create a poll with options:{prompt}, {option1}, {option2} and tags: {form_tags}")
+        
+        #Create new poll object
+        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID, date=creation_date, prompt=prompt)
+        new_poll.add_tags(form_tags)
 
-        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID, tag1=tags[0], tag2=tags[1], tag3=tags[2], date=creation_date, prompt=prompt)
         db.session.add(new_poll)
         db.session.commit()
         print("Poll created")
-        
+        flash("Poll has been created successfully.")
         return redirect(url_for('home'))
     print("User accessed the create page")
     return render_template('create.html', form=form, title="Create", tags=tags)
@@ -140,9 +224,79 @@ def create():
 @app.route('/GetUserPosts/<order>/<option>', methods=["GET"])
 def generate_posts(order, option):
     posts = []
-    for post in Users.query.filter_by(user_ID=session["user_ID"]).first().posts():
+    for post in Users.query.filter_by(user_ID=current_user.user_ID).first().posts():
         posts.append(post.to_dict())
+
     if option == "Ascending":
+        mode = False
+    elif option == "Descending":
+        mode = True
+    else:
+        flash("Invalid sort order detected. Please try again.", "error")
+        return redirect(url_for("account"))
+
+    if order == "Popularity":
+        posts.sort(reverse=mode, key = lambda user_post: user_post["total"] )
+    elif order == "Difference":
+        posts.sort(reverse=mode, key = lambda user_post: abs(user_post["left%"] - user_post["right%"]))
+    elif order == "UploadDate":
+        posts.sort(reverse=mode, key = lambda user_post: datetime.timestamp(datetime.strptime(user_post["date"], "%d/%m/%Y %H:%M:%S")))
+    else:
+        flash("Invalid sort option detected. Please try again.", "error")
+        return redirect(url_for("account"))
+        
+    return render_template("UserPosts.html", posts = posts)
+
+@app.route('/DeletePost/<int:id>', methods = ['GET'])
+@login_required
+def delete_user_post(id):
+    if(current_user.is_authenticated):
+        deleted_post = Polls.query.get(id)
+
+        if deleted_post is None:
+            flash("Could not delete post. Post does not exist.")
+        
+        elif deleted_post.pollAuthor_ID != current_user.get_id():
+            flash("You are not authorized to delete someone elses post.")
+
+        else:
+            deleted_post.delete_votes()
+            db.session.delete(deleted_post)
+            db.session.commit()
+            flash("Post was successfully deleted.")
+        return url_for("account")
+
+    return url_for("login")
+
+@app.route("/DeleteAccount", methods = ["POST"])
+@login_required
+def delete_account():
+    form = AccountDeletion()
+    if(form.validate_on_submit()):
+        password = form.password.data
+
+        #Verify the user's provided password
+        if(current_user.check_password(password)):
+            #Delete all content associated with a user and their posts
+            for post in current_user.posts():
+                post.delete_votes()
+                db.session.delete(post)
+    
+            current = Users.query.get(current_user.user_ID)
+            logout_user()
+
+            db.session.delete(current)
+            db.session.commit()
+            flash("Account Successfully Deleted.")
+            return redirect(url_for("login"))
+        
+        #Incorrect password provided
+        else:
+            flash("Invalid password. Please try again", "error")
+            return redirect(url_for("account"))
+        
+    flash("Something went wrong. Please try again", "error")
+    return redirect(url_for("account"))
         if order == "Popularity":
             posts.sort(key=lambda user_post: user_post["total"])
         elif order == "Difference":

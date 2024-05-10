@@ -1,15 +1,34 @@
 from flask_sqlalchemy import SQLAlchemy
 from app import db
+from werkzeug.security import generate_password_hash, check_password_hash
+from app import login
+from flask_login import UserMixin
 
-class Users(db.Model):
+@login.user_loader
+def get_user(id):
+    return Users.query.get(int(id))
+
+class Users(UserMixin, db.Model):
     __tablename__ = 'Users'
 
     user_ID = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True)
     email = db.Column(db.String, unique=True)
-    password = db.Column(db.String)
+    password = db.Column(db.String(128))
     date = db.Column(db.String(10))
+    
+    #Override for finding the user ID
+    def get_id(self):
+        return self.user_ID
+    
+    #Methods for getting and checking hashed password
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
 
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+    
+    #Methods for gathering user posts & their data
     def posts(self):
         return Polls.query.filter_by(pollAuthor_ID = self.user_ID)
     
@@ -59,6 +78,24 @@ class Polls(db.Model):
     tag3 = db.Column(db.String)
     date = db.Column(db.String)
     prompt = db.Column(db.String)
+
+    #Deleted all votes associated with a given poll
+    def delete_votes(self):
+        votes = VotePoll.query.filter_by(poll_ID=self.poll_ID)
+        for vote in votes:
+            db.session.delete(vote)
+
+    #Adds tags to Polls model instance based on how many tags it received, default is N/A
+    def add_tags(self, tags):
+        if len(tags) >= 1 and tags[0] != '':
+            self.tag1 = tags[0]
+            if len(tags) >= 2:
+                self.tag2 = tags[1]
+            if len(tags) == 3:
+                self.tag3 = tags[2]
+            
+
+    # Creates a dictionary struture based on fields and function values, used by user profile page    
     def to_dict(self):
         poll ={}
         poll["ID"] = self.poll_ID
@@ -73,8 +110,17 @@ class Polls(db.Model):
         poll["total"] = self.total_votes()
         poll["left%"] = self.left_percentage()
         poll["right%"] = self.right_percentage()
+
+        hours = int(self.date.split(" ")[1][0:2])
+        time = self.date.split(" ")[1][2:5]
+        time_date = self.date.split(" ")[0]
+        if(hours // 12 >= 1):
+            poll["date_readable"] = time_date + " " + str(hours % 12) + time + " PM"
+        else:
+            poll["date_readable"] = self.date + " " + hours + time + " AM" 
         return poll
 
+    # Functions to calcuate the proportion of votes for each given poll instance
     def total_left(self):
         return VotePoll.query.filter_by(poll_ID = self.poll_ID, Vote_opt = 1).count()
     

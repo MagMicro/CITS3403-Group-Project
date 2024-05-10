@@ -16,7 +16,6 @@ body{
     border: 2px solid black;
     box-shadow:20px 20px rgba(0, 0, 0, 0.2);
     margin-top:5%;
-    margin-bottom:5%;
     animation: appear 0.5s;
 }
 #Login{
@@ -107,7 +106,7 @@ a{
 #banner{
     position:fixed;
     top:0px;
-    z-index:1;
+    z-index:2;
     width:100%;
     margin: 0px;
     padding: 0px;
@@ -223,7 +222,7 @@ a{
     background-color: rgb(100, 104, 122);
     color:white;
     font-size: 30px;
-    box-shadow: 0px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 10px rgba(0, 0, 0, 0.2);
     margin-bottom:20px;
     border-bottom: 2px solid black;
 }
@@ -249,6 +248,8 @@ a{
     overflow-y:auto;
     border: 2px solid black;
     background-color: aliceblue;
+    border-radius: 10px;
+    box-shadow: 2px 2px grey;
 }
 
 .tag-button{
@@ -422,10 +423,87 @@ a{
 
 #filterBox{
     text-align: left;
-    padding:10px;
+    padding-bottom:10px;
+    padding-left:10px;
     border-bottom: 1px solid black;
 }
 
+#messageDisplay{
+    margin: auto;
+    text-align: center;
+    color: white;
+    background-color: rgb(120, 123, 137, 0.8);
+    position:fixed;
+    top:50px;
+    z-index:1;
+    height:50px;
+    width:100%;
+}
+
+#messageDisplay > *{
+    font-size: xx-large;
+}
+
+.postDelete{
+    position:absolute;
+    font-size: 20px;
+    top:10px;
+    right:10px;
+}
+.fa-xmark:hover{
+    color:red;
+}
+
+.userPost{
+    position:relative;
+}
+#sortOption, #sortOrder{
+    border-radius: 10px;
+    padding:2px;
+    box-shadow: 2px 2px grey;
+}
+
+#postConfirmMsg, #accountConfirmMsg{
+    display:none;
+    margin:auto;
+    text-align: center;
+    position:fixed;
+    top:0;
+    width: 100%;
+    height:100%;
+    z-index:3;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#accountConfirmMsg > .board{
+    position: relative;
+    height:300px;
+}
+
+#postConfirmMsg > .board{
+    position: relative;
+    height:200px;
+}
+
+#confirm{
+    display:block;
+    position:absolute;
+    bottom:10px;
+    left:25%;
+}
+
+#postNotificationClose, #accountNotificationClose{
+    position:absolute;
+    top:10px;
+    right:20px;
+    font-size: 25px;
+}
+
+#accountDelete{
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 30px;
 #vote-page .board {
     background-color: #ffffff;
     border-radius: 8px;
