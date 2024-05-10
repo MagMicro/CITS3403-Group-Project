@@ -297,20 +297,6 @@ def delete_account():
         
     flash("Something went wrong. Please try again", "error")
     return redirect(url_for("account"))
-        if order == "Popularity":
-            posts.sort(key=lambda user_post: user_post["total"])
-        elif order == "Difference":
-            posts.sort(key=lambda user_post: abs(user_post["left%"] - user_post["right%"]))
-        elif order == "UploadDate":
-            posts.sort(key=lambda user_post: datetime.timestamp(datetime.strptime(user_post["date"], "%d/%m/%Y %H:%M:%S")))
-    else:
-        if order == "Popularity":
-            posts.sort(reverse=True, key=lambda user_post: user_post["total"])
-        elif order == "Difference":
-            posts.sort(reverse=True, key=lambda user_post: abs(user_post["left%"] - user_post["right%"]))
-        elif order == "UploadDate":
-            posts.sort(reverse=True, key=lambda user_post: datetime.timestamp(datetime.strptime(user_post["date"], "%d/%m/%Y %H:%M:%S")))
-    return render_template("UserPosts.html", posts=posts)
 
 @app.route('/vote', methods=['GET'])
 def display_vote_page():
