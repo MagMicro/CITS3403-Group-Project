@@ -1,0 +1,15 @@
+{% extends "defaultFormat.html" %}
+
+{% block content %}
+<main id="vote-page" class="container mt-5">
+    <div class="board">
+        <h1>Vote on Polls</h1>
+        <div id="polls-container" class="poll-container">
+            <!-- Polls will be dynamically loaded here via vote.js -->
+        </div>
+        <button id="next-poll" class="btn btn-primary">Next Poll</button>
+    </div>
+</main>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/vote.css') }}">
+<script src="{{ url_for('static', filename='js/vote.js') }}"></script>
+{% endblock %}

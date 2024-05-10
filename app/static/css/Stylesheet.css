@@ -127,8 +127,16 @@ a{
     text-align: center;
     height:45px;
 }
-#home:hover, #account:hover, #create:hover{
-    background-color:rgb(41, 42, 50);
+
+#top-navigation a:hover {
+    background-color: rgb(41, 42, 50);
+}
+
+#top-navigation a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 12px;
+    display: inline-block;
 }
 
 #searchbar{
@@ -416,4 +424,193 @@ a{
     text-align: left;
     padding:10px;
     border-bottom: 1px solid black;
+}
+
+#vote-page .board {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    width: 80%;
+    margin: 2em auto;
+    padding: 2em;
+    text-align: center;
+}
+
+#vote-page .poll-container {
+    margin-top: 20px;
+}
+
+#vote-page .poll {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+#vote-page h1 {
+    color: #333;
+}
+
+#vote-page .poll-options {
+    margin-top: 20px;
+}
+
+#vote-page .poll-options label {
+    display: block;
+    background: #fff;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: 1px solid #eee;
+    cursor: pointer;
+}
+
+#vote-page .poll-options input[type="radio"] {
+    margin-right: 10px;
+}
+
+#vote-page .btn-vote {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+#vote-page .btn-vote:hover {
+    background-color: #45a049;
+}
+
+@media (max-width: 768px) {
+    #vote-page .board {
+        width: 95%;
+        padding: 1em;
+    }
+}
+
+#vote-page {
+    position: relative;
+    padding-bottom: 50px;
+}
+
+#polls-container {
+    min-height: 300px;
+    margin-bottom: 20px;
+}
+
+#next-poll {
+    padding: 10px 20px;
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+#TopContributors-section {
+    margin-top: 20px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#TopContributors-list {
+    list-style: none;
+    padding: 0;
+}
+
+#TopContributors-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+#TopContributors-list li:last-child {
+    border-bottom: none;
+}
+
+#vote-page .board {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    width: 80%;
+    margin: 2em auto;
+    padding: 2em;
+    text-align: center;
+}
+
+#vote-page h1 {
+    color: #333;
+}
+
+#polls-container {
+    margin-top: 20px;
+}
+
+.poll {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.poll h3 {
+    color: #444;
+    margin-bottom: 15px;
+}
+
+.poll-options label {
+    display: block;
+    background: #fff;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.poll-options input[type="radio"] {
+    margin-right: 10px;
+}
+
+.poll-options label:hover {
+    background: #f0f8ff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-vote {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.btn-vote:hover {
+    background-color: #45a049;
+}
+
+#results {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e0f7fa;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    #vote-page .board {
+        width: 95%;
+        padding: 1em;
+    }
 }

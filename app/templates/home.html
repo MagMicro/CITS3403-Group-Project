@@ -1,86 +1,31 @@
 {% extends "defaultFormat.html" %}
 
 {% block content %}
-<div id = "Home" class="board col-8 col-m-6 col-lg-4" >
-    <h1>Home</h1>
-    <div id="polls-container"></div>
-</div>
 
-<script>
-    async function updatePolls() {
-        const response = await fetch('/api/polls');
-        const data = await response.json();
+    <section class="board p-4 mb-5">
+        <h1>Welcome to SplitDif</h1>
+        <p>Discover diverse opinions, create engaging polls, and share your unique perspective with the community!</p>
+    </section>
 
-        const pollsContainer = document.getElementById('polls-container');
-        pollsContainer.innerHTML = '';
+<main class="container mt-5">
+    <section class="board p-4 mb-5 text-center">
+        <h2>Start Creating Polls!</h2>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('create') }}">Create Polls</a>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('display_vote_page') }}">Vote Now</a>
+    </section>
 
-        for (const poll of data) {
-            const pollElement = document.createElement('div');
-            pollElement.className = 'poll';
+    {% include "about.html" %}
 
-            const authorElement = document.createElement('p');
-            authorElement.textContent = `Author: ${poll.author}`;
-            pollElement.appendChild(authorElement);
+    <section class="board p-4 mb-5">
+        <h2>Most Popular Polls</h2>
+        <p>Check out the polls that have been most popular among users.</p>
+        <a class="btn btn-info" href="{{ url_for('popular') }}">View Polls</a>
+    </section>
 
-            const formElement = document.createElement('form');
-            formElement.className = 'poll-options';
-
-            const option1Element = document.createElement('div');
-            option1Element.innerHTML = `
-                <div class="option">
-                    <input type="radio" id="option1-${poll.id}" name="pollOption" value="1" ${poll.has_voted ? 'disabled' : ''}>
-                    <label for="option1-${poll.id}">${poll.option1}: ${poll.votes1.toFixed(2)}%</label>
-                </div>
-            `;
-            formElement.appendChild(option1Element);
-
-            const option2Element = document.createElement('div');
-            option2Element.innerHTML = `
-                <div class="option">
-                    <input type="radio" id="option2-${poll.id}" name="pollOption" value="2" ${poll.has_voted ? 'disabled' : ''}>
-                    <label for="option2-${poll.id}">${poll.option2}: ${poll.votes2.toFixed(2)}%</label>
-                </div>
-            `;
-            formElement.appendChild(option2Element);
-
-            const voteButton = document.createElement('button');
-            voteButton.type = 'submit';
-            voteButton.textContent = 'Vote';
-            voteButton.disabled = poll.has_voted;
-            formElement.appendChild(voteButton);
-
-            formElement.addEventListener('submit', async event => {
-                event.preventDefault();
-
-                const option = formElement.querySelector('input[name="pollOption"]:checked').value;
-
-                const response = await fetch(`/api/polls/${poll.id}/vote`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ option }),
-                });
-
-                if (response.status === 401) {
-                    window.location.href = '/login';
-                }
-                if (response.status === 403) {
-                    alert('You have already voted on this poll');
-                } 
-                else {
-                    updatePolls();
-                }
-            });
-
-            pollElement.appendChild(formElement);
-            pollsContainer.appendChild(pollElement);
-        }
-    }
-
-    window.onload = function() {
-        updatePolls();
-        setInterval(updatePolls, 5000);  // Update polls every 5 seconds
-    };
-</script>
+    <section class="board p-4 mb-5">
+        <h2>User Rankings</h2>
+        <p>Explore the top-ranked users and see who stands out in the SplitDif community.</p>
+        <a class="btn btn-info" href="{{ url_for('ranking') }}">View Rankings</a>
+    </section>
+</main>
 {% endblock %}
