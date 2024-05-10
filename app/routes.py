@@ -67,8 +67,7 @@ def vote(poll_id):
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('home.html', title = "Home")
-
+    return render_template('home.html', title="Home")
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -94,7 +93,7 @@ def login():
             return redirect(url_for('home'))
 
     print("User accessed the login page")
-    return render_template('loginPage.html', form=form, title = "Login")
+    return render_template('loginPage.html', form=form, title="Login")
 
 @app.route('/create_account', methods=['POST', 'GET'])
 def create_account():
@@ -106,19 +105,16 @@ def create_account():
 
         print(f"User attempting account creation with username: {username}, email: {email}, password: {password}")
 
-        # Check if username is already taken
         user = Users.query.filter_by(username=username).first()
         if user is not None:
             flash("Username is already taken.", "error")
             return render_template('accountCreationPage.html', form=form, title = "Account Creation")
 
-        # Check if email is already taken
         user = Users.query.filter_by(email=email).first()
         if user is not None:
             flash("Email is already taken.", "error")
             return render_template('accountCreationPage.html', form=form, title = "Account Creation")
 
-        # Create account
         creation_date = date.today().strftime("%d/%m/%Y")
         new_user = Users(username=username, email=email, date=creation_date)
         new_user.set_password(password)
@@ -143,7 +139,7 @@ def account():
 
 @app.route('/about', methods=['GET'])
 def about():
-    return render_template('about.html', title = "About")
+    return render_template('about.html', title="About")
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -152,7 +148,7 @@ def logout():
 
 @app.route('/popular', methods=['GET'])
 def popular():
-    return render_template('popular.html', title = "Popular")
+    return render_template('popular.html', title="Popular")
 
 @app.route('/ranking', methods=['GET'])
 def ranking():
@@ -172,7 +168,7 @@ def ranking():
             }
             rank_data.append(user_rank)
             
-        return render_template('ranking.html', title = "Ranking", user = user, rank_data = rank_data)
+        return render_template('ranking.html', title="Ranking", user=user, rank_data=rank_data)
 
 @app.route('/create', methods=['POST', 'GET'])
 def create():
@@ -223,12 +219,10 @@ def create():
         flash("Poll has been created successfully.")
         return redirect(url_for('home'))
     print("User accessed the create page")
-    return render_template('create.html', form=form, title = "Create", tags=tags)
+    return render_template('create.html', form=form, title="Create", tags=tags)
 
-
-@app.route('/GetUserPosts/<order>/<option>', methods = ["GET"])
+@app.route('/GetUserPosts/<order>/<option>', methods=["GET"])
 def generate_posts(order, option):
-    print(order, option)
     posts = []
     for post in Users.query.filter_by(user_ID=current_user.user_ID).first().posts():
         posts.append(post.to_dict())
@@ -303,3 +297,61 @@ def delete_account():
         
     flash("Something went wrong. Please try again", "error")
     return redirect(url_for("account"))
+        if order == "Popularity":
+            posts.sort(key=lambda user_post: user_post["total"])
+        elif order == "Difference":
+            posts.sort(key=lambda user_post: abs(user_post["left%"] - user_post["right%"]))
+        elif order == "UploadDate":
+            posts.sort(key=lambda user_post: datetime.timestamp(datetime.strptime(user_post["date"], "%d/%m/%Y %H:%M:%S")))
+    else:
+        if order == "Popularity":
+            posts.sort(reverse=True, key=lambda user_post: user_post["total"])
+        elif order == "Difference":
+            posts.sort(reverse=True, key=lambda user_post: abs(user_post["left%"] - user_post["right%"]))
+        elif order == "UploadDate":
+            posts.sort(reverse=True, key=lambda user_post: datetime.timestamp(datetime.strptime(user_post["date"], "%d/%m/%Y %H:%M:%S")))
+    return render_template("UserPosts.html", posts=posts)
+
+@app.route('/vote', methods=['GET'])
+def display_vote_page():
+    return render_template('vote.html')
+
+@app.route('/api/poll/random', methods=['GET'])
+def random_poll():
+    if 'user_ID' not in session:
+        return '', 401
+
+    voted_polls = [vote.poll_ID for vote in VotePoll.query.filter_by(user_ID=session['user_ID']).all()]
+    available_polls = Polls.query.filter(Polls.poll_ID.notin_(voted_polls)).all()
+
+    if not available_polls:
+        return jsonify({"message": "No available polls"}), 404
+
+    random_poll = random.choice(available_polls)
+    return jsonify(random_poll.to_dict())
+
+@app.route('/api/poll/vote', methods=['POST'])
+def cast_vote():
+    if 'user_ID' not in session:
+        return '', 401
+
+    data = request.get_json()
+    poll_id = data.get('poll_id')
+    option = data.get('option')
+
+    if not poll_id or option not in ['1', '2']:
+        abort(400)
+
+    user_vote = VotePoll.query.filter_by(user_ID=session['user_ID'], poll_ID=poll_id).first()
+    if user_vote is not None:
+        return '', 403
+
+    new_vote = VotePoll(user_ID=session['user_ID'], poll_ID=poll_id, Vote_opt=int(option))
+    db.session.add(new_vote)
+    db.session.commit()
+
+    poll = Polls.query.filter_by(poll_ID=poll_id).first()
+    if not poll:
+        abort(404)
+
+    return jsonify(poll.to_dict())

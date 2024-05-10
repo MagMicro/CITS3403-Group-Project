@@ -1,12 +1,13 @@
 {% extends "defaultFormat.html" %}
 {%block content%}
-<div id = "About" class="board col-8 col-m-6 col-lg-4" >
+<div id = "About" class="board col-8 col-m-6 col-lg-5" >
     <h1>About Page</h1>
 
-
     <hr class = "col-sm-9">
-    <h1>Welcome, {{ session.user_ID }}!</h1>
-    <h2>Your username is: {{ session.username }}</h2>
+    <h3>What is SplitDif?<h3>
+    <p style="font-size: 25px;">SplitDif is a site where users can create and vote on polls.<br> The more divisive a poll is, the better.<br> 
+        Divisiveness is measured by how close a poll achieves a 50/50 split.<br> The more divisive polls a user has, the higher their overall ranking.</p>
+    <p style="font-size: 25px">Users need an <a href="{{ url_for('login') }}">account</a> to create and vote on polls.</p>
     
     <hr class = "col-sm-9">
 
