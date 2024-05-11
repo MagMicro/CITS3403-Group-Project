@@ -20,12 +20,9 @@
         {{form.email(class = "inputBox col-12", placeholder = "someone@email.com")}}
         <p id = "emailNotification"></p>
 
-        <label class = "fieldName" for = password>New Password: <span  id = "visibility" class="fas fa-eye-slash" title = "View"></span></label>
+        <label class = "fieldName" for = password>New Password: <span  id = "visibility" class="fas fa-eye-slash" title = "View" onclick = changeVisibilty()></span></label>
         {{form.password(class = "inputBox col-12", placeholder = "Password")}}
         <p id = "passwordNotification"></p>
-        
-        {{form.TOS()}}
-        <label id = "TOSMessage" for = TOS_box>* I accept the Terms of Service</label>
 
         {{form.submit(class = "btn btn-primary col-9")}}
     </form>
@@ -33,5 +30,6 @@
     <hr class = "col-sm-9">
     <p id = "redirectionPrompt">Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
     <hr class = "col-sm-9"><br>
+    <script src="{{ url_for('static', filename='js/AccountValidation.js') }}"></script>
 </div>
 {% endblock %}

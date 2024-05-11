@@ -5,13 +5,13 @@ from wtforms.validators import DataRequired
 class LoginForm(FlaskForm):
     username = StringField("Username:", validators = [DataRequired()])
     password = PasswordField("Password:", validators = [DataRequired()])
+    remember = BooleanField("Stay signed in: ")
     submit = SubmitField("Submit")
 
 class CreationForm(FlaskForm):
     username = StringField("Username:", validators = [DataRequired()])
     email = EmailField("Email:", validators = [DataRequired()])
     password = PasswordField("Password:", validators = [DataRequired()])
-    TOS = BooleanField("TOS:")
     submit = SubmitField("Submit")
 
 class PollForm(FlaskForm):

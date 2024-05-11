@@ -91,7 +91,7 @@ def login():
         
         else:
             flash("Login Successful: Welcome " + user.username)
-            login_user(user)
+            login_user(user, remember = form.remember.data)
             return redirect(url_for('home'))
 
     print("User accessed the login page")
