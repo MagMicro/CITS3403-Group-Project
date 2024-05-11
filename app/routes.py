@@ -302,7 +302,7 @@ def delete_account():
 
 @app.route('/random', methods=['GET'])
 def get_random_poll():
-    return render_template('vote.html')
+    return render_template('RandomPoll.html')
 
 @app.route('/api/poll/random', methods=['GET'])
 def random_poll():
@@ -337,10 +337,11 @@ def cast_vote():
         flash("Invalid voting option detected. Please try again.")
         return "", 400
 
-    # User cannot vote on their own post.
+    # User cannot vote on the same post
     user_vote = VotePoll.query.filter_by(user_ID=current_user.user_ID, poll_ID=poll_id).first()
     if user_vote is not None:
-        return '', 403
+        flash("You have already voted.")
+        return "", 403
 
     new_vote = VotePoll(user_ID=current_user.user_ID, poll_ID=poll_id, Vote_opt=int(option))
     db.session.add(new_vote)
@@ -351,3 +352,14 @@ def cast_vote():
         abort(404)
 
     return render_template('PollResults.html', poll = poll.to_dict()), 200
+
+@app.route('/Poll/<int:id>', methods=['GET', 'POST'])
+def get_post(id):
+    post = Polls.query.get(id)
+    vote = VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = post.poll_ID)
+    if(post is None):
+        flash("Poll does not exist.")
+        return redirect(url_for('home'))
+
+    else:
+        return render_template("IndividualPost.html", poll=post.to_dict(), vote = vote)
