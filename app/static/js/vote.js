@@ -13,60 +13,36 @@ function loadRandomPoll() {
     const xhttp = new XMLHttpRequest();
     xhttp.open("GET", "/api/poll/random");
     xhttp.onload = function(){
-        const response = JSON.parse(xhttp.responseText);
+        const pollContainer = document.getElementById("polls-container");
         switch(xhttp.status){
             // Case that the vote was successfully logged in the system
             case 200:
-                displayPoll(response);
+                pollContainer.innerHTML = xhttp.responseText;
+
+                // Handle form submission
+                document.getElementById("poll-form").addEventListener("submit", function (event) {
+                event.preventDefault();
+                poll_ID = document.getElementsByClassName("poll")[0].getAttribute("id");
+                const formData = new FormData(event.target);
+                const selectedOption = formData.get("option");
+
+                if (selectedOption) {
+                    voteOnPoll(poll_ID, selectedOption);
+                } else {
+                    alert("Please select an option before voting.");
+                }
+                });
                 break;
+
+            // Case there are no more valid random polls
             case 404:
-                document.getElementById("polls-container").innerHTML = `<p>${response.message}</p>`;
+                pollContainer.innerHTML = xhttp.responseText;
+                document.getElementById("next-poll").style.display = "none"
                 break;
         }
     }
     xhttp.send();
 }
-
-function displayPoll(poll) {
-    const pollContainer = document.getElementById("polls-container");
-    pollContainer.innerHTML = `
-        <div class="poll">
-            <h3>${poll.prompt}</h3>
-            <form id="poll-form">
-                <div class="poll-options">
-                    <label>
-                        <input type="radio" name="option" value="1">
-                        ${poll.option1}
-                    </label>
-                    <label>
-                        <input type="radio" name="option" value="2">
-                        ${poll.option2}
-                    </label>
-                </div>
-                <button type="submit" class="btn-vote">Vote</button>
-            </form>
-            <div id="results" style="display: none;">
-                <h4>Results:</h4>
-                <p>${poll.option1}: ${poll['left%']}%</p>
-                <p>${poll.option2}: ${poll['right%']}%</p>
-            </div>
-        </div>
-    `;
-
-    // Handle form submission
-    document.getElementById("poll-form").addEventListener("submit", function (event) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const selectedOption = formData.get("option");
-
-        if (selectedOption) {
-            voteOnPoll(poll.ID, selectedOption);
-        } else {
-            alert("Please select an option before voting.");
-        }
-    });
-}
-
 
 function voteOnPoll(pollId, option) {
     const xhttp = new XMLHttpRequest();
@@ -81,21 +57,13 @@ function voteOnPoll(pollId, option) {
 
             // Case that the vote was successfully logged in the system
             case 200:
-                showResults(JSON.parse(xhttp.responseText));
+                const resultsDiv = document.getElementById("results");
+                resultsDiv.innerHTML = xhttp.responseText;
+                resultsDiv.style.display = "block";
                 break;
         }
 
     }
     // Send the field values as JSON to the server
     xhttp.send(JSON.stringify({ poll_id: pollId, option: option }));
-}
-
-function showResults(poll) {
-    const resultsDiv = document.getElementById("results");
-    resultsDiv.style.display = "block";
-    resultsDiv.innerHTML = `
-        <h4>Results:</h4>
-        <p>${poll.option1}: ${poll['left%']}%</p>
-        <p>${poll.option2}: ${poll['right%']}%</p>
-    `;
 }

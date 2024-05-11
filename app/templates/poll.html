@@ -1,0 +1,21 @@
+        <div class="poll" id="{{poll.ID}}">
+            <h3>{{poll['prompt']}}</h3>
+            <form id="poll-form">
+                <div class="poll-options">
+                    <label>
+                        <input type="radio" name="option" value="1">
+                        {{poll['option1']}}
+                    </label>
+                    <label>
+                        <input type="radio" name="option" value="2">
+                        {{poll['option2']}}
+                    </label>
+                </div>
+                <button type="submit" class="btn-vote">Vote</button>
+            </form>
+            <div id="results" style="display: none;">
+                <h4>Results:</h4>
+                <p>{{poll['option1']}}: {{poll['left%']}}%</p>
+                <p>{{poll['option2']}}: {{poll['right%']}}%</p>
+            </div>
+        </div>

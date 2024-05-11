@@ -300,8 +300,8 @@ def delete_account():
     flash("Something went wrong. Please try again", "error")
     return redirect(url_for("account"))
 
-@app.route('/vote', methods=['GET'])
-def display_vote_page():
+@app.route('/random', methods=['GET'])
+def get_random_poll():
     return render_template('vote.html')
 
 @app.route('/api/poll/random', methods=['GET'])
@@ -309,17 +309,17 @@ def random_poll():
     if current_user.is_anonymous:
         available_polls = Polls.query.all()
         random_poll = random.choice(available_polls)
-        return jsonify(random_poll.to_dict()), 200
+        return render_template('poll.html', poll = random_poll.to_dict()), 200
 
     else:
         voted_polls = [vote.poll_ID for vote in VotePoll.query.filter_by(user_ID=current_user.user_ID).all()]
-        available_polls = Polls.query.filter(Polls.poll_ID.notin_(voted_polls)).all()
+        available_polls = Polls.query.filter(Polls.poll_ID.notin_(voted_polls)).filter(Polls.pollAuthor_ID.notin_([current_user.user_ID])).all()
 
         if not available_polls:
-            return jsonify({"message": "No available polls"}), 404
+            return render_template('NoPolls.html'), 404
 
         random_poll = random.choice(available_polls)
-        return jsonify(random_poll.to_dict()), 200
+        return render_template('poll.html', poll = random_poll.to_dict()), 200
 
 @app.route('/api/poll/vote', methods=['POST'])
 def cast_vote():
@@ -350,4 +350,4 @@ def cast_vote():
     if not poll:
         abort(404)
 
-    return jsonify(poll.to_dict()), 200
+    return render_template('PollResults.html', poll = poll.to_dict()), 200

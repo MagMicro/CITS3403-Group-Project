@@ -117,7 +117,7 @@ class Polls(db.Model):
         if(hours // 12 >= 1):
             poll["date_readable"] = time_date + " " + str(hours % 12) + time + " PM"
         else:
-            poll["date_readable"] = self.date + " " + hours + time + " AM" 
+            poll["date_readable"] = self.date + " " + str(hours) + time + " AM" 
         return poll
 
     # Functions to calcuate the proportion of votes for each given poll instance
