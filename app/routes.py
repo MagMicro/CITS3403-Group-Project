@@ -4,6 +4,8 @@ from app.forms import *
 from .models import Users, Polls, VotePoll
 from app import db
 from datetime import date, datetime
+
+from app.Controller import *
 import random
 
 
@@ -177,8 +179,9 @@ def create():
     if current_user.is_anonymous:
         return redirect(url_for('login'))
     
-    tags = ["Food", "Sports", "Fashion", "Subject", "Video Games", "Anime", "Board Games" , "Animals", "People", "Places", "Film", "TV", "Novels", "Abilities", "Historical"]
+    tags = ["Food", "Drink", "Sports", "Fashion", "Makeup", "Subject", "Video Games", "Anime", "Board Games" , "Animals", "People", "Places", "City", "Country", "Film", "TV", "Novels", "Abilities", "Historical", "Superheroes"]
     form = PollForm()
+    PollBar = render_template('PollBar.html')
 
     if form.validate_on_submit():
         userID = current_user.user_ID
@@ -190,22 +193,22 @@ def create():
         #Check that a valid prompt, and associated options are present
         if prompt == "" or option1 == "" or option2 == "":
                 flash("Please make sure to fill in every field.", "error")
-                return render_template('create.html', form=form, title = "Create", tags=tags)
+                return render_template('create.html', form=form, title = "Create", tags=tags, PollBar=PollBar)
         
         #Make sure all submitted tags are valid
         for tag in form_tags:
             if tag == "":
                 flash("Need to use one or more tags. Please try again.", "error")
-                return render_template('create.html', form=form, title = "Create", tags=tags)
+                return render_template('create.html', form=form, title = "Create", tags=tags, PollBar=PollBar)
             if tag not in tags:
                 flash("Unrecognised tag/s detected. Please try again.", "error")
-                return render_template('create.html', form=form, title = "Create", tags=tags)
+                return render_template('create.html', form=form, title = "Create", tags=tags, PollBar=PollBar)
         
         #Make sure the post is unique
         for post in Polls.query.filter_by(prompt=prompt):
             if (post.Option1 == option1 and post.Option2 == option2) or (post.Option1 == option2 and post.Option2 == option1):
                 flash("Post already exists. Please try something else.", "error")
-                return render_template('create.html', form=form, title = "Create", tags=tags)
+                return render_template('create.html', form=form, title = "Create", tags=tags, PollBar=PollBar)
         
         creation_date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
@@ -221,7 +224,7 @@ def create():
         flash("Poll has been created successfully.")
         return redirect(url_for('home'))
     print("User accessed the create page")
-    return render_template('create.html', form=form, title="Create", tags=tags)
+    return render_template('create.html', form=form, title="Create", tags=tags, PollBar=PollBar)
 
 @app.route('/GetUserPosts/<order>/<option>', methods=["GET"])
 def generate_posts(order, option):
@@ -350,16 +353,27 @@ def cast_vote():
     poll = Polls.query.filter_by(poll_ID=poll_id).first()
     if not poll:
         abort(404)
-
-    return render_template('PollResults.html', poll = poll.to_dict()), 200
+    poll = poll.to_dict()
+    PollBar = render_template('PollBar.html', bar = bar_init(poll))
+    return render_template('PollResults.html', poll = poll, PollBar = PollBar), 200
 
 @app.route('/Poll/<int:id>', methods=['GET', 'POST'])
 def get_post(id):
     post = Polls.query.get(id)
-    vote = VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = post.poll_ID)
+
+    # If the user is logged in, checks to see if they have already voted
+    if current_user.is_authenticated:
+        vote = VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = post.poll_ID)
+    # Default no vote value of None, determines if poll results are shown when page is loaded
+    else:
+        vote = None
+
+    # Case that the user attempts to look for a pollID that currently doesnt exist
     if(post is None):
         flash("Poll does not exist.")
-        return redirect(url_for('home'))
+        return redirect(url_for('home')), 404
 
     else:
-        return render_template("IndividualPost.html", poll=post.to_dict(), vote = vote)
+        poll = post.to_dict()
+        PollBar = render_template('PollBar.html', bar = bar_init(poll))
+        return render_template("IndividualPost.html", poll=poll, vote=vote, PollBar = PollBar), 200
