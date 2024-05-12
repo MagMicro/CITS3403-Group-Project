@@ -11,63 +11,6 @@ import random
 
 from flask_login import current_user, login_user, logout_user, login_required
 
-@app.route('/api/polls', methods=['GET'])
-def get_polls():
-    polls = Polls.query.all()
-    user_votes = None
-    polls_data = []
-
-    for poll in polls:
-        has_voted = False
-        if current_user.is_authenticated:
-            if VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = poll.poll_ID).first() is not None:
-                has_voted = True
-
-        author = Users.query.filter_by(user_ID=poll.pollAuthor_ID).first()
-        total_votes = VotePoll.query.filter_by(poll_ID=poll.poll_ID).count()
-        votes1 = VotePoll.query.filter_by(poll_ID=poll.poll_ID, Vote_opt=1).count()
-        votes2 = VotePoll.query.filter_by(poll_ID=poll.poll_ID, Vote_opt=2).count()
-
-        poll_data = {
-            'id': poll.poll_ID,
-            'author': author.username if author else 'Unknown',
-            'option1': poll.Option1,
-            'votes1': (votes1 / total_votes) * 100 if total_votes > 0 else 0,
-            'option2': poll.Option2,
-            'votes2': (votes2 / total_votes) * 100 if total_votes > 0 else 0,
-            'has_voted': has_voted
-        }
-        polls_data.append(poll_data)
-
-    return jsonify(polls_data)
-
-@app.route('/api/polls/<int:poll_id>/vote', methods=['POST'])
-def vote(poll_id):
-    # Check if user is logged in
-    if current_user.is_anonymous:
-        return '', 401
-
-    # Get the selected option from the request body
-    data = request.get_json()
-    option = data.get('option')
-    if option not in ['1', '2']:
-        abort(400)
-
-    # Record the vote
-    vote = VotePoll(user_ID=current_user.user_ID, poll_ID=poll_id, Vote_opt=int(option))
-    #print vote for debug
-    print(vote)
-
-    #check if user has already voted
-    user_vote = VotePoll.query.filter_by(user_ID=current_user.user_ID, poll_ID=poll_id).first()
-    if user_vote is not None:
-        return '', 403
-    
-    db.session.add(vote)
-    db.session.commit()
-
-    return redirect(url_for('home'))
-
 @app.route('/')
 @app.route('/home')
 def home():
