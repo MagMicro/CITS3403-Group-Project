@@ -14,7 +14,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('home.html', title="Home")
+    return render_template('home.html', search=PollSearch(), title="Home")
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -28,11 +28,11 @@ def login():
         user = Users.query.filter_by(username=username).first()
         if user is None:
             flash("Username does not exist. Please try again.", "error")
-            return render_template('loginPage.html', form=form)
+            return render_template('loginPage.html', search=PollSearch(), form=form)
         
         elif user.check_password(password) == False:
             flash("Invalid password. Please try again.", "error")
-            return render_template('loginPage.html', form=form)
+            return render_template('loginPage.html', search=PollSearch(), form=form)
         
         else:
             flash("Login Successful: Welcome " + user.username)
@@ -40,7 +40,7 @@ def login():
             return redirect(url_for('home'))
 
     print("User accessed the login page")
-    return render_template('loginPage.html', form=form, title="Login")
+    return render_template('loginPage.html', search=PollSearch(), form=form, title="Login")
 
 @app.route('/create_account', methods=['POST', 'GET'])
 def create_account():
@@ -55,12 +55,12 @@ def create_account():
         user = Users.query.filter_by(username=username).first()
         if user is not None:
             flash("Username is already taken.", "error")
-            return render_template('accountCreationPage.html', form=form, title = "Account Creation")
+            return render_template('accountCreationPage.html', search=PollSearch(), form=form, title = "Account Creation")
 
         user = Users.query.filter_by(email=email).first()
         if user is not None:
             flash("Email is already taken.", "error")
-            return render_template('accountCreationPage.html', form=form, title = "Account Creation")
+            return render_template('accountCreationPage.html', search=PollSearch(), form=form, title = "Account Creation")
 
         creation_date = date.today().strftime("%d/%m/%Y")
         new_user = Users(username=username, email=email, date=creation_date)
@@ -70,10 +70,10 @@ def create_account():
         print("Account created")
         form = LoginForm()
         flash("Account created successfully.")
-        return render_template('loginPage.html', form=form, title = "Login")
+        return render_template('loginPage.html', search=PollSearch(), form=form, title = "Login")
 
     print("User accessed the Account Creation page")
-    return render_template('accountCreationPage.html', form=form, title="Account Creation")
+    return render_template('accountCreationPage.html', search=PollSearch(), form=form, title="Account Creation")
 
 @app.route('/account', methods=['POST', 'GET'])
 def account():
@@ -82,11 +82,11 @@ def account():
     else:
         user = Users.query.filter_by(user_ID=current_user.user_ID).first()
         form = AccountDeletion()
-        return render_template('account.html', title = "account",  user=user, form=form)
+        return render_template('account.html', search=PollSearch(), title = "account",  user=user, form=form)
 
 @app.route('/about', methods=['GET'])
 def about():
-    return render_template('about.html', title="About")
+    return render_template('about.html', search=PollSearch(), title="About")
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -95,7 +95,7 @@ def logout():
 
 @app.route('/popular', methods=['GET'])
 def popular():
-    return render_template('popular.html', title="Popular")
+    return render_template('popular.html', search=PollSearch(), title="Popular")
 
 @app.route('/ranking', methods=['GET'])
 def ranking():
@@ -115,7 +115,7 @@ def ranking():
             }
             rank_data.append(user_rank)
             
-        return render_template('ranking.html', title="Ranking", user=user, rank_data=rank_data)
+        return render_template('ranking.html', search=PollSearch(), title="Ranking", user=user, rank_data=rank_data)
 
 @app.route('/create', methods=['POST', 'GET'])
 def create():
@@ -136,22 +136,22 @@ def create():
         #Check that a valid prompt, and associated options are present
         if prompt == "" or option1 == "" or option2 == "":
                 flash("Please make sure to fill in every field.", "error")
-                return render_template('create.html', form=form, title = "Create", tags=tags, PollBar=PollBar)
+                return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
         
         #Make sure all submitted tags are valid
         for tag in form_tags:
             if tag == "":
                 flash("Need to use one or more tags. Please try again.", "error")
-                return render_template('create.html', form=form, title = "Create", tags=tags, PollBar=PollBar)
+                return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
             if tag not in tags:
                 flash("Unrecognised tag/s detected. Please try again.", "error")
-                return render_template('create.html', form=form, title = "Create", tags=tags, PollBar=PollBar)
+                return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
         
         #Make sure the post is unique
         for post in Polls.query.filter_by(prompt=prompt):
             if (post.Option1 == option1 and post.Option2 == option2) or (post.Option1 == option2 and post.Option2 == option1):
                 flash("Post already exists. Please try something else.", "error")
-                return render_template('create.html', form=form, title = "Create", tags=tags, PollBar=PollBar)
+                return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
         
         creation_date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
@@ -167,7 +167,7 @@ def create():
         flash("Poll has been created successfully.")
         return redirect(url_for('home'))
     print("User accessed the create page")
-    return render_template('create.html', form=form, title="Create", tags=tags, PollBar=PollBar)
+    return render_template('create.html', search=PollSearch(), form=form, title="Create", tags=tags, PollBar=PollBar)
 
 @app.route('/GetUserPosts/<order>/<option>', methods=["GET"])
 def generate_posts(order, option):
@@ -193,7 +193,7 @@ def generate_posts(order, option):
         flash("Invalid sort option detected. Please try again.", "error")
         return redirect(url_for("account"))
         
-    return render_template("UserPosts.html", posts = posts)
+    return render_template("UserPosts.html", search=PollSearch(), posts = posts)
 
 @app.route('/DeletePost/<int:id>', methods = ['GET'])
 @login_required
@@ -319,4 +319,8 @@ def get_post(id):
     else:
         poll = post.to_dict()
         PollBar = render_template('PollBar.html', bar = bar_init(poll))
-        return render_template("IndividualPost.html", poll=poll, vote=vote, PollBar = PollBar), 200
+        return render_template("IndividualPost.html", search=PollSearch() , poll=poll, vote=vote, PollBar = PollBar), 200
+    
+@app.route('/SearchOptions', methods=['POST'])
+def search_results():
+    print(request)

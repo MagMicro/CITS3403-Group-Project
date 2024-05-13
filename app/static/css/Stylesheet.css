@@ -141,8 +141,9 @@ a{
     display: inline-block;
 }
 
-#searchbar{
+#SearchBar{
     padding-left: 10px;
+    padding-right: 10px;
     border-radius: 15px;
 }
 #word{
@@ -182,14 +183,23 @@ a{
     top: 14px;
     display: none;
 }
-.dropdown span{
+.dropdown > span{
     border-bottom: 2px solid rgba(0, 0, 0, 0.2);
     display:inline-block;
     width:100%;
-    text-align: center;
     padding-top: 8px;
     padding-bottom: 8px;
 }
+
+#homeDropdown, #accountDropdown > span{
+    text-align: center;
+}
+
+#SearchDropdown span{
+    text-align: left;
+    padding-left: 10px;
+}
+
 .dropdown > span:hover{
     background-color:rgb(84, 87, 103);
 }
@@ -553,4 +563,22 @@ a{
 
 #aboutBody{
     font-size: 20px;
+}
+
+.searchField > input, select{
+    position: absolute;
+    left: 150px;
+    border-radius: 15px;
+    box-shadow: 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.searchField > select{
+    text-align: center;
+    width: 30%;
+}
+
+.searchField > input{
+    width: 60%;
+    padding-left:10px;
+    padding-right:10px;
 }

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, EmailField, BooleanField
+from wtforms import StringField, SubmitField, PasswordField, EmailField, BooleanField, SelectField
 from wtforms.validators import DataRequired
 
 class LoginForm(FlaskForm):
@@ -26,4 +26,11 @@ class AccountDeletion(FlaskForm):
     password = PasswordField("Password:", validators = [DataRequired()])
     submit = SubmitField("Submit")
     
-    
+class PollSearch(FlaskForm):
+    SearchBar = StringField()
+    SearchPrompt = StringField("Prompt: ")
+    SearchChoice1 = StringField("Option 1:")
+    SearchChoice2 = StringField("Option 2:")
+    SearchMode = SelectField("Search by:", choices = ["All", "User ID", "Post ID"])
+    SearchOption = SelectField("Sort by:", choices = ["Popularity", "Difference", "Upload Date"])
+    SearchOrder = SelectField("Order by:", choices = ["Ascending", "Descending"])

@@ -1,15 +1,19 @@
 function changeVisibilty(){
     if($("#visibility").attr("class") == "fas fa-eye-slash"){
-        $("#visibility").attr("class", "fas fa-eye");
-        $("#visibility").attr("title", "Hide");
-        $("#visibility").css("color", "green");
+        $("#visibility")
+        .attr("class", "fas fa-eye")
+        .attr("title", "Hide")
+        .css("color", "green");
+
         $("#password").attr("type", "text");
     }
     else{
-        $("#visibility").attr("class", "fas fa-eye-slash");
-        $("#visibility").attr("title", "View");
-        $("#visibility").css("color", "red");
-        $("#password").attr("type", "password");
+        $("#visibility")
+        .attr("class", "fas fa-eye-slash")
+        .attr("title", "View")
+        .css("color", "red");
+        
+        $("#password").attr("type", "password")
     }
 }
 
@@ -29,23 +33,42 @@ function makeWord(){
     $("body").append(word);
     setTimeout(()=>{removeWord(word);}, 8000);
 }
-function toggle_dropdown(){
+
+function untoggle(id){
+    if($(id).css("display") != "none"){
+        $(id).animate({height:"toggle"});
+    }
+}
+function init_dropdowns(){
     $("#home").click(() => {
         $("#homeDropdown").animate({height:"toggle"});
-        if($("#accountDropdown").css("display") != "none"){
-            $("#accountDropdown").animate({height:"toggle"});
-        }
+        untoggle("#accountDropdown");
+        untoggle("#SearchDropdown");
     });
     $("#account").click(() => {
         $("#accountDropdown").animate({height:"toggle"});
-        if($("#homeDropdown").css("display") != "none"){
-            $("#homeDropdown").animate({height:"toggle"});
+        untoggle("#homeDropdown");
+        untoggle("#SearchDropdown");
+    });
+
+    $("#SearchBar").focus(() => {
+        if($("#SearchDropdown").css("display") == "none"){
+            $("#SearchDropdown").animate({height:"toggle"});
         }
+        untoggle("#homeDropdown");
+        untoggle("#accountDropdown");
     });
 }
+
+function check_search_enter(event){
+    if(event.which == 13){
+        document.getElementById("postSearchForm").submit();
+    }
+}
 function init(){
-    toggle_dropdown();
+    init_dropdowns();
     setInterval(()=>{makeWord();}, 700);
     setTimeout(() => {$("#messageDisplay").animate({height:"toggle"});}, 3000);
+    $("#SearchBar").keydown(check_search_enter);
 }
 $(document).ready(init);
