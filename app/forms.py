@@ -34,3 +34,7 @@ class PollSearch(FlaskForm):
     SearchMode = SelectField("Search by:", choices = ["All", "User ID", "Post ID"])
     SearchOption = SelectField("Sort by:", choices = ["Popularity", "Difference", "Upload Date"])
     SearchOrder = SelectField("Order by:", choices = ["Ascending", "Descending"])
+
+class AccountPostFilter(FlaskForm):
+    SortOption = SelectField("Sort by:", choices = ["Popularity", "Difference", "Date"])
+    SortOrder = SelectField("Order by:", choices = ["Ascending", "Descending"])

@@ -1,6 +1,6 @@
 {% for post in posts %}
-<div class="userPost">
-    <div class = "fas fa-xmark postDelete" id = "{{post['ID']}}"></div>
+<div class="userPost" id = "{{post['ID']}}">
+    <div class = "fas fa-xmark postDelete"></div>
     <p><span class="post-subheading">ID: </span>{{post["ID"]}}</p>
     <p><span class="post-subheading">{{ post["prompt"] }}:</span> {{ post["option1"] }} ({{ post["left%"] }}%) vs {{ post["option2"] }} ({{ post["right%"] }}%)</p>
 
@@ -31,10 +31,12 @@
     $(".postDelete").click(
         function() 
         {
-            id = $(this).attr("id");
+            id = $(this).parent().attr("id");
             $("#postConfirmMsg").css("display", "block");
         }
     )
     $("#postNotificationClose").click(()=>{$("#postConfirmMsg").css("display", "none");});
     $("#confirm").click(()=>{delete_post(id);});
+    // Opens new window with the pressed post
+    $(".userPost").click(function(){window.open("/Poll/" + $(this).attr("id"));});
 </script>

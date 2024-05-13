@@ -12,7 +12,6 @@ import random
 from flask_login import current_user, login_user, logout_user, login_required
 
 @app.route('/')
-@app.route('/home')
 def home():
     return render_template('home.html', search=PollSearch(), title="Home")
 
@@ -81,8 +80,9 @@ def account():
         return redirect(url_for('login'))
     else:
         user = Users.query.filter_by(user_ID=current_user.user_ID).first()
-        form = AccountDeletion()
-        return render_template('account.html', search=PollSearch(), title = "account",  user=user, form=form)
+        deletion = AccountDeletion()
+        filter = AccountPostFilter()
+        return render_template('account.html', search=PollSearch(), title = "account",  user=user, deletion=deletion, filter=filter)
 
 @app.route('/about', methods=['GET'])
 def about():
@@ -187,13 +187,13 @@ def generate_posts(order, option):
         posts.sort(reverse=mode, key = lambda user_post: user_post["total"] )
     elif order == "Difference":
         posts.sort(reverse=mode, key = lambda user_post: abs(user_post["left%"] - user_post["right%"]))
-    elif order == "UploadDate":
+    elif order == "Date":
         posts.sort(reverse=mode, key = lambda user_post: datetime.timestamp(datetime.strptime(user_post["date"], "%d/%m/%Y %H:%M:%S")))
     else:
         flash("Invalid sort option detected. Please try again.", "error")
         return redirect(url_for("account"))
         
-    return render_template("UserPosts.html", search=PollSearch(), posts = posts)
+    return render_template("UserPosts.html", search=PollSearch(), posts = posts, url = url_for("home"))
 
 @app.route('/DeletePost/<int:id>', methods = ['GET'])
 @login_required
@@ -248,7 +248,7 @@ def delete_account():
 
 @app.route('/random', methods=['GET'])
 def get_random_poll():
-    return render_template('RandomPoll.html')
+    return render_template('RandomPoll.html', search=PollSearch())
 
 @app.route('/api/poll/random', methods=['GET'])
 def random_poll():

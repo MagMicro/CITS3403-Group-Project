@@ -23,17 +23,12 @@
     <div id="postHeader" class="header col-12">Posts: 
         <div class="fas fa-folder"></div>
     </div>
-    <div id="filterBox"><div class = "fas fa-filter"></div> Filter By:
-        <select id="sortOption">
-            <option value="Popularity">Popularity</option>
-            <option value="Difference">Difference</option>
-            <option value="UploadDate">Upload Date</option>
-        </select>
-        <select id="sortOrder">
-            <option value="Ascending">Ascending</option>
-            <option value="Descending">Descending</option>
-        </select>
-    </div>
+    <form id="filterBox" class="col-12">
+        {{filter.hidden_tag()}}
+        <div class = "fas fa-filter"></div> Filter By:
+        {{filter.SortOption}}
+        {{filter.SortOrder}}
+    </form>
     <div id="userPosts" style="flex-grow: 1;"></div>
 </div>
 <script src="{{ url_for('static', filename='js/profilePageFunctionality.js') }}"></script>
@@ -52,7 +47,7 @@
 <div id = "accountConfirmMsg">
     <div class = "board col-4">
         <form method="post" action="/DeleteAccount">
-            {{form.hidden_tag()}}
+            {{deletion.hidden_tag()}}
             <h3>Confirmation:</h3>
             <div class="fas fa-xmark" id="accountNotificationClose"></div>
             <hr></hr>
@@ -60,9 +55,9 @@
             <div id = "accountWarning">
                 <p><b>Note:</b> Your account will be permanently deleted.</p>
                 <b><i>*This cannot be undone!*</i></b>
-                {{form.password(class = "inputBox col-sm-10", placeholder = "Password")}}
+                {{deletion.password(class = "inputBox col-sm-10", placeholder = "Password")}}
             </div>
-            {{form.submit(class="btn btn-danger col-6", placeholder = "Confirm")}}
+            {{deletion.submit(class="btn btn-danger col-6", placeholder = "Confirm")}}
         </form>
     </div>
 </div>
