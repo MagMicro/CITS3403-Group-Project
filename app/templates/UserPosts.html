@@ -1,26 +1,36 @@
 {% for post in posts %}
 <div class="userPost" id = "{{post.poll_ID}}">
     <div class = "fas fa-xmark postDelete"></div>
-    <p><span class="post-subheading">ID: </span>{{post.poll_ID}}</p>
-    <p><span class="post-subheading">{{ post.prompt }}:</span> {{ post.Option1 }} ({{ post.left_percentage() }}%) vs {{ post.Option2 }} ({{ post.right_percentage()}}%)</p>
+    <div id = "postContent">
+        <p><span class="post-subheading">ID: </span>{{post.poll_ID}}</p>
 
-    <div class="small-bar">
-        {%if post.left_percentage() == 0 and post.right_percentage() == 0 %}
-        <div style="width: 100%; background-color:lightgrey;"></div>
-        {%elif post.left_percentage() == 100 %}
-        <div style="width: 100%; background-color:red;"></div>
-        {%elif post.left_percentage() == 0 %}
-        <div style="width: 100%; background-color:blue;"></div>
-        {% else %}
-        <div style="width: {{ post.left_percentage() }}%; background-color:red;"></div>
-        <div style="width: {{ post.right_percentage()}}%; background-color:blue;"></div>
-        {% endif %}
+        <p>
+            <span class="post-subheading">Prompt:</span> {{ post.prompt }} 
+            <br>
+            <span class="post-subheading">Options:</span> {{ post.Option1 }} ({{ post.left_percentage() }}%) vs {{ post.Option2 }} ({{ post.right_percentage() }}%)
+        </p>
+
+        <div class="small-bar">
+            {%if post.left_percentage() == 0 and post.right_percentage() == 0 %}
+            <div style="width: 100%; background-color:lightgrey;"></div>
+            {%elif post.left_percentage() == 100 %}
+            <div style="width: 100%; background-color:red;"></div>
+            {%elif post.left_percentage() == 0 %}
+            <div style="width: 100%; background-color:blue;"></div>
+            {% else %}
+            <div style="width: {{ post.left_percentage() }}%; background-color:red;"></div>
+            <div style="width: {{ post.right_percentage()}}%; background-color:blue;"></div>
+            {% endif %}
+        </div>
+        <br>
+        <p>
+            <span class="post-subheading">Tags:</span> {{ post.tag1 }} {% if post.tag2 != None %} , {{ post.tag2}} {% endif %} {% if post.tag3 != None %} , {{ post.tag3 }} {% endif %}
+            <br>
+            <span class="post-subheading">Total Votes:</span> {{post.total_votes()}}
+            <br>
+            <span class="post-subheading">Posted on: </span><date>{{ post.readable_date() }}</date>
+        </p>
     </div>
-    <br>
-
-    <p><span class="post-subheading">Tags:</span> {{ post.tag1 }} {% if post.tag2 != None %} , {{ post.tag2}} {% endif %} {% if post.tag3 != None %} , {{ post.tag3 }} {% endif %}</p>
-    <p><span class="post-subheading">Total Votes:</span> {{post.total_votes()}}</p>
-    <p><span class="post-subheading">Posted on:</span><date>{{ post.readable_date() }}</date></p>
 </div>
 {% endfor %}
 <script>
@@ -39,5 +49,5 @@
     $("#confirm").click(()=>{delete_post(id);});
 
     // Opens new window with a given post when a user clicks on it
-    $(".userPost").click(function(){window.open("/Poll/" + $(this).attr("id"));});
+    $("#postContent").click(function(){window.open("/Poll/" + $(this).parent().attr("id"));});
 </script>
