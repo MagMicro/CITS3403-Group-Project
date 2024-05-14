@@ -298,7 +298,7 @@ def get_post(id):
     # Case that the user attempts to look for a pollID that currently doesnt exist
     if(poll is None):
         flash("Poll does not exist.")
-        return redirect(url_for('home')), 404
+        return redirect(url_for('home'))
     
     # If the user is logged in, checks to see if they have already voted
     if current_user.is_authenticated:
