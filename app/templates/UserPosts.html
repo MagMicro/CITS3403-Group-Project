@@ -5,14 +5,16 @@
     <p><span class="post-subheading">{{ post["prompt"] }}:</span> {{ post["option1"] }} ({{ post["left%"] }}%) vs {{ post["option2"] }} ({{ post["right%"] }}%)</p>
 
     <div class="small-bar">
-        {%if post["left%"] == 100%}
+        {%if post["left%"] == 0 and post["right%"] == 0 %}
+        <div style="width: 100%; background-color:lightgrey;"></div>
+        {%elif post["left%"] == 100 %}
         <div style="width: 100%; background-color:red;"></div>
-        {%elif post["left%"] == 0%}
+        {%elif post["left%"] == 0 %}
         <div style="width: 100%; background-color:blue;"></div>
-        {%else%}
+        {% else %}
         <div style="width: {{ post['left%'] }}%; background-color:red;"></div>
         <div style="width: {{ post['right%']}}%; background-color:blue;"></div>
-        {%endif%}
+        {% endif %}
     </div>
     <br>
 
