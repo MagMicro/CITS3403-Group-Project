@@ -320,6 +320,9 @@ def search_results():
     prompt = form.SearchPrompt.data
     choice1 = form.SearchChoice1.data
     choice2 = form.SearchChoice2.data
+    tag1 = form.Tag1.data
+    tag2 = form.Tag2.data
+    tag3 = form.Tag3.data
     option = form.SearchOption.data
     order = form.SearchOrder.data
 
@@ -336,6 +339,9 @@ def search_results():
     posts = filter_by_prompt(prompt, posts)
     posts = filter_by_choice(choice1, posts)
     posts = filter_by_choice(choice2, posts)
+    posts = filter_by_tag(tag1, posts)
+    posts = filter_by_tag(tag2, posts)
+    posts = filter_by_tag(tag3, posts)
 
     # Validate the sort order
     if valid_choice(order, PollSearch().SearchOrder.choices):

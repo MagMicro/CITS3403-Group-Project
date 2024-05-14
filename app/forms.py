@@ -27,10 +27,16 @@ class AccountDeletion(FlaskForm):
     submit = SubmitField("Submit")
     
 class PollSearch(FlaskForm):
+    tags = ["Food", "Drink", "Sports", "Fashion", "Makeup", "Subject", "Video Games", "Anime", "Board Games" , "Animals", "People", "Places", "City", "Country", "Film", "TV", "Novels", "Abilities", "Historical", "Superheroes"]
     SearchBar = StringField()
     SearchPrompt = StringField("Prompt: ")
     SearchChoice1 = StringField("Option 1:")
     SearchChoice2 = StringField("Option 2:")
+
+    Tag1 = SelectField("Search by:", choices = tags)
+    Tag2 = SelectField("Search by:", choices = tags)
+    Tag3 = SelectField("Search by:", choices = tags)
+
     SearchMode = SelectField("Search by:", choices = ["All", "PostID", "Username"])
     SearchOption = SelectField("Sort by:", choices = ["Popularity", "Difference", "Upload Date"])
     SearchOrder = SelectField("Order by:", choices = ["Ascending", "Descending"])

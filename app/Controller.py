@@ -71,7 +71,15 @@ def filter_by_choice(choice, posts):
                 final = []
                 for post in posts:
                         if contains_string(post.Option1, choice) or contains_string(post.Option2, choice):
-                                print(post)
+                                final.append(post)
+                return final
+        return posts
+
+def filter_by_tag(tag, posts):
+        if tag != "":
+                final = []
+                for post in posts:
+                        if post.tag1 == tag or post.tag2 == tag or post.tag3 == tag:
                                 final.append(post)
                 return final
         return posts

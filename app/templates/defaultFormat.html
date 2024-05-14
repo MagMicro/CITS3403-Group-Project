@@ -24,45 +24,56 @@
                     </div>
                 </td>
                 <td id = "create" class = "entry col-2"><a href="{{ url_for('create') }}"><div class = "fas fa-pen"></div> Create</a></td>
-                <form id = "postSearchForm" method="post" action="/SearchOptions">
-                    <td id = "search" class = "entry col-4"><div class = "fas fa-search"></div> 
-                        {{search.SearchBar(placeholder = "Search", class = "col-10")}}
-                        <div id = "SearchDropdown" class = "dropdown col-12">
-                            <span class = "searchField">
-                                {{search.SearchMode.label}}
-                                {{search.SearchMode}}
-                            </span>
+                <search>
+                    <form id = "postSearchForm" method="post" action="/SearchOptions">
+                        <td id = "search" class = "entry col-4"><div class = "fas fa-search"></div> 
+                            {{search.SearchBar(placeholder = "Search", class = "col-10")}}
+                            <div id = "SearchDropdown" class = "dropdown col-12">
+                                <span class = "searchField">
+                                    {{search.SearchMode.label}}
+                                    {{search.SearchMode}}
+                                </span>
 
-                            <span class = "searchField">
-                                {{search.SearchPrompt.label}}
-                                {{search.SearchPrompt(placeholder = "Enter a prompt here")}}<br>
-                                (Optional)
-                            </span>
+                                <span class = "searchField">
+                                    {{search.SearchPrompt.label}}
+                                    {{search.SearchPrompt(placeholder = "Enter a prompt here")}}<br>
+                                    (Optional)
+                                </span>
 
-                            <span class = "searchField">
-                                {{search.SearchChoice1.label}}
-                                {{search.SearchChoice1(placeholder = "Enter a choice here")}}<br>
-                                (Optional)
-                            </span>
+                                <span class = "searchField">
+                                    {{search.SearchChoice1.label}}
+                                    {{search.SearchChoice1(placeholder = "Enter a choice here")}}<br>
+                                    (Optional)
+                                </span>
 
-                            <span class = "searchField">
-                                {{search.SearchChoice2.label}}
-                                {{search.SearchChoice2(placeholder = "Enter a choice here")}}<br>
-                                (Optional)
-                            </span>
+                                <span class = "searchField">
+                                    {{search.SearchChoice2.label}}
+                                    {{search.SearchChoice2(placeholder = "Enter a choice here")}}<br>
+                                    (Optional)
+                                </span>
 
-                            <span class = "searchField">
-                                {{search.SearchOption.label}}
-                                {{search.SearchOption}}
-                            </span>
+                                <span class = "searchField">
+                                    <label id = "tagsLabel">Tags: <br>(Optional)</label>
+                                    <div id = "tagFields">
+                                        {{search.Tag1(class = 'tagField', size = '3')}}
+                                        {{search.Tag2(class = 'tagField', size = '3')}}
+                                        {{search.Tag3(class = 'tagField', size = '3')}}
+                                    </div>
+                                </span>
 
-                            <span class = "searchField">
-                                {{search.SearchOrder.label}}
-                                {{search.SearchOrder}}
-                            </span>
-                        </div> 
-                    </td>
-                </form>
+                                <span class = "searchField">
+                                    {{search.SearchOption.label}}
+                                    {{search.SearchOption}}
+                                </span>
+
+                                <span class = "searchField">
+                                    {{search.SearchOrder.label}}
+                                    {{search.SearchOrder}}
+                                </span>
+                            </div> 
+                        </td>
+                    </form> 
+                </search>
                 <td id = "account" class = "entry col-2">
                     {% if current_user.is_authenticated %}
                         <div class = "fas fa-user"></div> Account 

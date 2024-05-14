@@ -611,3 +611,21 @@ a{
 .searchPost:hover{
     background-color: rgba(0, 0, 0, 0.2);
 }
+
+.tagField{
+    text-align: center;
+    margin-right: 15px;
+}
+.tagField option{
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+#tagFields{
+    float: right;
+    position: relative;
+}
+
+#tagsLabel{
+    float: left;
+    display: block;
+}
