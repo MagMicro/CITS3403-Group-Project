@@ -36,8 +36,12 @@ body{
 #About{
     height:700px;
 }
+#searchBoard{
+    height:700px;
+    overflow: hidden;
+}
 #accountPosts{
-    height: 60%;
+    height:700px;
     overflow: hidden;
     padding-bottom: 20px;
     display: flex; 
@@ -583,4 +587,27 @@ a{
     width: 60%;
     padding-left:10px;
     padding-right:10px;
+}
+
+#searchPosts{
+    overflow-y: auto;
+    display: flex;
+    position: relative;
+    top: 5px;
+    flex-direction: column;
+    height: 630px;
+}
+
+.searchPost{
+    text-align: left;
+    font-size: 16px;
+    color: black;
+    border-bottom: 1px solid black;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+
+.searchPost:hover{
+    background-color: rgba(0, 0, 0, 0.2);
 }

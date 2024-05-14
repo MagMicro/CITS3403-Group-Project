@@ -5,25 +5,25 @@
     <div class="board">
         <h1>Vote on Polls</h1>
         <div id="polls-container" class="poll-container">
-            <div class="poll" id="{{poll['ID']}}">
-                <h3>{{poll['prompt']}}</h3>
+            <div class="poll" id="{{poll.poll_ID}}">
+                <h3>{{poll.prompt}}</h3>
                 <form id="poll-form">
                     <div class="poll-options">
                         <label>
                             <input type="radio" name="option" value="1">
-                            {{poll['option1']}}
+                            {{poll.Option1}}
                         </label>
                         <label>
                             <input type="radio" name="option" value="2">
-                            {{poll['option2']}}
+                            {{poll.Option2}}
                         </label>
                     </div>
                     <button type="submit" class="btn-vote">Vote</button>
                 </form>
                 <div id="results" {%if not vote%} style="display: none;"{% endif %}>
                     <h4>Results:</h4>
-                    <p>{{poll['option1']}}: {{poll['left%']}}%</p>
-                    <p>{{poll['option2']}}: {{poll['right%']}}%</p>
+                    <p>{{poll.Option1}}: {{poll.left_percentage()}}%</p>
+                    <p>{{poll.Option2}}: {{poll.right_percentage()}}%</p>
                     {{PollBar |safe }}
                 </div>
             </div>

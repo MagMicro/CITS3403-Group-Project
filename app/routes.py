@@ -171,9 +171,7 @@ def create():
 
 @app.route('/GetUserPosts/<order>/<option>', methods=["GET"])
 def generate_posts(order, option):
-    posts = []
-    for post in Users.query.filter_by(user_ID=current_user.user_ID).first().posts():
-        posts.append(post.to_dict())
+    posts = Polls.query.filter_by(pollAuthor_ID=current_user.user_ID).all()
 
     if option == "Ascending":
         mode = False
@@ -184,11 +182,11 @@ def generate_posts(order, option):
         return redirect(url_for("account"))
 
     if order == "Popularity":
-        posts.sort(reverse=mode, key = lambda user_post: user_post["total"] )
+        posts.sort(reverse=mode, key = lambda user_post: user_post.total_votes() )
     elif order == "Difference":
-        posts.sort(reverse=mode, key = lambda user_post: abs(user_post["left%"] - user_post["right%"]))
+        posts.sort(reverse=mode, key = lambda user_post: abs(user_post.left_percentage() - user_post.right_percentage()))
     elif order == "Date":
-        posts.sort(reverse=mode, key = lambda user_post: datetime.timestamp(datetime.strptime(user_post["date"], "%d/%m/%Y %H:%M:%S")))
+        posts.sort(reverse=mode, key = lambda user_post: datetime.timestamp(datetime.strptime(user_post.date, "%d/%m/%Y %H:%M:%S")))
     else:
         flash("Invalid sort option detected. Please try again.", "error")
         return redirect(url_for("account"))
@@ -255,7 +253,7 @@ def random_poll():
     if current_user.is_anonymous:
         available_polls = Polls.query.all()
         random_poll = random.choice(available_polls)
-        return render_template('poll.html', poll = random_poll.to_dict()), 200
+        return render_template('poll.html', poll = random_poll), 200
 
     else:
         voted_polls = [vote.poll_ID for vote in VotePoll.query.filter_by(user_ID=current_user.user_ID).all()]
@@ -265,7 +263,7 @@ def random_poll():
             return render_template('NoPolls.html'), 404
 
         random_poll = random.choice(available_polls)
-        return render_template('poll.html', poll = random_poll.to_dict()), 200
+        return render_template('poll.html', poll = random_poll), 200
 
 @app.route('/api/poll/vote', methods=['POST'])
 def cast_vote():
@@ -296,31 +294,28 @@ def cast_vote():
     poll = Polls.query.filter_by(poll_ID=poll_id).first()
     if not poll:
         abort(404)
-    poll = poll.to_dict()
     PollBar = render_template('PollBar.html', bar = bar_init(poll))
     return render_template('PollResults.html', poll = poll, PollBar = PollBar), 200
 
 @app.route('/Poll/<int:id>', methods=['GET', 'POST'])
 def get_post(id):
-    post = Polls.query.get(id)
-
+    poll = Polls.query.get(id)
+    # Case that the user attempts to look for a pollID that currently doesnt exist
+    if(poll is None):
+        flash("Poll does not exist.")
+        return redirect(url_for('home')), 404
+    
     # If the user is logged in, checks to see if they have already voted
     if current_user.is_authenticated:
-        vote = VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = post.poll_ID)
+        vote = VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = poll.poll_ID)
     # Default no vote value of None, determines if poll results are shown when page is loaded
     else:
         vote = None
 
-    # Case that the user attempts to look for a pollID that currently doesnt exist
-    if(post is None):
-        flash("Poll does not exist.")
-        return redirect(url_for('home')), 404
-
-    else:
-        poll = post.to_dict()
-        PollBar = render_template('PollBar.html', bar = bar_init(poll))
-        return render_template("IndividualPost.html", search=PollSearch() , poll=poll, vote=vote, PollBar = PollBar), 200
+    PollBar = render_template('PollBar.html', bar = bar_init(poll))
+    return render_template("IndividualPost.html", search=PollSearch() , poll=poll, vote=vote, PollBar = PollBar), 200
     
 @app.route('/SearchOptions', methods=['POST'])
 def search_results():
-    print(request)
+    posts = Polls.query.all()
+    return render_template("SearchResults.html", search=PollSearch(), posts=posts)

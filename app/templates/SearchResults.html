@@ -1,0 +1,29 @@
+{% extends "defaultFormat.html" %}
+{% block content%}
+<div id = "searchBoard" class="board col-8 col-m-6">
+    <div id="searchHeader" class="header col-12">Search Results:
+    <div id="searchPosts" class = "col-12">
+        {% for post in posts %}
+        <div class="searchPost col-12" id = "{{ post.poll_ID }}">
+            <p>
+                <span class="post-subheading">Post ID: </span>{{ post.poll_ID }}
+                <br>
+                <span class="post-subheading">Author:</span> {{ post.get_author() }}
+            </p>
+            <p>
+                <span class="post-subheading">Prompt:</span> {{ post.prompt }} 
+                <br>
+                <span class="post-subheading">Options:</span> {{ post.Option1 }} vs {{ post.Option2 }}
+                <br>
+                <span class="post-subheading">Tags:</span> {{ post.tag1 }} {% if post.tag2 != None %} , {{ post.tag2}} {% endif %} {% if post.tag3 != None %} , {{ post.tag3 }} {% endif %}
+            </p>
+            <p>
+                <span class="post-subheading">Total Votes:</span> {{post.total_votes()}}
+                <br>
+                <span class="post-subheading">Posted on: </span><date>{{ post.readable_date() }}</date>
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

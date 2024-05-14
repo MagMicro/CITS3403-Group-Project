@@ -1,4 +1,4 @@
 <h4>Results:</h4>
-<p>{{poll['option1']}}: <span id = "PercentageLeft">{{poll['left%']}}%</span></p>
-<p>{{poll['option2']}}: <span id = "PercentageRight">{{poll['right%']}}%</span></p>
+<p>{{poll.Option1}}: <span id = "PercentageLeft">{{poll.left_percentage()}}%</span></p>
+<p>{{poll.Option2}}: <span id = "PercentageRight">{{poll.right_percentage()}}%</span></p>
 {{PollBar |safe }}
