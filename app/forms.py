@@ -31,7 +31,7 @@ class PollSearch(FlaskForm):
     SearchPrompt = StringField("Prompt: ")
     SearchChoice1 = StringField("Option 1:")
     SearchChoice2 = StringField("Option 2:")
-    SearchMode = SelectField("Search by:", choices = ["All", "User ID", "Post ID"])
+    SearchMode = SelectField("Search by:", choices = ["All", "PostID", "Username"])
     SearchOption = SelectField("Sort by:", choices = ["Popularity", "Difference", "Upload Date"])
     SearchOrder = SelectField("Order by:", choices = ["Ascending", "Descending"])
 

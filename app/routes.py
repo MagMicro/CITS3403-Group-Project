@@ -13,6 +13,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 
 @app.route('/')
 def home():
+    print(PollSearch().SearchOption.choices)
     return render_template('home.html', search=PollSearch(), title="Home")
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -169,24 +170,18 @@ def create():
     print("User accessed the create page")
     return render_template('create.html', search=PollSearch(), form=form, title="Create", tags=tags, PollBar=PollBar)
 
-@app.route('/GetUserPosts/<order>/<option>', methods=["GET"])
-def generate_posts(order, option):
+@app.route('/GetUserPosts/<option>/<order>', methods=["GET"])
+def generate_posts(option, order):
     posts = Polls.query.filter_by(pollAuthor_ID=current_user.user_ID).all()
 
-    if option == "Ascending":
-        mode = False
-    elif option == "Descending":
-        mode = True
+    if valid_choice(order, AccountPostFilter().SortOrder.choices):
+        mode = get_sort_order(order)
     else:
         flash("Invalid sort order detected. Please try again.", "error")
         return redirect(url_for("account"))
 
-    if order == "Popularity":
-        posts.sort(reverse=mode, key = lambda user_post: user_post.total_votes() )
-    elif order == "Difference":
-        posts.sort(reverse=mode, key = lambda user_post: abs(user_post.left_percentage() - user_post.right_percentage()))
-    elif order == "Date":
-        posts.sort(reverse=mode, key = lambda user_post: datetime.timestamp(datetime.strptime(user_post.date, "%d/%m/%Y %H:%M:%S")))
+    if valid_choice(option, AccountPostFilter().SortOption.choices):
+        sort_by_option(option, mode, posts)
     else:
         flash("Invalid sort option detected. Please try again.", "error")
         return redirect(url_for("account"))
@@ -317,5 +312,34 @@ def get_post(id):
     
 @app.route('/SearchOptions', methods=['POST'])
 def search_results():
-    posts = Polls.query.all()
+    form = PollSearch()
+    input = form.SearchBar.data
+    mode = form.SearchMode.data
+    prompt = form.SearchPrompt.data
+    choice1 = form.SearchChoice1.data
+    choice2 = form.SearchChoice2.data
+    option = form.SearchOption.data
+    order = form.SearchOrder.data
+
+    # Validate the search mode used
+    if valid_choice(mode, form.SearchMode.choices):
+        # Return a list with posts found via form input & mode
+        posts = get_mode_list(mode, input)
+    else:
+        # Invalid search mode was submitted
+        flash("Invalid mode detected. Please try again.")
+        return redirect(url_for("home"))
+
+    if valid_choice(order, PollSearch().SearchOrder.choices):
+        mode = get_sort_order(order)
+    else:
+        flash("Invalid sort order detected. Please try again.", "error")
+        return redirect(url_for("home"))
+
+    if valid_choice(option, PollSearch().SearchOption.choices):
+        sort_by_option(option, mode, posts)
+    else:
+        flash("Invalid sort option detected. Please try again.", "error")
+        return redirect(url_for("home"))
+    
     return render_template("SearchResults.html", search=PollSearch(), posts=posts)

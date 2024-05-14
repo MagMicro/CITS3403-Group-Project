@@ -30,7 +30,7 @@ class Users(UserMixin, db.Model):
     
     #Methods for gathering user posts & their data
     def posts(self):
-        return Polls.query.filter_by(pollAuthor_ID = self.user_ID)
+        return Polls.query.filter_by(pollAuthor_ID = self.user_ID).all()
     
     def count_posts(self):
         return self.posts().count()

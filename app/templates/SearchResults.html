@@ -2,6 +2,7 @@
 {% block content%}
 <div id = "searchBoard" class="board col-8 col-m-6">
     <div id="searchHeader" class="header col-12">Search Results:
+    {% if posts %}
     <div id="searchPosts" class = "col-12">
         {% for post in posts %}
         <div class="searchPost col-12" id = "{{ post.poll_ID }}">
@@ -25,5 +26,6 @@
         </div>
         {% endfor %}
     </div>
+    {% endif %}
 </div>
 {% endblock %}
