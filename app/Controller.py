@@ -48,3 +48,30 @@ def get_mode_list(mode, input):
                         return user.posts()
                 else:
                         return []
+                
+def contains_string(string, search):
+        string = string.lower()
+        search = search.lower()
+        if string.find(search) == -1:
+                return False
+        else:
+                return True
+        
+def filter_by_prompt(prompt, posts):
+        if prompt != "":
+                final = []
+                for post in posts:
+                        if contains_string(post.prompt, prompt):
+                                final.append(post)
+                return final
+        return posts
+
+def filter_by_choice(choice, posts):
+        if choice != "":
+                final = []
+                for post in posts:
+                        if contains_string(post.Option1, choice) or contains_string(post.Option2, choice):
+                                print(post)
+                                final.append(post)
+                return final
+        return posts

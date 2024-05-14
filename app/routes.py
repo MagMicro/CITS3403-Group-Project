@@ -313,6 +313,8 @@ def get_post(id):
 @app.route('/SearchOptions', methods=['POST'])
 def search_results():
     form = PollSearch()
+
+    # Initialise variables for form data
     input = form.SearchBar.data
     mode = form.SearchMode.data
     prompt = form.SearchPrompt.data
@@ -330,16 +332,27 @@ def search_results():
         flash("Invalid mode detected. Please try again.")
         return redirect(url_for("home"))
 
+    # Returns posts whose prompt/choices contain a certain string (if the fields weren't empty)
+    posts = filter_by_prompt(prompt, posts)
+    posts = filter_by_choice(choice1, posts)
+    posts = filter_by_choice(choice2, posts)
+
+    # Validate the sort order
     if valid_choice(order, PollSearch().SearchOrder.choices):
+        # get which order to sort the posts by (Ascending / Descending)
         mode = get_sort_order(order)
     else:
+        # Invalid filter order was submitted
         flash("Invalid sort order detected. Please try again.", "error")
         return redirect(url_for("home"))
 
+    # Validate the sort option (what to sort by)
     if valid_choice(option, PollSearch().SearchOption.choices):
+        # Sort the list using the previously calculated order and the search option
         sort_by_option(option, mode, posts)
     else:
+        # Invalid filter option was submitted
         flash("Invalid sort option detected. Please try again.", "error")
         return redirect(url_for("home"))
-    
+
     return render_template("SearchResults.html", search=PollSearch(), posts=posts)

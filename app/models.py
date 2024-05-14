@@ -33,7 +33,7 @@ class Users(UserMixin, db.Model):
         return Polls.query.filter_by(pollAuthor_ID = self.user_ID).all()
     
     def count_posts(self):
-        return self.posts().count()
+        return len(self.posts())
     
     def average_dif(self):
         total_diff = 0

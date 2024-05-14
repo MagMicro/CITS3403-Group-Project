@@ -70,5 +70,6 @@ function init(){
     setInterval(()=>{makeWord();}, 700);
     setTimeout(() => {$("#messageDisplay").animate({height:"toggle"});}, 3000);
     $("#SearchBar").keydown(check_search_enter);
+    $("#SearchDropdown").keydown(check_search_enter);
 }
 $(document).ready(init);
