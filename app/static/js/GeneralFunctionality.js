@@ -71,5 +71,9 @@ function init(){
     setTimeout(() => {$("#messageDisplay").animate({height:"toggle"});}, 3000);
     $("#SearchBar").keydown(check_search_enter);
     $("#SearchDropdown").keydown(check_search_enter);
+    $("#tagReset").click(function(){
+        event.preventDefault();
+        $(".tagField option").prop("selected", false)
+    })
 }
 $(document).ready(init);

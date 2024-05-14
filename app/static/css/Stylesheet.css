@@ -629,3 +629,9 @@ a{
     float: left;
     display: block;
 }
+
+#tagReset{
+    margin-top: 10px;
+    width: 80px;
+    padding: 2px;
+}
