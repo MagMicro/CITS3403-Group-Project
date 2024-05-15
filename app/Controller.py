@@ -45,7 +45,7 @@ def get_mode_list(mode, input, voted):
         elif mode == "Username":
                 user = Users.query.filter_by(username=input).first()
                 if user is not None:
-                        polls = user.posts()
+                        polls = user.posts
                 else:
                         return []
                 
