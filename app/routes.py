@@ -302,7 +302,8 @@ def get_post(id):
     
     # If the user is logged in, checks to see if they have already voted
     if current_user.is_authenticated:
-        vote = VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = poll.poll_ID)
+        vote = VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = poll.poll_ID).first()
+        print(vote)
     # Default no vote value of None, determines if poll results are shown when page is loaded
     else:
         vote = None

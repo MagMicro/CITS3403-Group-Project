@@ -36,7 +36,7 @@ class Users(UserMixin, db.Model):
     def voted_polls(self):
         voted_polls = []
         for vote in self.votes:
-            voted_polls.append(vote.get_poll)
+            voted_polls.append(vote.poll)
         return voted_polls
     
     def count_posts(self):
