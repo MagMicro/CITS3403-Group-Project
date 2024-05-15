@@ -172,7 +172,7 @@ def create():
 
 @app.route('/GetUserPosts/<option>/<order>', methods=["GET"])
 def generate_posts(option, order):
-    posts = Polls.query.filter_by(pollAuthor_ID=current_user.user_ID).all()
+    posts = current_user.posts
 
     if valid_choice(order, AccountPostFilter().SortOrder.choices):
         mode = get_sort_order(order)
@@ -219,7 +219,7 @@ def delete_account():
         #Verify the user's provided password
         if(current_user.check_password(password)):
             #Delete all content associated with a user and their posts
-            for post in current_user.posts():
+            for post in current_user.posts:
                 post.delete_votes()
                 db.session.delete(post)
     
@@ -317,6 +317,7 @@ def search_results():
     # Initialise variables for form data
     input = form.SearchBar.data
     mode = form.SearchMode.data
+    voted = form.Voted.data
     prompt = form.SearchPrompt.data
     choice1 = form.SearchChoice1.data
     choice2 = form.SearchChoice2.data
@@ -327,9 +328,9 @@ def search_results():
     order = form.SearchOrder.data
 
     # Validate the search mode used
-    if valid_choice(mode, form.SearchMode.choices):
-        # Return a list with posts found via form input & mode
-        posts = get_mode_list(mode, input)
+    if valid_choice(mode, form.SearchMode.choices) and valid_choice(voted, form.Voted.choices):
+        # Return a list with posts found via form input, mode & vote status
+        posts = get_mode_list(mode, input, voted)
     else:
         # Invalid search mode was submitted
         flash("Invalid mode detected. Please try again.")

@@ -17,6 +17,11 @@ class Users(UserMixin, db.Model):
     password = db.Column(db.String(128))
     date = db.Column(db.String(10))
     
+    # Gets all user posts
+    posts = db.relationship('Polls', back_populates = 'author')
+    # Gets all user votes
+    votes = db.relationship('VotePoll', back_populates = 'voter')
+
     #Override for finding the user ID
     def get_id(self):
         return self.user_ID
@@ -28,17 +33,19 @@ class Users(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
     
-    #Methods for gathering user posts & their data
-    def posts(self):
-        return Polls.query.filter_by(pollAuthor_ID = self.user_ID).all()
+    def voted_polls(self):
+        voted_polls = []
+        for vote in self.votes:
+            voted_polls.append(vote.get_poll)
+        return voted_polls
     
     def count_posts(self):
-        return len(self.posts())
+        return len(self.posts)
     
     def average_dif(self):
         total_diff = 0
         total_polls = self.count_posts()
-        for post in self.posts():
+        for post in self.posts:
             if post.total_votes() == 0:
                 continue
             poll_diff = abs(post.left_percentage() - post.right_percentage()) / 100
@@ -79,6 +86,8 @@ class Polls(db.Model):
     date = db.Column(db.String)
     prompt = db.Column(db.String)
 
+    author = db.relationship('Users', back_populates = 'posts')
+    votes = db.relationship('VotePoll', back_populates = 'poll')
     #Deleted all votes associated with a given poll
     def delete_votes(self):
         votes = VotePoll.query.filter_by(poll_ID=self.poll_ID)
@@ -136,3 +145,6 @@ class VotePoll(db.Model):
     user_ID = db.Column(db.Integer, db.ForeignKey('Users.user_ID'), primary_key=True)
     poll_ID = db.Column(db.Integer, db.ForeignKey('Polls.poll_ID'), primary_key=True)
     Vote_opt = db.Column(db.Integer)
+
+    poll = db.relationship('Polls', back_populates = 'votes')
+    voter = db.relationship('Users', back_populates = 'votes')

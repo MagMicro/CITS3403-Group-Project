@@ -1,7 +1,7 @@
 from .models import Users, Polls, VotePoll
 from app import db
-from flask import render_template, redirect, url_for, flash
-from datetime import date, datetime
+from datetime import datetime
+from flask_login import current_user, login_user, logout_user, login_required
 
 # Initialises the display values for a given polls vote percentage bar
 def bar_init(poll):
@@ -35,20 +35,38 @@ def valid_choice(choice, choices):
         else:
                 return False
 
-def get_mode_list(mode, input):
+def get_mode_list(mode, input, voted):
         if mode == "All":
-                return Polls.query.all()
+                polls = Polls.query.all()
 
         elif mode == "PostID":
-                return [Polls.query.get(int(input))]
+                polls = [Polls.query.get(int(input))]
 
         elif mode == "Username":
                 user = Users.query.filter_by(username=input).first()
                 if user is not None:
-                        return user.posts()
+                        polls = user.posts()
                 else:
                         return []
                 
+        # Both means no further filtering is required
+        if voted == "Both":
+                return polls
+        
+        polls = set(polls)
+        # Gets the voted polls from the user, empty if they arent logged in
+        if current_user.is_authenticated:
+                voted_polls = set(current_user.voted_polls())
+        else:
+                voted_polls = set()
+
+        # Return only posts the user has voted on
+        if voted == "Yes":
+                return list(polls.intersection(voted_polls))
+        # Return only the posts that have not been voted on by the user
+        elif voted == "No":
+                return list(polls.difference(voted_polls))
+        
 def contains_string(string, search):
         string = string.lower()
         search = search.lower()
