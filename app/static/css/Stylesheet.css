@@ -1,7 +1,8 @@
 html, body {
     height: 100%; 
     width: 100%; 
-    margin: 0; 
+    margin: 0;
+    padding-top:55px; 
 }
 
 body{
@@ -18,10 +19,6 @@ body{
     border: 2px solid black;
     box-shadow:20px 20px rgba(0, 0, 0, 0.2);
     animation: appear 0.5s;
-}
-
-.board:nth-of-type(1){
-    margin-top:105px;
 }
 
 #Login{
