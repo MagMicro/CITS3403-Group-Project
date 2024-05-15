@@ -101,3 +101,6 @@ def filter_by_tag(tag, posts):
                                 final.append(post)
                 return final
         return posts
+
+def available_username(username):
+        return Users.query.filter_by(username=username).first() is None

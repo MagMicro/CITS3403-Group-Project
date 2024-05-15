@@ -46,7 +46,7 @@ body{
     position:relative;
 }
 #accountHeader{
-    height: 40%;
+    height: 300px;
     overflow: hidden;
     padding-bottom: 20px;
 }
@@ -203,6 +203,19 @@ a{
 
 .dropdown > span:hover{
     background-color:rgb(84, 87, 103);
+}
+
+#AccountUsername{
+    display: inline;
+    height: 60px;
+    width: 20ch;
+    background-color: white;
+    border: none;
+}
+
+#renameIcon{
+    font-size: 30px;
+    color: navy;
 }
 #profilePic{
     display:block;
@@ -669,3 +682,4 @@ a{
     position: relative;
     top:-8px;
 }
+
