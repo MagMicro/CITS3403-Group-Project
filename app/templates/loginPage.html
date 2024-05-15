@@ -5,7 +5,7 @@
 
     <hr class = "col-sm-9">
 
-    <img id = "logo" src="static/icon.png">
+    <img id = "logo" src="{{url_for('static', filename='Images/icon.png')}}">
 
     <form  id = "loginForm" class = "inputFields col-sm-10" method="post" action="/login">
         {{form.hidden_tag()}}
@@ -13,9 +13,12 @@
         {{form.username(class = "inputBox col-sm-12", placeholder = "Username")}}
         <p class = "notify"></p>
 
-        <label class = "fieldName" for = password>Password: <span  id = "visibility" class="fas fa-eye-slash" title = "View"></span></label>
+        <label class = "fieldName" for = password>Password: <span  id = "visibility" class="fas fa-eye-slash" title = "View" onclick = changeVisibilty()></span></label>
         {{form.password(class = "inputBox col-sm-12", placeholder = "Password")}}
         <p class = "notify"></p>
+
+        {{form.remember.label}}
+        {{form.remember()}}
 
         {{form.submit(value = "Login", class = "col-9")}}
     </form>
@@ -23,5 +26,6 @@
     <hr class = "col-sm-9">
     <p id = "redirectionPrompt"> Don't have an account? <a href = "{{ url_for('create_account') }}">Create new account</a></p>
     <hr class = "col-sm-9"><br>
+    <script src="{{ url_for('static', filename='js/LoginFunctionality.js') }}"></script>
 </div>
 {% endblock %}

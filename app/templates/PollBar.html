@@ -1,0 +1,18 @@
+<div id = "barBox" class = "col-10">
+    <div class = "bolt" id = "bolt1"><div class = "boltgap"></div></div>
+    <div class = "bolt" id = "bolt2"><div class = "boltgap"></div></div>
+    <div class = "bolt" id = "bolt3"><div class = "boltgap"></div></div>
+    <div class = "bolt" id = "bolt4"><div class = "boltgap"></div></div>
+
+    <div id = "lightray1" class = "lightray"></div>
+    <div id = "lightray2" class = "lightray"></div>
+            
+    <div id = "barContainer" class = "col-11">
+        <div class = " bar col-12">
+            <div id = "left" {% if bar %} style = {{bar['left']}} {% endif %}><div class = "highlight"></div><div class = "shadow"></div></div>
+            <div id = "right" {% if bar %} style ={{bar['right']}} {% endif %}><div class = "highlight"></div><div class = "shadow"></div></div>
+        </div>
+        <div id = "divider" {% if bar %} style = "{% if not bar['ShowDivider'] %} display:none; {% endif %} {{bar['divider']}} {% endif %}"></div>
+    </div>
+</div>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/PollBar.css') }}">

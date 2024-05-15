@@ -1,0 +1,28 @@
+#tagsContainer{
+    margin:auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 100px;
+    overflow-y:auto;
+    border: 2px solid black;
+    background-color: aliceblue;
+    border-radius: 10px;
+    box-shadow: 2px 2px grey;
+}
+
+.tag-button{
+    border: 1px solid black;
+    background-color: white;
+    margin:5px;
+    border-radius: 15px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    font-size: 14px;
+}
+
+.tag-button:hover{
+    background-color: rgba(0, 0, 0, 0.2);
+}

@@ -30,10 +30,10 @@ class Users(UserMixin, db.Model):
     
     #Methods for gathering user posts & their data
     def posts(self):
-        return Polls.query.filter_by(pollAuthor_ID = self.user_ID)
+        return Polls.query.filter_by(pollAuthor_ID = self.user_ID).all()
     
     def count_posts(self):
-        return self.posts().count()
+        return len(self.posts())
     
     def average_dif(self):
         total_diff = 0
@@ -85,7 +85,7 @@ class Polls(db.Model):
         for vote in votes:
             db.session.delete(vote)
 
-    #Adds tags to Polls model instance based on how many tags it received, default is N/A
+    # Adds tags to Polls model instance based on how many tags it received, default is N/A
     def add_tags(self, tags):
         if len(tags) >= 1 and tags[0] != '':
             self.tag1 = tags[0]
@@ -93,32 +93,20 @@ class Polls(db.Model):
                 self.tag2 = tags[1]
             if len(tags) == 3:
                 self.tag3 = tags[2]
-            
 
-    # Creates a dictionary struture based on fields and function values, used by user profile page    
-    def to_dict(self):
-        poll ={}
-        poll["ID"] = self.poll_ID
-        poll["Author"] = self.pollAuthor_ID
-        poll["option1"] = self.Option1
-        poll["option2"] = self.Option2
-        poll["tag1"] = self.tag1
-        poll["tag2"] = self.tag2
-        poll["tag3"] = self.tag3
-        poll["date"] = self.date
-        poll["prompt"] = self.prompt
-        poll["total"] = self.total_votes()
-        poll["left%"] = self.left_percentage()
-        poll["right%"] = self.right_percentage()
-
+    # Returns the post author's username       
+    def get_author(self):
+        return Users.query.get(self.pollAuthor_ID).username
+    
+    # Creates a human readable date for a given post
+    def readable_date(self):
         hours = int(self.date.split(" ")[1][0:2])
         time = self.date.split(" ")[1][2:5]
         time_date = self.date.split(" ")[0]
         if(hours // 12 >= 1):
-            poll["date_readable"] = time_date + " " + str(hours % 12) + time + " PM"
+            return time_date + " " + str(hours % 12) + time + " PM"
         else:
-            poll["date_readable"] = self.date + " " + hours + time + " AM" 
-        return poll
+            return self.date + " " + str(hours) + time + " AM" 
 
     # Functions to calcuate the proportion of votes for each given poll instance
     def total_left(self):

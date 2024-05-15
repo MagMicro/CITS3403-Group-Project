@@ -8,22 +8,70 @@
         <script src="https://kit.fontawesome.com/38ca22e423.js" crossorigin="anonymous"></script> 
         <script src = "https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="{{ url_for('static', filename='js/loginPageFunctionality.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/GeneralFunctionality.js') }}"></script>
     </head>
     <body>
         <table id = banner>
             <tr>
-                <td class = "entry col-2"><img src="static/Logo.png" id = "website-white" class = "col-5"></td>
+                <td class = "entry col-2"><img src="{{url_for('static', filename='Images/Logo.png')}}" id = "website-white" class = "col-5"></td>
                 <td id = "home" class = "entry col-2">
                     <a href="{{ url_for('home') }}"><div class = "fas fa-home"></div> Home</a>
                     <div id = "homeDropdown" class = "dropdown col-12">
                         <span><a href="{{ url_for('about') }}"><div class = "fas fa-lightbulb"></div> About</span></a><br>
+                        <span><a href="{{ url_for('get_random_poll') }}"><div class = "fas fa-dice"></div> Random</span></a><br>
                         <span><a href="{{ url_for('popular') }}"><div class = "fas fa-arrow-trend-up"></div> Most Popular</span></a><br>
                         <span><a href="{{ url_for('ranking') }}"><div class = "fas fa-ranking-star"></div> User Rankings</span></a><br>
                     </div>
                 </td>
                 <td id = "create" class = "entry col-2"><a href="{{ url_for('create') }}"><div class = "fas fa-pen"></div> Create</a></td>
-                <td id = "search" class = "entry col-4"><div class = "fas fa-search"></div> <input id = "searchbar" type = "text" placeholder = "Search" class = "col-10"></td>
+                <search>
+                    <form id = "postSearchForm" method="post" action="/SearchOptions">
+                        <td id = "search" class = "entry col-4"> 
+                            {{search.SearchBar(placeholder = "Search", class = "col-10")}}
+                            <button id = "searchButton" class = 'entry btn btn-primary col-1'><div class = "fas fa-search"></div></button>
+                            <div id = "SearchDropdown" class = "container dropdown">
+                                <span class = "searchField">
+                                    <label>{{search.SearchMode.label}}<br>(Optional)</label>
+                                    {{search.SearchMode}}
+                                </span>
+
+                                <span class = "searchField">
+                                    <label>{{search.SearchPrompt.label}}<br>(Optional)</label>
+                                    {{search.SearchPrompt(placeholder = "Enter a prompt here")}}<br>
+                                </span>
+
+                                <span class = "searchField">
+                                    <label>{{search.SearchChoice1.label}}<br>(Optional)</label>
+                                    {{search.SearchChoice1(placeholder = "Enter a choice here")}}<br>
+                                </span>
+
+                                <span class = "searchField">
+                                    <label>{{search.SearchChoice2.label}}<br>(Optional)</label>
+                                    {{search.SearchChoice2(placeholder = "Enter a choice here")}}<br>
+                                </span>
+
+                                <span class = "searchField">
+                                    <label>Tags: <br>(Optional)<br> <button id = "tagReset" class = 'btn btn-primary'>Reset</button></label>
+                                    <div id = "tagFields">
+                                        {{search.Tag1(class = 'tagField', size = '4')}}
+                                        {{search.Tag2(class = 'tagField', size = '4')}}
+                                        {{search.Tag3(class = 'tagField', size = '4')}}
+                                    </div>
+                                </span>
+
+                                <span class = "searchField">
+                                    {{search.SearchOption.label}}
+                                    {{search.SearchOption}}
+                                </span>
+
+                                <span class = "searchField">
+                                    {{search.SearchOrder.label}}
+                                    {{search.SearchOrder}}
+                                </span>
+                            </div> 
+                        </td>
+                    </form> 
+                </search>
                 <td id = "account" class = "entry col-2">
                     {% if current_user.is_authenticated %}
                         <div class = "fas fa-user"></div> Account 

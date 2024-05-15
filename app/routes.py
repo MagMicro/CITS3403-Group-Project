@@ -3,71 +3,18 @@ from flask import request, render_template, g, session, redirect, url_for, jsoni
 from app.forms import *
 from .models import Users, Polls, VotePoll
 from app import db
-from datetime import date
-from datetime import datetime
+from datetime import date, datetime
+
+from app.Controller import *
+import random
+
+
 from flask_login import current_user, login_user, logout_user, login_required
 
-@app.route('/api/polls', methods=['GET'])
-def get_polls():
-    polls = Polls.query.all()
-    user_votes = None
-    polls_data = []
-
-    for poll in polls:
-        has_voted = False
-        if current_user.is_authenticated:
-            if VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = poll.poll_ID).first() is not None:
-                has_voted = True
-
-        author = Users.query.filter_by(user_ID=poll.pollAuthor_ID).first()
-        total_votes = VotePoll.query.filter_by(poll_ID=poll.poll_ID).count()
-        votes1 = VotePoll.query.filter_by(poll_ID=poll.poll_ID, Vote_opt=1).count()
-        votes2 = VotePoll.query.filter_by(poll_ID=poll.poll_ID, Vote_opt=2).count()
-
-        poll_data = {
-            'id': poll.poll_ID,
-            'author': author.username if author else 'Unknown',
-            'option1': poll.Option1,
-            'votes1': (votes1 / total_votes) * 100 if total_votes > 0 else 0,
-            'option2': poll.Option2,
-            'votes2': (votes2 / total_votes) * 100 if total_votes > 0 else 0,
-            'has_voted': has_voted
-        }
-        polls_data.append(poll_data)
-
-    return jsonify(polls_data)
-
-@app.route('/api/polls/<int:poll_id>/vote', methods=['POST'])
-def vote(poll_id):
-    # Check if user is logged in
-    if current_user.is_anonymous:
-        return '', 401
-
-    # Get the selected option from the request body
-    data = request.get_json()
-    option = data.get('option')
-    if option not in ['1', '2']:
-        abort(400)
-
-    # Record the vote
-    vote = VotePoll(user_ID=current_user.user_ID, poll_ID=poll_id, Vote_opt=int(option))
-    #print vote for debug
-    print(vote)
-
-    #check if user has already voted
-    user_vote = VotePoll.query.filter_by(user_ID=current_user.user_ID, poll_ID=poll_id).first()
-    if user_vote is not None:
-        return '', 403
-    
-    db.session.add(vote)
-    db.session.commit()
-
-    return redirect(url_for('home'))
-
 @app.route('/')
-@app.route('/home')
 def home():
-    return render_template('home.html', title="Home")
+    print(PollSearch().SearchOption.choices)
+    return render_template('home.html', search=PollSearch(), title="Home")
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -81,19 +28,19 @@ def login():
         user = Users.query.filter_by(username=username).first()
         if user is None:
             flash("Username does not exist. Please try again.", "error")
-            return render_template('loginPage.html', form=form)
+            return render_template('loginPage.html', search=PollSearch(), form=form)
         
         elif user.check_password(password) == False:
             flash("Invalid password. Please try again.", "error")
-            return render_template('loginPage.html', form=form)
+            return render_template('loginPage.html', search=PollSearch(), form=form)
         
         else:
             flash("Login Successful: Welcome " + user.username)
-            login_user(user)
+            login_user(user, remember = form.remember.data)
             return redirect(url_for('home'))
 
     print("User accessed the login page")
-    return render_template('loginPage.html', form=form, title="Login")
+    return render_template('loginPage.html', search=PollSearch(), form=form, title="Login")
 
 @app.route('/create_account', methods=['POST', 'GET'])
 def create_account():
@@ -108,12 +55,12 @@ def create_account():
         user = Users.query.filter_by(username=username).first()
         if user is not None:
             flash("Username is already taken.", "error")
-            return render_template('accountCreationPage.html', form=form, title = "Account Creation")
+            return render_template('accountCreationPage.html', search=PollSearch(), form=form, title = "Account Creation")
 
         user = Users.query.filter_by(email=email).first()
         if user is not None:
             flash("Email is already taken.", "error")
-            return render_template('accountCreationPage.html', form=form, title = "Account Creation")
+            return render_template('accountCreationPage.html', search=PollSearch(), form=form, title = "Account Creation")
 
         creation_date = date.today().strftime("%d/%m/%Y")
         new_user = Users(username=username, email=email, date=creation_date)
@@ -123,10 +70,10 @@ def create_account():
         print("Account created")
         form = LoginForm()
         flash("Account created successfully.")
-        return render_template('loginPage.html', form=form, title = "Login")
+        return render_template('loginPage.html', search=PollSearch(), form=form, title = "Login")
 
     print("User accessed the Account Creation page")
-    return render_template('accountCreationPage.html', form=form, title="Account Creation")
+    return render_template('accountCreationPage.html', search=PollSearch(), form=form, title="Account Creation")
 
 @app.route('/account', methods=['POST', 'GET'])
 def account():
@@ -134,12 +81,13 @@ def account():
         return redirect(url_for('login'))
     else:
         user = Users.query.filter_by(user_ID=current_user.user_ID).first()
-        form = AccountDeletion()
-        return render_template('account.html', title = "account",  user=user, form=form)
+        deletion = AccountDeletion()
+        filter = AccountPostFilter()
+        return render_template('account.html', search=PollSearch(), title = "account",  user=user, deletion=deletion, filter=filter)
 
 @app.route('/about', methods=['GET'])
 def about():
-    return render_template('about.html', title="About")
+    return render_template('about.html', search=PollSearch(), title="About")
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -148,7 +96,7 @@ def logout():
 
 @app.route('/popular', methods=['GET'])
 def popular():
-    return render_template('popular.html', title="Popular")
+    return render_template('popular.html', search=PollSearch(), title="Popular")
 
 @app.route('/ranking', methods=['GET'])
 def ranking():
@@ -168,15 +116,16 @@ def ranking():
             }
             rank_data.append(user_rank)
             
-        return render_template('ranking.html', title="Ranking", user=user, rank_data=rank_data)
+        return render_template('ranking.html', search=PollSearch(), title="Ranking", user=user, rank_data=rank_data)
 
 @app.route('/create', methods=['POST', 'GET'])
 def create():
     if current_user.is_anonymous:
         return redirect(url_for('login'))
     
-    tags = ["Food", "Sports", "Fashion", "Subject", "Video Games", "Anime", "Board Games" , "Animals", "People", "Places", "Film", "TV", "Novels", "Abilities", "Historical"]
+    tags = ["Food", "Drink", "Sports", "Fashion", "Makeup", "Subject", "Video Games", "Anime", "Board Games" , "Animals", "People", "Places", "City", "Country", "Film", "TV", "Novels", "Abilities", "Historical", "Superheroes"]
     form = PollForm()
+    PollBar = render_template('PollBar.html')
 
     if form.validate_on_submit():
         userID = current_user.user_ID
@@ -188,22 +137,22 @@ def create():
         #Check that a valid prompt, and associated options are present
         if prompt == "" or option1 == "" or option2 == "":
                 flash("Please make sure to fill in every field.", "error")
-                return render_template('create.html', form=form, title = "Create", tags=tags)
+                return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
         
         #Make sure all submitted tags are valid
         for tag in form_tags:
             if tag == "":
                 flash("Need to use one or more tags. Please try again.", "error")
-                return render_template('create.html', form=form, title = "Create", tags=tags)
+                return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
             if tag not in tags:
                 flash("Unrecognised tag/s detected. Please try again.", "error")
-                return render_template('create.html', form=form, title = "Create", tags=tags)
+                return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
         
         #Make sure the post is unique
         for post in Polls.query.filter_by(prompt=prompt):
             if (post.Option1 == option1 and post.Option2 == option2) or (post.Option1 == option2 and post.Option2 == option1):
                 flash("Post already exists. Please try something else.", "error")
-                return render_template('create.html', form=form, title = "Create", tags=tags)
+                return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
         
         creation_date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
@@ -219,33 +168,25 @@ def create():
         flash("Poll has been created successfully.")
         return redirect(url_for('home'))
     print("User accessed the create page")
-    return render_template('create.html', form=form, title="Create", tags=tags)
+    return render_template('create.html', search=PollSearch(), form=form, title="Create", tags=tags, PollBar=PollBar)
 
-@app.route('/GetUserPosts/<order>/<option>', methods=["GET"])
-def generate_posts(order, option):
-    posts = []
-    for post in Users.query.filter_by(user_ID=current_user.user_ID).first().posts():
-        posts.append(post.to_dict())
+@app.route('/GetUserPosts/<option>/<order>', methods=["GET"])
+def generate_posts(option, order):
+    posts = Polls.query.filter_by(pollAuthor_ID=current_user.user_ID).all()
 
-    if option == "Ascending":
-        mode = False
-    elif option == "Descending":
-        mode = True
+    if valid_choice(order, AccountPostFilter().SortOrder.choices):
+        mode = get_sort_order(order)
     else:
         flash("Invalid sort order detected. Please try again.", "error")
         return redirect(url_for("account"))
 
-    if order == "Popularity":
-        posts.sort(reverse=mode, key = lambda user_post: user_post["total"] )
-    elif order == "Difference":
-        posts.sort(reverse=mode, key = lambda user_post: abs(user_post["left%"] - user_post["right%"]))
-    elif order == "UploadDate":
-        posts.sort(reverse=mode, key = lambda user_post: datetime.timestamp(datetime.strptime(user_post["date"], "%d/%m/%Y %H:%M:%S")))
+    if valid_choice(option, AccountPostFilter().SortOption.choices):
+        sort_by_option(option, mode, posts)
     else:
         flash("Invalid sort option detected. Please try again.", "error")
         return redirect(url_for("account"))
         
-    return render_template("UserPosts.html", posts = posts)
+    return render_template("UserPosts.html", search=PollSearch(), posts = posts, url = url_for("home"))
 
 @app.route('/DeletePost/<int:id>', methods = ['GET'])
 @login_required
@@ -298,46 +239,126 @@ def delete_account():
     flash("Something went wrong. Please try again", "error")
     return redirect(url_for("account"))
 
-@app.route('/vote', methods=['GET'])
-def display_vote_page():
-    return render_template('vote.html')
+@app.route('/random', methods=['GET'])
+def get_random_poll():
+    return render_template('RandomPoll.html', search=PollSearch())
 
 @app.route('/api/poll/random', methods=['GET'])
 def random_poll():
-    if 'user_ID' not in session:
-        return '', 401
+    if current_user.is_anonymous:
+        available_polls = Polls.query.all()
+        random_poll = random.choice(available_polls)
+        return render_template('poll.html', poll = random_poll), 200
 
-    voted_polls = [vote.poll_ID for vote in VotePoll.query.filter_by(user_ID=session['user_ID']).all()]
-    available_polls = Polls.query.filter(Polls.poll_ID.notin_(voted_polls)).all()
+    else:
+        voted_polls = [vote.poll_ID for vote in VotePoll.query.filter_by(user_ID=current_user.user_ID).all()]
+        available_polls = Polls.query.filter(Polls.poll_ID.notin_(voted_polls)).filter(Polls.pollAuthor_ID.notin_([current_user.user_ID])).all()
 
-    if not available_polls:
-        return jsonify({"message": "No available polls"}), 404
+        if not available_polls:
+            return render_template('NoPolls.html'), 404
 
-    random_poll = random.choice(available_polls)
-    return jsonify(random_poll.to_dict())
+        random_poll = random.choice(available_polls)
+        return render_template('poll.html', poll = random_poll), 200
 
 @app.route('/api/poll/vote', methods=['POST'])
 def cast_vote():
-    if 'user_ID' not in session:
-        return '', 401
-
+    # redirect anonymous users to the login page
+    if current_user.is_anonymous:
+        flash("You need to log in to vote.")
+        return url_for("login"), 404
+    
     data = request.get_json()
     poll_id = data.get('poll_id')
     option = data.get('option')
 
+    # Invalid options are sent to the server.
     if not poll_id or option not in ['1', '2']:
-        abort(400)
+        flash("Invalid voting option detected. Please try again.")
+        return "", 400
 
-    user_vote = VotePoll.query.filter_by(user_ID=session['user_ID'], poll_ID=poll_id).first()
+    # User cannot vote on the same post
+    user_vote = VotePoll.query.filter_by(user_ID=current_user.user_ID, poll_ID=poll_id).first()
     if user_vote is not None:
-        return '', 403
+        flash("You have already voted.")
+        return "", 403
 
-    new_vote = VotePoll(user_ID=session['user_ID'], poll_ID=poll_id, Vote_opt=int(option))
+    new_vote = VotePoll(user_ID=current_user.user_ID, poll_ID=poll_id, Vote_opt=int(option))
     db.session.add(new_vote)
     db.session.commit()
 
     poll = Polls.query.filter_by(poll_ID=poll_id).first()
     if not poll:
         abort(404)
+    PollBar = render_template('PollBar.html', bar = bar_init(poll))
+    return render_template('PollResults.html', poll = poll, PollBar = PollBar), 200
 
-    return jsonify(poll.to_dict())
+@app.route('/Poll/<int:id>', methods=['GET', 'POST'])
+def get_post(id):
+    poll = Polls.query.get(id)
+    # Case that the user attempts to look for a pollID that currently doesnt exist
+    if(poll is None):
+        flash("Poll does not exist.")
+        return redirect(url_for('home'))
+    
+    # If the user is logged in, checks to see if they have already voted
+    if current_user.is_authenticated:
+        vote = VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = poll.poll_ID)
+    # Default no vote value of None, determines if poll results are shown when page is loaded
+    else:
+        vote = None
+
+    PollBar = render_template('PollBar.html', bar = bar_init(poll))
+    return render_template("IndividualPost.html", search=PollSearch() , poll=poll, vote=vote, PollBar = PollBar), 200
+    
+@app.route('/SearchOptions', methods=['POST'])
+def search_results():
+    form = PollSearch()
+
+    # Initialise variables for form data
+    input = form.SearchBar.data
+    mode = form.SearchMode.data
+    prompt = form.SearchPrompt.data
+    choice1 = form.SearchChoice1.data
+    choice2 = form.SearchChoice2.data
+    tag1 = form.Tag1.data
+    tag2 = form.Tag2.data
+    tag3 = form.Tag3.data
+    option = form.SearchOption.data
+    order = form.SearchOrder.data
+
+    # Validate the search mode used
+    if valid_choice(mode, form.SearchMode.choices):
+        # Return a list with posts found via form input & mode
+        posts = get_mode_list(mode, input)
+    else:
+        # Invalid search mode was submitted
+        flash("Invalid mode detected. Please try again.")
+        return redirect(url_for("home"))
+
+    # Returns posts whose prompt/choices contain a certain string (if the fields weren't empty)
+    posts = filter_by_prompt(prompt, posts)
+    posts = filter_by_choice(choice1, posts)
+    posts = filter_by_choice(choice2, posts)
+    posts = filter_by_tag(tag1, posts)
+    posts = filter_by_tag(tag2, posts)
+    posts = filter_by_tag(tag3, posts)
+
+    # Validate the sort order
+    if valid_choice(order, PollSearch().SearchOrder.choices):
+        # get which order to sort the posts by (Ascending / Descending)
+        mode = get_sort_order(order)
+    else:
+        # Invalid filter order was submitted
+        flash("Invalid sort order detected. Please try again.", "error")
+        return redirect(url_for("home"))
+
+    # Validate the sort option (what to sort by)
+    if valid_choice(option, PollSearch().SearchOption.choices):
+        # Sort the list using the previously calculated order and the search option
+        sort_by_option(option, mode, posts)
+    else:
+        # Invalid filter option was submitted
+        flash("Invalid sort option detected. Please try again.", "error")
+        return redirect(url_for("home"))
+
+    return render_template("SearchResults.html", search=PollSearch(), posts=posts)

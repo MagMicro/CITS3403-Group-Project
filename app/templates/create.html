@@ -24,23 +24,7 @@
             </div>
         </div>
         
-        <div id = "barBox" class = "col-12">
-            <div class = "bolt" id = "bolt1"><div class = "boltgap"></div></div>
-            <div class = "bolt" id = "bolt2"><div class = "boltgap"></div></div>
-            <div class = "bolt" id = "bolt3"><div class = "boltgap"></div></div>
-            <div class = "bolt" id = "bolt4"><div class = "boltgap"></div></div>
-
-            <div id = "lightray1" class = "lightray"></div>
-            <div id = "lightray2" class = "lightray"></div>
-            
-            <div id = "barContainer" class = "col-11">
-                <div class = " bar col-12">
-                    <div id = "left"><div class = "highlight"></div><div class = "shadow"></div></div>
-                    <div id = "right"><div class = "highlight"></div><div class = "shadow"></div></div>
-                </div>
-                <div id = "divider"></div>
-            </div>
-        </div>
+        {{PollBar |safe }}
 
         <h2>Select up to 3 tags:</h2>
 
@@ -59,30 +43,6 @@
     </form>   
 </div>
 
-<script>
-    var selectedTags = [];
-
-    function updateTagsField() {
-        document.querySelector('#tags').value = selectedTags.join(',');
-    }
-
-    document.querySelectorAll('.tag-button').forEach(item => {
-        item.addEventListener('click', event => {
-            if (selectedTags.includes(item.dataset.tag)) {
-                selectedTags = selectedTags.filter(tag => tag !== item.dataset.tag);
-                item.classList.remove('selected');
-                item.style.backgroundColor = 'rgb(255, 255, 255)';
-            } else {
-                if (selectedTags.length < 3) {
-                    selectedTags.push(item.dataset.tag);
-                    item.classList.add('selected');
-                    item.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
-                }
-            }
-            updateTagsField();
-        });
-    });
-
-
-</script>
+<script src="{{url_for('static', filename= 'js/TagFunctionality.js')}}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/TagsContainer.css') }}">
 {% endblock %}

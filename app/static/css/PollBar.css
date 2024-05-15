@@ -1,0 +1,120 @@
+.bar{
+    height:40px;
+    display:flex;
+    flex-direction:row;
+    border: 2px solid black;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:10px 10px rgba(0, 0, 0, 0.2);
+}
+
+#left{
+    width:50%;
+    background-color: rgb(32, 32, 255);
+}
+#right{
+    width:50%;
+    background-color: rgb(255, 32, 32);
+}
+
+.highlight{
+    width: 100%;
+    height: 20%;
+    position:relative;
+    top:0;
+    background-color: rgba(255, 253, 133, 0.5);
+}
+
+.shadow{
+    width: 100%;
+    height: 20%;
+    position:relative;
+    top:60%;
+    background-color: rgba(48, 47, 50, 0.5);
+}
+
+#divider{
+    position:absolute;
+    left:49.5%;
+    top:-25%;
+    width: 1%;
+    height:150%;
+    background-color: silver;
+    border: 1px solid black;
+}
+#barBox{
+    border-radius: 5px;
+    height: 100px;
+    background-color: rgb(135, 140, 163);
+    border: 2px solid black;
+    position:relative;
+    box-shadow:10px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#barContainer{
+    margin:auto;
+    position:relative;
+}
+
+.bolt{
+    overflow:hidden;
+    rotate: 45deg;
+    border-radius: 50px;
+    background-color: rgb(160, 167, 193);
+    height: 10px;
+    width: 10px;
+    position:absolute;
+    box-shadow:2px 1px rgba(0, 0, 0, 0.2);
+}
+
+#bolt1{
+    top:5px;
+    left:5px;
+}
+
+#bolt2{
+    top:5px;
+    right:5px;
+}
+
+#bolt3{
+    bottom:5px;
+    left:5px;
+}
+
+#bolt4{
+    bottom:5px;
+    right:5px;
+}
+
+.boltgap{
+    margin:auto;
+    background-color: rgb(110, 117, 144);
+    height: 15px;
+    width: 2px;
+    
+}
+.lightray{
+    position:absolute;
+    top:-25%;
+    height:150px;
+    rotate:30deg;
+    background-color:rgba(255,255,255,0.3);
+}
+
+#lightray1{
+    width:50px;
+    left: 20%;
+}
+
+#lightray2{
+    width:20px;
+    left: 35%;
+}
