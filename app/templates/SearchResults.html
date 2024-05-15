@@ -23,12 +23,12 @@
                 <br>
                 <span class="post-subheading">Posted on: </span><date>{{ post.readable_date() }}</date>
             </p>
-            <button id = "postRedirect" class = 'btn btn-primary'>Open</button>
+            <button class = 'btn btn-primary postRedirect'>Open</button>
         </div>
         {% endfor %}
         <script>
                 // Opens new window with a given post when a user clicks on it
-                $("#postRedirect").click(function(){window.open("/Poll/" + $(this).parent().attr("id"));});
+                $(".postRedirect").click(function(){window.open("/Poll/" + $(this).parent().attr("id"));});
         </script>
     </div>
     {% endif %}
