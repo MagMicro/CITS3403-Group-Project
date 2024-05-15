@@ -134,9 +134,8 @@ a{
     text-align: center;
     height:45px;
 }
-
-#top-navigation a:hover {
-    background-color: rgb(41, 42, 50);
+#home:hover, #create:hover, #account:hover{
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 #top-navigation a {
@@ -644,4 +643,13 @@ a{
     border-radius: 10px;
     box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
     width: 100px;
+}
+
+#searchButton{
+    height: 45px;
+    width: 60px;
+    float:right;
+    border-radius: 0px;
+    position: relative;
+    top:-8px;
 }

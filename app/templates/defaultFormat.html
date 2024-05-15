@@ -26,8 +26,9 @@
                 <td id = "create" class = "entry col-2"><a href="{{ url_for('create') }}"><div class = "fas fa-pen"></div> Create</a></td>
                 <search>
                     <form id = "postSearchForm" method="post" action="/SearchOptions">
-                        <td id = "search" class = "entry col-4"><div class = "fas fa-search"></div> 
+                        <td id = "search" class = "entry col-4"> 
                             {{search.SearchBar(placeholder = "Search", class = "col-10")}}
+                            <button id = "searchButton" class = 'entry btn btn-primary'><div class = "fas fa-search"></div></button>
                             <div id = "SearchDropdown" class = "dropdown col-12">
                                 <span class = "searchField">
                                     {{search.SearchMode.label}}
