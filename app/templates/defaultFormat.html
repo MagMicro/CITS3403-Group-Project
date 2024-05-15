@@ -29,32 +29,29 @@
                         <td id = "search" class = "entry col-4"> 
                             {{search.SearchBar(placeholder = "Search", class = "col-10")}}
                             <button id = "searchButton" class = 'entry btn btn-primary'><div class = "fas fa-search"></div></button>
-                            <div id = "SearchDropdown" class = "dropdown col-12">
+                            <div id = "SearchDropdown" class = "container dropdown">
                                 <span class = "searchField">
-                                    {{search.SearchMode.label}}
+                                    <label>{{search.SearchMode.label}}<br>(Optional)</label>
                                     {{search.SearchMode}}
                                 </span>
 
                                 <span class = "searchField">
-                                    {{search.SearchPrompt.label}}
+                                    <label>{{search.SearchPrompt.label}}<br>(Optional)</label>
                                     {{search.SearchPrompt(placeholder = "Enter a prompt here")}}<br>
-                                    (Optional)
                                 </span>
 
                                 <span class = "searchField">
-                                    {{search.SearchChoice1.label}}
+                                    <label>{{search.SearchChoice1.label}}<br>(Optional)</label>
                                     {{search.SearchChoice1(placeholder = "Enter a choice here")}}<br>
-                                    (Optional)
                                 </span>
 
                                 <span class = "searchField">
-                                    {{search.SearchChoice2.label}}
+                                    <label>{{search.SearchChoice2.label}}<br>(Optional)</label>
                                     {{search.SearchChoice2(placeholder = "Enter a choice here")}}<br>
-                                    (Optional)
                                 </span>
 
                                 <span class = "searchField">
-                                    <label id = "tagsLabel">Tags: <br>(Optional)<br> <button id = "tagReset" class = 'btn btn-primary'>Reset</button></label>
+                                    <label>Tags: <br>(Optional)<br> <button id = "tagReset" class = 'btn btn-primary'>Reset</button></label>
                                     <div id = "tagFields">
                                         {{search.Tag1(class = 'tagField', size = '4')}}
                                         {{search.Tag2(class = 'tagField', size = '4')}}

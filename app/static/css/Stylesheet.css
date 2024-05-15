@@ -571,8 +571,7 @@ a{
 }
 
 #SearchOrder, #SearchOption, #SearchMode, #SearchPrompt, #SearchChoice1, #SearchChoice2{
-    position: absolute;
-    left: 150px;
+    float: right;
     border-radius: 15px;
     box-shadow: 2px 2px rgba(0, 0, 0, 0.2);
 }
@@ -614,6 +613,7 @@ a{
 .tagField{
     text-align: center;
     margin-right: 15px;
+    font-size: 12px;
 }
 .tagField option{
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
@@ -624,13 +624,14 @@ a{
     position: relative;
 }
 
-#tagsLabel{
+.searchField > label{
     float: left;
     display: block;
 }
 
 #tagReset{
     margin-top: 10px;
+    margin-bottom: 10px;
     width: 80px;
     padding: 2px;
 }
