@@ -13,7 +13,7 @@
     <body>
         <table id = banner>
             <tr>
-                <td class = "entry col-2"><img src="static/Logo.png" id = "website-white" class = "col-5"></td>
+                <td class = "entry col-2"><img src="{{url_for('static', filename='Images/Logo.png')}}" id = "website-white" class = "col-5"></td>
                 <td id = "home" class = "entry col-2">
                     <a href="{{ url_for('home') }}"><div class = "fas fa-home"></div> Home</a>
                     <div id = "homeDropdown" class = "dropdown col-12">
