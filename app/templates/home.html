@@ -2,28 +2,31 @@
 
 {% block content %}
 
-    <section class="board p-4 mb-5">
+<div class="homepage-container">
+    <section class="homepage-intro">
         <h1>Welcome to SplitDif</h1>
         <p>Discover diverse opinions, create engaging polls, and share your unique perspective with the community!</p>
     </section>
 
-<main class="container mt-5">
-    <section class="board p-4 mb-5 text-center">
-        <h2>Start Creating Polls!</h2>
-        <a class="btn btn-primary btn-lg" href="{{ url_for('create') }}">Create Polls</a>
-        <a class="btn btn-primary btn-lg" href="{{ url_for('get_random_poll') }}">Vote Now</a>
-    </section>
+    <main class="homepage-card-container">
+        <section class="homepage-card">
+            <h2>Start Creating Polls!</h2>
+            <a class="homepage-btn homepage-btn-primary" href="{{ url_for('create') }}">Create Polls</a>
+            <a class="homepage-btn homepage-btn-primary" href="{{ url_for('get_random_poll') }}">Vote Now</a>
+        </section>
 
-    <section class="board p-4 mb-5">
-        <h2>Most Popular Polls</h2>
-        <p>Check out the polls that have been most popular among users.</p>
-        <a class="btn btn-info" href="{{ url_for('popular') }}">View Polls</a>
-    </section>
+        <section class="homepage-card">
+            <h2>Most Popular Polls</h2>
+            <p>Check out the polls that have been most popular among users.</p>
+            <a class="homepage-btn homepage-btn-info" href="{{ url_for('popular') }}">View Polls</a>
+        </section>
 
-    <section class="board p-4 mb-5">
-        <h2>User Rankings</h2>
-        <p>Explore the top-ranked users and see who stands out in the SplitDif community.</p>
-        <a class="btn btn-info" href="{{ url_for('ranking') }}">View Rankings</a>
-    </section>
-</main>
+        <section class="homepage-card">
+            <h2>User Rankings</h2>
+            <p>Explore the top-ranked users and see who stands out in the SplitDif community.</p>
+            <a class="homepage-btn homepage-btn-success" href="{{ url_for('ranking') }}">View Rankings</a>
+        </section>
+    </main>
+</div>
+
 {% endblock %}

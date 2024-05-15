@@ -1,23 +1,22 @@
 {% extends "defaultFormat.html" %}
-{%block content%}
-<div id = "About" class="board col-8 col-m-6 col-lg-5" >
-    <h1>About Page</h1>
 
-    <hr class = "col-sm-9">
-    <h3>What is SplitDif?</h3>
-    <img id = "logo" src="{{url_for('static', filename='Images/icon.png')}}">
-    <p id = "aboutBody">SplitDif is a site where users can create and vote on polls.<br> 
-        The more <b>divisive</b> a poll is, the better.
-    </p>
-
-    <p id = "aboutBody">
-        <b>Divisiveness</b> is measured by how close a poll achieves a <u>50/50 split.</u>
-    </p>
-
-    <p id = "aboutBody">Points are awarded corresponding to the <u>amount of votes</u> and the <u>difference between votes.</u></p>
-    <p>Users need an <a href="{{ url_for('login') }}">account</a> to create and vote on polls.</p>
-    
-    <hr class = "col-sm-9">
-
+{% block content %}
+<div class="about-container">
+    <div class="about-header">
+        <h1>About SplitDif</h1>
+        <hr class="divider">
+    </div>
+    <div class="about-content">
+        <div class="about-logo">
+            <img src="{{ url_for('static', filename='Images/icon.png') }}" alt="SplitDif Logo">
+        </div>
+        <div class="about-text">
+            <h2>What is SplitDif?</h2>
+            <p>SplitDif is a site where users can create and vote on polls. The more <b>divisive</b> a poll is, the better.</p>
+            <p><b>Divisiveness</b> is measured by how close a poll achieves a <u>50/50 split.</u></p>
+            <p>Points are awarded corresponding to the <u>amount of votes</u> and the <u>difference between votes.</u></p>
+            <p>Users need an <a href="{{ url_for('login') }}">account</a> to create and vote on polls.</p>
+        </div>
+    </div>
 </div>
 {% endblock %}
