@@ -374,8 +374,7 @@ def change_username():
         id = form.AccountID.data
         username = form.AccountUsername.data
         if current_user.is_authenticated and current_user.user_ID == id:
-            if not available_username(username):
-                flash("Username is already taken. Please try again")
+            if not valid_username(username) or not available_username(username):
                 return redirect(url_for('account'))
             
             user = Users.query.get(id)

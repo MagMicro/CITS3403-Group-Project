@@ -1,9 +1,9 @@
 function checkUsername(username){
     if(username.length < 5){
-        return "username must be longer than 5 characters."
+        return "username must be atleast 5 characters long."
     }
-    else if(username.length > 20){
-        return "max username length exceeded (20 characters)"
+    else if(username.length > 15){
+        return "max username length exceeded (15 characters)"
     }
     else{
         return "Valid username."
