@@ -635,3 +635,13 @@ a{
     width: 80px;
     padding: 2px;
 }
+
+#postRedirect{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 10px;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
+    width: 100px;
+}
