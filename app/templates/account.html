@@ -10,7 +10,7 @@
                 <div id="renameIcon" class = "fas fa-pencil"></div> 
                 #{{user.user_ID}}
                 {{form.hidden_tag()}}
-                {{form.AccountUsername(value = current_user.username)}}
+                {{form.AccountUsername(value = current_user.username, disabled = true)}}
                 {{form.AccountID(style = "display:none", value = user.user_ID)}}
             </form>
         </h1>

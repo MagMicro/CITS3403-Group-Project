@@ -208,9 +208,12 @@ a{
 #AccountUsername{
     display: inline;
     height: 60px;
-    width: 20ch;
+    width: 15ch;
     background-color: white;
     border: none;
+}
+#AccountUsername:disabled{
+    color:black;
 }
 
 #renameIcon{
