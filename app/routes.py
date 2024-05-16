@@ -307,8 +307,7 @@ def get_post(poll_id):
         vote = None
 
     PollBar = render_template('PollBar.html', bar = bar_init(poll))
-    comment = CommentForm()
-    return render_template("IndividualPost.html", search=PollSearch() , poll=poll, vote=vote, PollBar = PollBar, comment=comment), 200
+    return render_template("IndividualPost.html", search=PollSearch() , poll=poll, vote=vote, PollBar = PollBar, comment=CommentForm()), 200
     
 @app.route('/SearchOptions', methods=['POST'])
 def search_results():
