@@ -28,7 +28,7 @@ def sort_by_option(option, mode, posts):
         elif option == "Difference":
                 posts.sort(reverse=mode, key = lambda user_post: abs(user_post.left_percentage() - user_post.right_percentage()))
         elif option == "Date":
-                posts.sort(reverse=mode, key = lambda user_post: datetime.timestamp(datetime.strptime(user_post.date, "%d/%m/%Y %H:%M:%S")))
+                posts.sort(reverse=mode, key = lambda user_post: datetime.timestamp(user_post.creation_date))
         
 def valid_choice(choice, choices):
         if choice in choices:

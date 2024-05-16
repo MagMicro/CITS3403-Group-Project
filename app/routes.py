@@ -62,8 +62,7 @@ def create_account():
             flash("Email is already taken.", "error")
             return render_template('accountCreationPage.html', search=PollSearch(), form=form, title = "Account Creation")
 
-        creation_date = date.today().strftime("%d/%m/%Y")
-        new_user = Users(username=username, email=email, date=creation_date)
+        new_user = Users(username=username, email=email)
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
@@ -154,13 +153,11 @@ def create():
             if (post.Option1 == option1 and post.Option2 == option2) or (post.Option1 == option2 and post.Option2 == option1):
                 flash("Post already exists. Please try something else.", "error")
                 return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
-        
-        creation_date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
-        print(f"{creation_date}: User attempting to create a poll with options:{prompt}, {option1}, {option2} and tags: {form_tags}")
+        print(f"User attempting to create a poll with options:{prompt}, {option1}, {option2} and tags: {form_tags}")
         
         #Create new poll object
-        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID, date=creation_date, prompt=prompt)
+        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID, prompt=prompt)
         new_poll.add_tags(form_tags)
 
         db.session.add(new_poll)

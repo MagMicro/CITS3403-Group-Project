@@ -19,7 +19,7 @@
             <span class ="detailHeader">Posts:</span> {{user.count_posts()}}<br>
             <span class ="detailHeader">Average Percent from 50-50:</span> {{user.average_dif()}}%<br>
             <span class ="detailHeader">Ranking:</span> {{user.rank()}}<br>
-            <span class ="detailHeader">Joined:</span> {{user.date}}
+            <span class ="detailHeader">Joined:</span> {{user.creation_date.strftime("%d/%m/%Y")}}
         </p>
     </div>
     <hr class = "col-11">
