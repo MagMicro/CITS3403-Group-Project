@@ -39,25 +39,42 @@ function untoggle(id){
         $(id).animate({height:"toggle"});
     }
 }
-function init_dropdowns(){
-    $("#home").click(() => {
-        $("#homeDropdown").animate({height:"toggle"});
-        untoggle("#accountDropdown");
-        untoggle("#SearchDropdown");
-    });
-    $("#account").click(() => {
-        $("#accountDropdown").animate({height:"toggle"});
-        untoggle("#homeDropdown");
-        untoggle("#SearchDropdown");
-    });
+function init_dropdowns() {
+    $("#home").hover(
+        function() {
+            $("#homeDropdown").stop(true, true).slideDown();
+            untoggle("#accountDropdown");
+            untoggle("#SearchDropdown");
+        },
+        function() {
+            $("#homeDropdown").stop(true, true).slideUp();
+        }
+    );
 
-    $("#SearchBar").focus(() => {
-        if($("#SearchDropdown").css("display") == "none"){
-            $("#SearchDropdown").animate({height:"toggle"});
+    $("#account").hover(
+        function() {
+            $("#accountDropdown").stop(true, true).slideDown();
+            untoggle("#homeDropdown");
+            untoggle("#SearchDropdown");
+        },
+        function() {
+            $("#accountDropdown").stop(true, true).slideUp();
+        }
+    );
+
+    $("#SearchBar").focus(function() {
+        if ($("#SearchDropdown").css("display") == "none") {
+            $("#SearchDropdown").stop(true, true).slideDown();
         }
         untoggle("#homeDropdown");
         untoggle("#accountDropdown");
     });
+
+    function untoggle(selector) {
+        if ($(selector).css("display") != "none") {
+            $(selector).stop(true, true).slideUp();
+        }
+    }
 }
 
 function check_search_enter(event){

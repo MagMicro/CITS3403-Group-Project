@@ -665,7 +665,7 @@ a{
 .homepage-intro {
     text-align: center;
     padding: 60px 20px;
-    background-color: #2c2f3a;
+    background-color: rgb(62, 64, 76);
     border-radius: 15px;
     margin-bottom: 40px;
 }
@@ -770,9 +770,9 @@ a{
     max-width: 900px;
     margin: 60px auto;
     padding: 40px;
-    background-color: #ffffff;
+    background-color: rgb(62, 64, 76);
     border-radius: 15px;
-    color: #333;
+    color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
@@ -784,13 +784,13 @@ a{
 .about-header h1 {
     font-size: 36px;
     margin-bottom: 10px;
-    color: #007bff;
+    color: #ffffff;
 }
 
 .about-header .divider {
     width: 80%;
     margin: 10px auto;
-    border-top: 2px solid #007bff;
+    border-top: 2px solid #ffffff;
 }
 
 .about-content {
@@ -804,9 +804,8 @@ a{
 }
 
 .about-logo img {
-    width: 120px;
+    width: 200px;
     height: auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .about-text {
@@ -817,23 +816,24 @@ a{
 .about-text h2 {
     font-size: 28px;
     margin-bottom: 15px;
-    color: #007bff;
+    color: #ffffff;
 }
 
 .about-text p {
     font-size: 18px;
     line-height: 1.6;
     margin-bottom: 10px;
+    color: #f1f1f1;
 }
 
 .about-text a {
-    color: #007bff;
+    color: #f1f1f1;
     text-decoration: none;
     font-weight: bold;
 }
 
 .about-text a:hover {
-    color: #0056b3;
+    color: #ffffff;
     text-decoration: underline;
 }
 
@@ -848,7 +848,7 @@ a{
     }
 
     .about-logo {
-        width: 100px;
+        width: 160px;
     }
 
     .about-text h2 {
@@ -865,7 +865,7 @@ a{
     max-width: 1000px;
     margin: 50px auto;
     padding: 20px;
-    background: #2c2f3a;
+    background: rgb(62, 64, 76);
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     color: #fff;
