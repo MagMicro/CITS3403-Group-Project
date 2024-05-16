@@ -83,7 +83,8 @@ def account():
         user = Users.query.filter_by(user_ID=current_user.user_ID).first()
         deletion = AccountDeletion()
         filter = AccountPostFilter()
-        return render_template('account.html', search=PollSearch(), title = "account",  user=user, deletion=deletion, filter=filter)
+        form = AccountUsername()
+        return render_template('account.html', search=PollSearch(), title = "account",  user=user, deletion=deletion, filter=filter, form=form)
 
 @app.route('/about', methods=['GET'])
 def about():
@@ -364,3 +365,24 @@ def search_results():
         return redirect(url_for("home"))
 
     return render_template("SearchResults.html", search=PollSearch(), posts=posts)
+
+@app.route('/ChangeUsername', methods = ['POST'])
+@login_required
+def change_username():
+    form = AccountUsername()
+    if form.validate_on_submit():
+        id = form.AccountID.data
+        username = form.AccountUsername.data
+        if current_user.is_authenticated and current_user.user_ID == id:
+            if not valid_username(username) or not available_username(username):
+                return redirect(url_for('account'))
+            
+            user = Users.query.get(id)
+            user.username = username
+            db.session.add(user)
+            db.session.commit()
+            flash("Username was successfully changed.")
+            return redirect(url_for('account'))
+
+    flash("You do not have permission to do this.")
+    return redirect(url_for('account'))

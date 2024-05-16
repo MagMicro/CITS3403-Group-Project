@@ -8,7 +8,7 @@
 
     <img id = "logo" src="{{url_for('static', filename='Images/icon.png')}}">
 
-    <form id = "creationForm"class = "inputFields" method="POST" action="/create_account">
+    <form id = "creationForm" class = "inputFields" method="POST" action="/create_account">
         {{form.hidden_tag()}}
         <p style="color: red;">{{ message }}</p>
 
