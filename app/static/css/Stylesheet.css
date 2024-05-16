@@ -329,12 +329,12 @@ a{
     font-size: xx-large;
 }
 
-.postDelete{
+.deleteItem, #accountDelete{
     position:absolute;
-    font-size: 20px;
     top:10px;
     right:10px;
 }
+
 .fa-xmark:hover{
     color:red;
 }
@@ -349,7 +349,7 @@ a{
     box-shadow: 2px 2px grey;
 }
 
-#postConfirmMsg, #accountConfirmMsg{
+.deletionConfirmation{
     display:none;
     margin:auto;
     text-align: center;
@@ -361,24 +361,12 @@ a{
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-#accountConfirmMsg > .board{
+#accountDeletionBoard{
     position: relative;
     height:300px;
 }
 
-#postConfirmMsg > .board{
-    position: relative;
-    height:200px;
-}
-
-#confirm{
-    display:block;
-    position:absolute;
-    bottom:10px;
-    left:25%;
-}
-
-#postNotificationClose, #accountNotificationClose{
+.close{
     position:absolute;
     top:10px;
     right:20px;
@@ -386,10 +374,11 @@ a{
 }
 
 #accountDelete{
-    position: absolute;
-    top: 10px;
-    right: 15px;
     font-size: 30px;
+}
+
+#postDeletion{
+    font-size: 20px;
 }
 
 #vote-page .board {
@@ -769,8 +758,10 @@ a{
 }
 .userComment{
     display: flex;
+    position: relative;
     flex-direction:column;
     border-bottom: 1px solid black;
+    padding-bottom: 20px;
     padding-top: 10px;
     padding-left:40px;
     padding-right:40px;
@@ -784,5 +775,12 @@ a{
 .userCommentText{
     overflow-y: auto;
     white-space: pre-wrap;
-    word-wrap:break-word
+    word-wrap:break-word;
+    height: 80px;
+}
+
+.userCommentField{
+    border: 1px solid lightgray;
+    border-radius: 15px;
+    padding-left: 10px;
 }

@@ -93,9 +93,13 @@ class Polls(db.Model):
     
     #Deleted all votes associated with a given poll
     def delete_votes(self):
-        votes = VotePoll.query.filter_by(poll_ID=self.poll_ID)
-        for vote in votes:
+        for vote in self.votes:
             db.session.delete(vote)
+
+    #Deleted all comments associated with a given poll
+    def delete_comments(self):
+        for comment in self.comments:
+            db.session.delete(comment)
 
     # Adds tags to Polls model instance based on how many tags it received, default is N/A
     def add_tags(self, tags):

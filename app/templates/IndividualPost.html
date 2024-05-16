@@ -58,18 +58,23 @@
     <div class = "userCommentsContainer">
         {% for comment in poll.comments %}
         <div class = "userComment">
-            <div class = "userProfile">
+            <div class = "userProfile" id = "{{comment.comment_ID}}">
+                {% if comment.user.user_ID == current_user.user_ID %}<div id = "deleteComment" class ="fas fa-xmark deleteItem"></div>{% endif %}
                 <div class = "profileContainer smallContainer">
                     <img id = "commentProfilePic" src="{{url_for('static', filename='Images/DefaultProfile.png')}}">
                 </div>
                 <h5>{{comment.user.username}}</h5>
+                <p>Date: {{comment.readable_date()}}</p>
             </div>
-            <b>Comment: </b>
-            <p class = "userCommentText">{{comment.message}}</p>
+            <div class = "userCommentField">
+                <b>Comment: </b>
+                <p class = "userCommentText">{{comment.message}}</p>
+            </div>
         </div>
         {% endfor %}
     </div>
 </div>
+{{notification |safe }}
 {% endif %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/vote.css') }}">
 <script src="{{ url_for('static', filename='js/VoteFunctionality.js') }}"></script>

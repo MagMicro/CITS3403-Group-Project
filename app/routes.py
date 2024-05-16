@@ -80,10 +80,8 @@ def account():
         return redirect(url_for('login'))
     else:
         user = Users.query.filter_by(user_ID=current_user.user_ID).first()
-        deletion = AccountDeletion()
-        filter = AccountPostFilter()
-        form = AccountUsername()
-        return render_template('account.html', search=PollSearch(), title = "account",  user=user, deletion=deletion, filter=filter, form=form)
+        notification = render_template("Notification.html", item = "post")
+        return render_template('account.html', search=PollSearch(), title = "account",  user=user, deletion=AccountDeletion(), filter=AccountPostFilter(), form=AccountUsername(), notification = notification)
 
 @app.route('/about', methods=['GET'])
 def about():
@@ -189,23 +187,40 @@ def generate_posts(option, order):
 @app.route('/DeletePost/<int:id>', methods = ['GET'])
 @login_required
 def delete_user_post(id):
-    if(current_user.is_authenticated):
-        deleted_post = Polls.query.get(id)
+    deleted_post = Polls.query.get(id)
 
-        if deleted_post is None:
-            flash("Could not delete post. Post does not exist.")
+    if deleted_post is None:
+        flash("Could not delete post. Post does not exist.")
         
-        elif deleted_post.pollAuthor_ID != current_user.get_id():
-            flash("You are not authorized to delete someone elses post.")
+    elif deleted_post.pollAuthor_ID != current_user.get_id():
+        flash("You are not authorized to delete someone elses post.")
 
-        else:
-            deleted_post.delete_votes()
-            db.session.delete(deleted_post)
-            db.session.commit()
-            flash("Post was successfully deleted.")
+    else:
+        deleted_post.delete_votes()
+        deleted_post.delete_comments()
+
+        db.session.delete(deleted_post)
+        db.session.commit()
+        flash("Post was successfully deleted.")
         return url_for("account")
 
-    return url_for("login")
+@app.route('/DeleteComment/<int:id>', methods = ['GET'])
+@login_required
+def delete_user_comment(id):
+    deleted_comment = Comments.query.get(id)
+    poll_id = deleted_comment.poll_ID
+
+    if deleted_comment is None:
+        flash("Could not delete post. Post does not exist.")
+        
+    elif deleted_comment.user_ID != current_user.get_id():
+        flash("You are not authorized to delete someone elses comment.")
+
+    else:
+        db.session.delete(deleted_comment)
+        db.session.commit()
+        flash("Comment was successfully deleted.")
+        return url_for('get_post', poll_id=int(poll_id))
 
 @app.route("/DeleteAccount", methods = ["POST"])
 @login_required
@@ -219,6 +234,7 @@ def delete_account():
             #Delete all content associated with a user and their posts
             for post in current_user.posts:
                 post.delete_votes()
+                post.delete_comments()
                 db.session.delete(post)
     
             current = Users.query.get(current_user.user_ID)
@@ -307,7 +323,8 @@ def get_post(poll_id):
         vote = None
 
     PollBar = render_template('PollBar.html', bar = bar_init(poll))
-    return render_template("IndividualPost.html", search=PollSearch() , poll=poll, vote=vote, PollBar = PollBar, comment=CommentForm()), 200
+    notification = render_template("Notification.html", item = "comment")
+    return render_template("IndividualPost.html", search=PollSearch() , poll=poll, vote=vote, PollBar = PollBar, comment=CommentForm(), notification = notification), 200
     
 @app.route('/SearchOptions', methods=['POST'])
 def search_results():
