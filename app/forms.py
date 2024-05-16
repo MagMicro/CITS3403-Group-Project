@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, EmailField, BooleanField, SelectField, IntegerField
+from wtforms import StringField, SubmitField, PasswordField, EmailField, BooleanField, SelectField, IntegerField, TextAreaField
 from wtforms.validators import DataRequired
 
 class LoginForm(FlaskForm):
@@ -47,5 +47,11 @@ class AccountPostFilter(FlaskForm):
     SortOrder = SelectField("Order by:", choices = ["Ascending", "Descending"])
 
 class AccountUsername(FlaskForm):
-    AccountUsername = StringField()
-    AccountID = IntegerField()
+    AccountUsername = StringField(validators = [DataRequired()])
+    AccountID = IntegerField(validators = [DataRequired()])
+
+class CommentForm(FlaskForm):
+    CreatorID = IntegerField()
+    PostID = IntegerField()
+    CommentContent = TextAreaField()
+    CommentSubmit = SubmitField("Submit")

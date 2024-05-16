@@ -30,7 +30,44 @@
         </div>
     </div>
 </main>
+{% if current_user.is_authenticated%}
+<div id = "commentCreationBoard" class = "board col-8">
+    <div id ="newCommentHeader" class = "header col-12"> New Comment: <div class="fas fa-comment"></div></div>
+    <div id ="newCommentBody">
+        <div id = "currentUserProfile">
+            <div id = "profileContainer">
+                <img id = "userCommentProfilePic" src="{{url_for('static', filename='Images/DefaultProfile.png')}}">
+            </div>
+            <h1>{{current_user.user_ID}}# {{current_user.username}}</h1>
+        </div>
+        <h5>Create a new comment: <div class = "fas fa-pencil"></div></h5>
+        <form id = "commentCreation" class= "col-12" method = 'post' action = "{{url_for('create_comment')}}">
+            {{comment.hidden_tag()}}
+            {{comment.CreatorID(value = current_user.user_ID)}}
+            {{comment.PostID(value = poll.poll_ID)}}
+            {{comment.CommentContent(class = 'col-12', maxlength = 500, placeholder = "Enter a new comment here:")}}
+            <div id ="commentCreationButtons">
+                <button class="btn btn-secondary col-2">Cancel</button>
+                {{comment.CommentSubmit(class = "btn btn-primary col-2")}}
+            </div>
+        </form>
+    </div>
+</div>
+<div id = "userCommentsBoard" class = "board col-8">
+    <div id ="userCommentsHeader" class = "header col-12"> Comments: <div class="fas fa-comment"></div></div>
+    <div id = "userCommentsContainer">
+        {% for comment in poll.comments %}
+        <div class = "userComment">
+            <img id = "commentProfilePic" src="{{url_for('static', filename='Images/DefaultProfile.png')}}">
+            <h1>{{comment.user.user_ID}}# {{comment.user.username}}</h1>
+            <p>{{comment.message}}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/vote.css') }}">
 <script src="{{ url_for('static', filename='js/VoteFunctionality.js') }}"></script>
+<script src="{{ url_for('static', filename='js/CommentFunctionality.js') }}"></script>
 <script>$(document).ready(() => {handle_submission()});</script>
 {% endblock %}

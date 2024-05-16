@@ -1,7 +1,7 @@
 from app import app
 from flask import request, render_template, g, session, redirect, url_for, jsonify, abort, flash
 from app.forms import *
-from .models import Users, Polls, VotePoll
+from .models import Users, Polls, VotePoll, Comments
 from app import db
 from datetime import date, datetime
 
@@ -290,9 +290,9 @@ def cast_vote():
     PollBar = render_template('PollBar.html', bar = bar_init(poll))
     return render_template('PollResults.html', poll = poll, PollBar = PollBar), 200
 
-@app.route('/Poll/<int:id>', methods=['GET', 'POST'])
-def get_post(id):
-    poll = Polls.query.get(id)
+@app.route('/Poll/<int:poll_id>', methods=['GET', 'POST'])
+def get_post(poll_id):
+    poll = Polls.query.get(poll_id)
     # Case that the user attempts to look for a pollID that currently doesnt exist
     if(poll is None):
         flash("Poll does not exist.")
@@ -307,7 +307,8 @@ def get_post(id):
         vote = None
 
     PollBar = render_template('PollBar.html', bar = bar_init(poll))
-    return render_template("IndividualPost.html", search=PollSearch() , poll=poll, vote=vote, PollBar = PollBar), 200
+    comment = CommentForm()
+    return render_template("IndividualPost.html", search=PollSearch() , poll=poll, vote=vote, PollBar = PollBar, comment=comment), 200
     
 @app.route('/SearchOptions', methods=['POST'])
 def search_results():
@@ -383,3 +384,22 @@ def change_username():
 
     flash("You do not have permission to do this.")
     return redirect(url_for('account'))
+
+@app.route('/CreateComment', methods = ["POST"])
+@login_required
+def create_comment():
+    form = CommentForm()
+    if form.validate_on_submit and current_user.is_authenticated:
+        message = form.CommentContent.data
+        user_ID = form.CreatorID.data
+        poll_ID = form.PostID.data
+        print("hello", poll_ID)
+        comment = Comments(user_ID = user_ID, poll_ID = poll_ID, message = message)
+        db.session.add(comment)
+        db.session.commit()
+
+        flash("Comment was successfully created.")
+        return redirect(url_for('get_post', poll_id=int(poll_ID)))
+    
+    flash("Comment was too long. Please try again.")
+    return redirect(url_for('get_post', poll_id=int(poll_ID)))

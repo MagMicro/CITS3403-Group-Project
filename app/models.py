@@ -89,6 +89,8 @@ class Polls(db.Model):
 
     author = db.relationship('Users', back_populates = 'posts')
     votes = db.relationship('VotePoll', back_populates = 'poll')
+    comments = db.relationship('Comments')
+    
     #Deleted all votes associated with a given poll
     def delete_votes(self):
         votes = VotePoll.query.filter_by(poll_ID=self.poll_ID)
@@ -149,7 +151,12 @@ class Comments(db.Model):
     __tablename__ = 'Comments'
 
     comment_ID = db.Column(db.Integer, primary_key=True)
-    user_ID = db.Column(db.Integer, db.ForeignKey('Users.user_ID'), primary_key=True)
-    poll_ID = db.Column(db.Integer, db.ForeignKey('Polls.poll_ID'), primary_key=True)
-    message = db.Column(db.String)
+    user_ID = db.Column(db.Integer, db.ForeignKey('Users.user_ID'))
+    poll_ID = db.Column(db.Integer, db.ForeignKey('Polls.poll_ID'))
+    message = db.Column(db.String(500))
     creation_date = db.Column(db.DateTime, default=datetime.datetime.now())
+
+    user = db.relationship('Users')
+
+    def readable_date(self):
+        return self.creation_date.strftime('%d/%m/%Y') + self.creation_date.strftime(' %I:%M %p').replace("0", "")
