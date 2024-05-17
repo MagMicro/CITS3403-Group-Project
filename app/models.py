@@ -17,11 +17,10 @@ class Users(UserMixin, db.Model):
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String(128))
     creation_date = db.Column(db.DateTime, default=datetime.datetime.now())
-    
-    # Gets all user posts
+
     posts = db.relationship('Polls', back_populates = 'author')
-    # Gets all user votes
     votes = db.relationship('VotePoll', back_populates = 'voter')
+    comments = db.relationship('Comments', back_populates = 'user')
 
     #Override for finding the user ID
     def get_id(self):
@@ -101,6 +100,7 @@ class Polls(db.Model):
         for comment in self.comments:
             db.session.delete(comment)
 
+
     # Adds tags to Polls model instance based on how many tags it received, default is N/A
     def add_tags(self, tags):
         if len(tags) >= 1 and tags[0] != '':
@@ -126,7 +126,7 @@ class Polls(db.Model):
         return VotePoll.query.filter_by(poll_ID = self.poll_ID, Vote_opt = 2).count()
 
     def total_votes(self):
-        return self.total_left() + self.total_right()
+        return len(self.votes)
 
     def left_percentage(self):
         if self.total_left() != 0:
@@ -160,7 +160,7 @@ class Comments(db.Model):
     message = db.Column(db.String(500))
     creation_date = db.Column(db.DateTime, default=datetime.datetime.now())
 
-    user = db.relationship('Users')
+    user = db.relationship('Users', back_populates = 'comments')
 
     def readable_date(self):
         return self.creation_date.strftime('%d/%m/%Y') + self.creation_date.strftime(' %I:%M %p').replace("0", "")

@@ -1081,3 +1081,39 @@ a{
     border-radius: 15px;
     padding-left: 10px;
 }
+
+.popularPoll{
+    height: 100px;
+}
+
+#popularTimePeriod{
+    border-radius: 15px;
+    text-align: center;
+    font-size: 20px;
+}
+
+#popularTimePeriod option{
+    font-size: 15px;
+}
+
+#popularHeading{
+    font-size: 20px;
+}
+
+.rank{
+    font-size: 20px;
+    color:white;
+    background-color:#007bff;
+}
+.popularPoll:nth-child(2) > .rank{
+    background-color: gold;
+    margin: 5px;
+}
+
+.popularPoll:nth-child(3) > .rank{
+    background-color: silver;
+}
+
+.popularPoll:nth-child(4) > .rank{
+    background-color: #CD7F32;
+}

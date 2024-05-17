@@ -1,0 +1,19 @@
+<tr id = "popularHeading">
+    <th>Rank: </th>
+    <th>Poll: </th>
+    <th>Date: </th>
+    <th>All-time votes: </th>
+</tr>
+{% for poll in polls %}
+<tr class = "popularPoll">
+    <td class = "rank">{{loop.index}}#</td>
+    <td>
+        <div>
+            <h5>{{poll.prompt}}</h5>
+            <p>{{poll.Option1}} vs. {{poll.Option2}}</p>
+        </div>
+    </td>
+    <td>{{poll.readable_date()}}</td>
+    <td>{{poll.total_votes()}}</td>
+</tr>
+{% endfor %}

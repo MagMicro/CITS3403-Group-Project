@@ -117,3 +117,44 @@ def valid_username(username):
                 flash("Username cannot be longer than 15 characters.")
                 return False
         return True
+
+def get_timed_posts(choice):
+        polls = Polls.query.all()
+        final = []
+
+        # Time for daily in seconds
+        time = (24*60*60)
+
+        # Time for weekly in seconds
+        if choice == "Weekly":
+                time = time * 7
+
+        # Time for monthly in seconds
+        elif choice == "Monthly":
+                time = time * 31
+
+
+        #Important: This was a python workaround because the filter function for sql did not support datetime timestamp
+
+        # Holds the total amount of votes for each poll that falls within the timeframe
+        count_dict = {}
+        votes = VotePoll.query.all()
+        for vote in votes:
+                # Checks if the vote happened within the required timeframe
+                if(datetime.timestamp(datetime.now()) - datetime.timestamp(vote.creation_date) <= time):
+                        count_dict[vote.poll_ID] = count_dict.get(vote.poll_ID, 0) + 1
+
+        # Sorts polls based on number of votes
+        sorted_list = sorted(count_dict.items(), reverse = True, key = lambda item:item[1])
+        results = []
+
+        length = len(sorted_list)
+        index = 0
+
+        # Grabs the first 10 polls or less using the poll ID from each count
+        while index < 10 and index < length:
+                results.append(Polls.query.get(sorted_list[index][0]))
+                index += 1
+
+        return results
+

@@ -229,13 +229,12 @@ def delete_account():
     if(form.validate_on_submit()):
         password = form.password.data
 
-        #Verify the user's provided password
+        #Verify the password provided
         if(current_user.check_password(password)):
             #Delete all content associated with a user and their posts
-            for post in current_user.posts:
-                post.delete_votes()
-                post.delete_comments()
-                db.session.delete(post)
+            db.session.delete(current_user.posts)
+            db.session.delete(current_user.votes)
+            db.session.delete(current_user.comments)
     
             current = Users.query.get(current_user.user_ID)
             logout_user()
@@ -419,3 +418,13 @@ def create_comment():
     
     flash("Comment was too long. Please try again.")
     return redirect(url_for('get_post', poll_id=int(poll_ID)))
+
+@app.route('/GetMostPopular/<choice>', methods=['GET'])
+def popular_polls(choice):
+    print(choice)
+    if choice not in ["Daily", "Weekly", "Monthly"]:
+        flash("Invalid option detected. Please try again.")
+        return redirect(url_for("popular"))
+    
+    polls = get_timed_posts(choice)
+    return render_template("PopularPolls.html", polls = polls)
