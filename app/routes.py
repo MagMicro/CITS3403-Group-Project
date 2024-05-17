@@ -13,7 +13,6 @@ from flask_login import current_user, login_user, logout_user, login_required
 
 @app.route('/')
 def home():
-    print(PollSearch().SearchOption.choices)
     return render_template('home.html', search=PollSearch(), title="Home")
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -254,24 +253,29 @@ def delete_account():
 
 @app.route('/random', methods=['GET'])
 def get_random_poll():
-    return render_template('RandomPoll.html', search=PollSearch())
+    return redirect
 
 @app.route('/api/poll/random', methods=['GET'])
 def random_poll():
+    notification = render_template("Notification.html", item = "comment")
     if current_user.is_anonymous:
         available_polls = Polls.query.all()
         random_poll = random.choice(available_polls)
-        return render_template('poll.html', poll = random_poll), 200
+        PollBar = render_template('PollBar.html', bar = bar_init(random_poll))
+        return render_template('RandomPoll.html', poll = random_poll, search=PollSearch(), PollBar = PollBar, comment=CommentForm(), notification = notification), 200
 
     else:
         voted_polls = [vote.poll_ID for vote in VotePoll.query.filter_by(user_ID=current_user.user_ID).all()]
         available_polls = Polls.query.filter(Polls.poll_ID.notin_(voted_polls)).filter(Polls.pollAuthor_ID.notin_([current_user.user_ID])).all()
 
         if not available_polls:
-            return render_template('NoPolls.html'), 404
+            flash("No more random polls available. Please try again later.")
+            return redirect(url_for("home")), 404
 
         random_poll = random.choice(available_polls)
-        return render_template('poll.html', poll = random_poll), 200
+        PollBar = render_template('PollBar.html', bar = bar_init(random_poll))
+        notification = render_template("Notification.html", item = "comment")
+        return render_template('RandomPoll.html', poll = random_poll, search=PollSearch(), PollBar = PollBar, comment=CommentForm(), notification = notification), 200
 
 @app.route('/api/poll/vote', methods=['POST'])
 def cast_vote():
@@ -298,12 +302,7 @@ def cast_vote():
     new_vote = VotePoll(user_ID=current_user.user_ID, poll_ID=poll_id, Vote_opt=int(option))
     db.session.add(new_vote)
     db.session.commit()
-
-    poll = Polls.query.filter_by(poll_ID=poll_id).first()
-    if not poll:
-        abort(404)
-    PollBar = render_template('PollBar.html', bar = bar_init(poll))
-    return render_template('PollResults.html', poll = poll, PollBar = PollBar), 200
+    return "", 200
 
 @app.route('/Poll/<int:poll_id>', methods=['GET', 'POST'])
 def get_post(poll_id):

@@ -26,13 +26,11 @@ function voteOnPoll(pollId, option) {
 
             // Case that the vote was successfully logged in the system
             case 200:
-                const resultsDiv = document.getElementById("results");
-                resultsDiv.innerHTML = xhttp.responseText;
-                resultsDiv.style.display = "block";
+                $("#results").css("display", "block");
                 break;
 
-            //Case the user has already voted.
-            case 403:
+            //Case the user has already voted OR invalid option was detected
+            default:
                 window.location.reload();
         }
 
