@@ -34,16 +34,10 @@ function makeWord(){
     setTimeout(()=>{removeWord(word);}, 8000);
 }
 
-function untoggle(id){
-    if($(id).css("display") != "none"){
-        $(id).animate({height:"toggle"});
-    }
-}
 function init_dropdowns() {
     $("#home").hover(
         function() {
             $("#homeDropdown").stop(true, true).slideDown();
-            untoggle("#accountDropdown");
             untoggle("#SearchDropdown");
         },
         function() {
@@ -54,7 +48,6 @@ function init_dropdowns() {
     $("#account").hover(
         function() {
             $("#accountDropdown").stop(true, true).slideDown();
-            untoggle("#homeDropdown");
             untoggle("#SearchDropdown");
         },
         function() {
@@ -66,8 +59,13 @@ function init_dropdowns() {
         if ($("#SearchDropdown").css("display") == "none") {
             $("#SearchDropdown").stop(true, true).slideDown();
         }
-        untoggle("#homeDropdown");
-        untoggle("#accountDropdown");
+    });
+
+    $("body").click(function(event) {
+        const target = $(event.target);
+        if($("#SearchDropdown").css("display") != "none" && target.closest("#search").length === 0){
+            $("#SearchDropdown").stop(true, true).slideUp();
+        }
     });
 
     function untoggle(selector) {
