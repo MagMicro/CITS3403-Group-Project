@@ -25,10 +25,11 @@ body{
     height:700px;
 }
 #Creation{
-    height: 820px;
+    height: 850px;
 }
-#postCreate{
-    height:700px;
+#postCreateBoard{
+    height: 800px;
+    padding: 20px;
 }
 #About{
     height:700px;
@@ -57,11 +58,15 @@ body{
     border-radius: 15px;
     border-width:2px;
     padding:10px;
-    margin-bottom:10px;
-    box-shadow: 2px 2px grey;
+    margin-bottom:20px;
+    box-shadow: 6px 6px rgba(0, 0, 0, 0.2);
 }
 #username:hover, #password:hover{
     border-color: aqua;
+}
+#creationUsernameLabel, #creationEmailLabel, #creationPasswordLabel{
+    position: relative;
+    left: 50px;
 }
 .fieldName{
     display: block;
@@ -79,7 +84,6 @@ body{
 #redirectionPrompt{
     display: inline-block;
     border: none;
-    width: 350px;
     margin-top:10px;
     margin-bottom:10px;
 }
@@ -206,9 +210,10 @@ a{
 }
 
 #AccountUsername{
+    font-size: 100%;
     display: inline;
     height: 60px;
-    width: 30ch;
+    width: 50%;
     background-color: white;
     border: none;
 }

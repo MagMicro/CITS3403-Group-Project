@@ -267,7 +267,7 @@ def random_poll():
 
         if not available_polls:
             flash("No more random polls available. Please try again later.")
-            return redirect(url_for("home")), 404
+            return redirect(url_for("home"))
 
         random_poll = random.choice(available_polls)
         PollBar = render_template('PollBar.html', bar = bar_init(random_poll))

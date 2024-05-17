@@ -114,7 +114,7 @@ class Polls(db.Model):
     
     # Creates a human readable date for a given post
     def readable_date(self):
-        return self.creation_date.strftime('%d/%m/%Y') + self.creation_date.strftime(' %I:%M %p').replace("0", "")
+        return self.creation_date.strftime('%d/%m/%Y %-I:%M %p')
 
     # Functions to calcuate the proportion of votes for each given poll instance
     def total_left(self):

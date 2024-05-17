@@ -6,13 +6,13 @@
 </tr>
 {% for poll in polls %}
 <tr class = "popularPoll" id = "{{poll.poll_ID}}">
-    <td class = "rank">{{loop.index}}#</td>
-    <td>
+    <td class = "rank col-sm-1 col-md-1 col-lg-1">{{loop.index}}#</td>
+    <td class = "col-sm-6 col-md-5 col-lg-4">
         <h5>{{poll.prompt}}</h5>
         <p>{{poll.Option1}} vs. {{poll.Option2}}</p>
     </td>
-    <td>{{poll.readable_date()}}</td>
-    <td>{{poll.total_votes()}}</td>
+    <td class = "col-3">{{poll.readable_date()}}</td>
+    <td class = "col-2">{{poll.total_votes()}}</td>
 </tr>
 {% endfor %}
 <script>
