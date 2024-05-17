@@ -46,7 +46,7 @@ body{
     position:relative;
 }
 #accountHeader{
-    height: 40%;
+    height: 300px;
     overflow: hidden;
     padding-bottom: 20px;
 }
@@ -204,6 +204,22 @@ a{
 .dropdown > span:hover{
     background-color:rgb(84, 87, 103);
 }
+
+#AccountUsername{
+    display: inline;
+    height: 60px;
+    width: 15ch;
+    background-color: white;
+    border: none;
+}
+#AccountUsername:disabled{
+    color:black;
+}
+
+#renameIcon{
+    font-size: 30px;
+    color: navy;
+}
 #profilePic{
     display:block;
     overflow:hidden;
@@ -221,6 +237,7 @@ a{
 #userDetails{
     margin:10px;
     padding-bottom: 10px;
+    padding-left:10px;
 }
 .detailHeader{
     font-weight:bold;
@@ -670,6 +687,7 @@ a{
     top:-8px;
 }
 
+<<<<<<< HEAD
 /* Home Page */
 .homepage-container {
     max-width: 1200px;
@@ -964,3 +982,5 @@ a{
         padding: 10px;
     }
 }
+=======
+>>>>>>> f62f3260c50af771256885637d4a0607a5015115

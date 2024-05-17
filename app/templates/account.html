@@ -4,8 +4,16 @@
     <div class ="fas fa-xmark" id = "accountDelete"></div>
     <div id = "profileHeader" class = "header col-12"> User Profile: <div class = "fas fa-id-card"></div></div>
     <div id = "userDetails">
-        <img id = "profilePic" src = "">
-        <h1 id = "name">{{user.username}} #{{user.user_ID}}</h1>
+        <img id = "profilePic" src = "{{url_for('static', filename='Images/DefaultProfile.png')}}">
+        <h1 id = "name">
+            <form id = "usernameForm" method="post" action="{{url_for('change_username')}}">
+                <div id="renameIcon" class = "fas fa-pencil"></div> 
+                #{{user.user_ID}}
+                {{form.hidden_tag()}}
+                {{form.AccountUsername(value = current_user.username, disabled = true)}}
+                {{form.AccountID(style = "display:none", value = user.user_ID)}}
+            </form>
+        </h1>
         <p id = "userContent">
             <span class ="detailHeader">Email:</span> {{user.email}} <br> 
             <span class ="detailHeader">Posts:</span> {{user.count_posts()}}<br>

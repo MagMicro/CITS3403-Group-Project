@@ -2,6 +2,7 @@ from .models import Users, Polls, VotePoll
 from app import db
 from datetime import datetime
 from flask_login import current_user, login_user, logout_user, login_required
+from flask import flash
 
 # Initialises the display values for a given polls vote percentage bar
 def bar_init(poll):
@@ -101,3 +102,18 @@ def filter_by_tag(tag, posts):
                                 final.append(post)
                 return final
         return posts
+
+def available_username(username):
+        if not Users.query.filter_by(username=username).first() is None:
+                flash("Username is already taken. Please try again")
+                return False
+        return True
+
+def valid_username(username):
+        if len(username) < 5:
+                flash("Username must be longer than 5 characters.")
+                return False
+        if len(username) > 15:
+                flash("Username cannot be longer than 15 characters.")
+                return False
+        return True
