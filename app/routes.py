@@ -120,7 +120,7 @@ def create():
     if current_user.is_anonymous:
         return redirect(url_for('login'))
     
-    tags = ["Food", "Drink", "Sports", "Fashion", "Makeup", "Subject", "Video Games", "Anime", "Board Games" , "Animals", "People", "Places", "City", "Country", "Film", "TV", "Novels", "Abilities", "Historical", "Superheroes"]
+    tags = PollSearch().tags
     form = PollForm()
     PollBar = render_template('PollBar.html')
 
@@ -144,12 +144,13 @@ def create():
             if tag not in tags:
                 flash("Unrecognised tag/s detected. Please try again.", "error")
                 return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
-        
+        if option1 == option2:
+            flash("Options must be different. Please try again.", "error")
+            return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
         #Make sure the post is unique
-        for post in Polls.query.filter_by(prompt=prompt):
-            if (post.Option1 == option1 and post.Option2 == option2) or (post.Option1 == option2 and post.Option2 == option1):
-                flash("Post already exists. Please try something else.", "error")
-                return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
+        if (Polls.query.filter_by(Option1=option1, Option2=option2).first() is not None or Polls.query.filter_by(Option1=option2, Option2=option1).first() is not None):
+            flash("Post already exists. Please try something else.", "error")
+            return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
 
         print(f"User attempting to create a poll with options:{prompt}, {option1}, {option2} and tags: {form_tags}")
         
@@ -195,9 +196,7 @@ def delete_user_post(id):
         flash("You are not authorized to delete someone elses post.")
 
     else:
-        deleted_post.delete_votes()
-        deleted_post.delete_comments()
-
+        deleted_post.wipe_poll()
         db.session.delete(deleted_post)
         db.session.commit()
         flash("Post was successfully deleted.")
@@ -231,9 +230,7 @@ def delete_account():
         #Verify the password provided
         if(current_user.check_password(password)):
             #Delete all content associated with a user and their posts
-            db.session.delete(current_user.posts)
-            db.session.delete(current_user.votes)
-            db.session.delete(current_user.comments)
+            current_user.wipe_account()
     
             current = Users.query.get(current_user.user_ID)
             logout_user()

@@ -33,6 +33,11 @@ class Users(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
     
+    def wipe_account(self):
+        Polls.query.filter_by(pollAuthor_ID = self.user_ID).delete()
+        VotePoll.query.filter_by(user_ID = self.user_ID).delete()
+        Comments.query.filter_by(user_ID = self.user_ID).delete()
+
     def voted_polls(self):
         voted_polls = []
         for vote in self.votes:
@@ -90,16 +95,9 @@ class Polls(db.Model):
     votes = db.relationship('VotePoll', back_populates = 'poll')
     comments = db.relationship('Comments')
     
-    #Deleted all votes associated with a given poll
-    def delete_votes(self):
-        for vote in self.votes:
-            db.session.delete(vote)
-
-    #Deleted all comments associated with a given poll
-    def delete_comments(self):
-        for comment in self.comments:
-            db.session.delete(comment)
-
+    def wipe_poll(self):
+        Comments.query.filter_by(poll_ID = self.poll_ID).delete()
+        VotePoll.query.filter_by(poll_ID = self.poll_ID).delete()
 
     # Adds tags to Polls model instance based on how many tags it received, default is N/A
     def add_tags(self, tags):
