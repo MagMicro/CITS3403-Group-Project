@@ -1,15 +1,15 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, EmailField, BooleanField, SelectField, IntegerField
-from wtforms.validators import DataRequired
+from wtforms import StringField, SubmitField, PasswordField, EmailField, BooleanField, SelectField, IntegerField, TextAreaField
+from wtforms.validators import DataRequired, Length
 
 class LoginForm(FlaskForm):
-    username = StringField("Username:", validators = [DataRequired()])
+    username = StringField("Username:", validators = [DataRequired(), Length(min=5, max=15)])
     password = PasswordField("Password:", validators = [DataRequired()])
     remember = BooleanField("Stay signed in: ")
     submit = SubmitField("Submit")
 
 class CreationForm(FlaskForm):
-    username = StringField("Username:", validators = [DataRequired()])
+    username = StringField("Username:", validators = [DataRequired(), Length(min=5, max=15)])
     email = EmailField("Email:", validators = [DataRequired()])
     password = PasswordField("Password:", validators = [DataRequired()])
     submit = SubmitField("Submit")
@@ -47,5 +47,11 @@ class AccountPostFilter(FlaskForm):
     SortOrder = SelectField("Order by:", choices = ["Ascending", "Descending"])
 
 class AccountUsername(FlaskForm):
-    AccountUsername = StringField()
-    AccountID = IntegerField()
+    AccountUsername = StringField(validators = [DataRequired(), Length(min=5, max=15)])
+    AccountID = IntegerField(validators = [DataRequired()])
+
+class CommentForm(FlaskForm):
+    CreatorID = IntegerField()
+    PostID = IntegerField()
+    CommentContent = TextAreaField(validators= [DataRequired(), Length(max=500)])
+    CommentSubmit = SubmitField("Submit")
