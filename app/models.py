@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from app import db
+import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import login
 from flask_login import UserMixin
@@ -15,7 +16,7 @@ class Users(UserMixin, db.Model):
     username = db.Column(db.String, unique=True)
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String(128))
-    date = db.Column(db.String(10))
+    creation_date = db.Column(db.DateTime, default=datetime.datetime.now())
     
     # Gets all user posts
     posts = db.relationship('Polls', back_populates = 'author')
@@ -83,16 +84,22 @@ class Polls(db.Model):
     tag1 = db.Column(db.String)
     tag2 = db.Column(db.String)
     tag3 = db.Column(db.String)
-    date = db.Column(db.String)
+    creation_date = db.Column(db.DateTime, default=datetime.datetime.now())
     prompt = db.Column(db.String)
 
     author = db.relationship('Users', back_populates = 'posts')
     votes = db.relationship('VotePoll', back_populates = 'poll')
+    comments = db.relationship('Comments')
+    
     #Deleted all votes associated with a given poll
     def delete_votes(self):
-        votes = VotePoll.query.filter_by(poll_ID=self.poll_ID)
-        for vote in votes:
+        for vote in self.votes:
             db.session.delete(vote)
+
+    #Deleted all comments associated with a given poll
+    def delete_comments(self):
+        for comment in self.comments:
+            db.session.delete(comment)
 
     # Adds tags to Polls model instance based on how many tags it received, default is N/A
     def add_tags(self, tags):
@@ -109,13 +116,7 @@ class Polls(db.Model):
     
     # Creates a human readable date for a given post
     def readable_date(self):
-        hours = int(self.date.split(" ")[1][0:2])
-        time = self.date.split(" ")[1][2:5]
-        time_date = self.date.split(" ")[0]
-        if(hours // 12 >= 1):
-            return time_date + " " + str(hours % 12) + time + " PM"
-        else:
-            return self.date + " " + str(hours) + time + " AM" 
+        return self.creation_date.strftime('%d/%m/%Y') + self.creation_date.strftime(' %I:%M %p').replace("0", "")
 
     # Functions to calcuate the proportion of votes for each given poll instance
     def total_left(self):
@@ -145,6 +146,21 @@ class VotePoll(db.Model):
     user_ID = db.Column(db.Integer, db.ForeignKey('Users.user_ID'), primary_key=True)
     poll_ID = db.Column(db.Integer, db.ForeignKey('Polls.poll_ID'), primary_key=True)
     Vote_opt = db.Column(db.Integer)
+    creation_date = db.Column(db.DateTime, default=datetime.datetime.now())
 
     poll = db.relationship('Polls', back_populates = 'votes')
     voter = db.relationship('Users', back_populates = 'votes')
+
+class Comments(db.Model):
+    __tablename__ = 'Comments'
+
+    comment_ID = db.Column(db.Integer, primary_key=True)
+    user_ID = db.Column(db.Integer, db.ForeignKey('Users.user_ID'))
+    poll_ID = db.Column(db.Integer, db.ForeignKey('Polls.poll_ID'))
+    message = db.Column(db.String(500))
+    creation_date = db.Column(db.DateTime, default=datetime.datetime.now())
+
+    user = db.relationship('Users')
+
+    def readable_date(self):
+        return self.creation_date.strftime('%d/%m/%Y') + self.creation_date.strftime(' %I:%M %p').replace("0", "")

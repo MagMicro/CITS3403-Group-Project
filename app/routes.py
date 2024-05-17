@@ -1,7 +1,7 @@
 from app import app
 from flask import request, render_template, g, session, redirect, url_for, jsonify, abort, flash
 from app.forms import *
-from .models import Users, Polls, VotePoll
+from .models import Users, Polls, VotePoll, Comments
 from app import db
 from datetime import date, datetime
 
@@ -62,8 +62,7 @@ def create_account():
             flash("Email is already taken.", "error")
             return render_template('accountCreationPage.html', search=PollSearch(), form=form, title = "Account Creation")
 
-        creation_date = date.today().strftime("%d/%m/%Y")
-        new_user = Users(username=username, email=email, date=creation_date)
+        new_user = Users(username=username, email=email)
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
@@ -81,10 +80,8 @@ def account():
         return redirect(url_for('login'))
     else:
         user = Users.query.filter_by(user_ID=current_user.user_ID).first()
-        deletion = AccountDeletion()
-        filter = AccountPostFilter()
-        form = AccountUsername()
-        return render_template('account.html', search=PollSearch(), title = "account",  user=user, deletion=deletion, filter=filter, form=form)
+        notification = render_template("Notification.html", item = "post")
+        return render_template('account.html', search=PollSearch(), title = "account",  user=user, deletion=AccountDeletion(), filter=AccountPostFilter(), form=AccountUsername(), notification = notification)
 
 @app.route('/about', methods=['GET'])
 def about():
@@ -154,13 +151,11 @@ def create():
             if (post.Option1 == option1 and post.Option2 == option2) or (post.Option1 == option2 and post.Option2 == option1):
                 flash("Post already exists. Please try something else.", "error")
                 return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
-        
-        creation_date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
-        print(f"{creation_date}: User attempting to create a poll with options:{prompt}, {option1}, {option2} and tags: {form_tags}")
+        print(f"User attempting to create a poll with options:{prompt}, {option1}, {option2} and tags: {form_tags}")
         
         #Create new poll object
-        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID, date=creation_date, prompt=prompt)
+        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID, prompt=prompt)
         new_poll.add_tags(form_tags)
 
         db.session.add(new_poll)
@@ -192,23 +187,40 @@ def generate_posts(option, order):
 @app.route('/DeletePost/<int:id>', methods = ['GET'])
 @login_required
 def delete_user_post(id):
-    if(current_user.is_authenticated):
-        deleted_post = Polls.query.get(id)
+    deleted_post = Polls.query.get(id)
 
-        if deleted_post is None:
-            flash("Could not delete post. Post does not exist.")
+    if deleted_post is None:
+        flash("Could not delete post. Post does not exist.")
         
-        elif deleted_post.pollAuthor_ID != current_user.get_id():
-            flash("You are not authorized to delete someone elses post.")
+    elif deleted_post.pollAuthor_ID != current_user.get_id():
+        flash("You are not authorized to delete someone elses post.")
 
-        else:
-            deleted_post.delete_votes()
-            db.session.delete(deleted_post)
-            db.session.commit()
-            flash("Post was successfully deleted.")
+    else:
+        deleted_post.delete_votes()
+        deleted_post.delete_comments()
+
+        db.session.delete(deleted_post)
+        db.session.commit()
+        flash("Post was successfully deleted.")
         return url_for("account")
 
-    return url_for("login")
+@app.route('/DeleteComment/<int:id>', methods = ['GET'])
+@login_required
+def delete_user_comment(id):
+    deleted_comment = Comments.query.get(id)
+    poll_id = deleted_comment.poll_ID
+
+    if deleted_comment is None:
+        flash("Could not delete post. Post does not exist.")
+        
+    elif deleted_comment.user_ID != current_user.get_id():
+        flash("You are not authorized to delete someone elses comment.")
+
+    else:
+        db.session.delete(deleted_comment)
+        db.session.commit()
+        flash("Comment was successfully deleted.")
+        return url_for('get_post', poll_id=int(poll_id))
 
 @app.route("/DeleteAccount", methods = ["POST"])
 @login_required
@@ -222,6 +234,7 @@ def delete_account():
             #Delete all content associated with a user and their posts
             for post in current_user.posts:
                 post.delete_votes()
+                post.delete_comments()
                 db.session.delete(post)
     
             current = Users.query.get(current_user.user_ID)
@@ -293,9 +306,9 @@ def cast_vote():
     PollBar = render_template('PollBar.html', bar = bar_init(poll))
     return render_template('PollResults.html', poll = poll, PollBar = PollBar), 200
 
-@app.route('/Poll/<int:id>', methods=['GET', 'POST'])
-def get_post(id):
-    poll = Polls.query.get(id)
+@app.route('/Poll/<int:poll_id>', methods=['GET', 'POST'])
+def get_post(poll_id):
+    poll = Polls.query.get(poll_id)
     # Case that the user attempts to look for a pollID that currently doesnt exist
     if(poll is None):
         flash("Poll does not exist.")
@@ -310,7 +323,8 @@ def get_post(id):
         vote = None
 
     PollBar = render_template('PollBar.html', bar = bar_init(poll))
-    return render_template("IndividualPost.html", search=PollSearch() , poll=poll, vote=vote, PollBar = PollBar), 200
+    notification = render_template("Notification.html", item = "comment")
+    return render_template("IndividualPost.html", search=PollSearch() , poll=poll, vote=vote, PollBar = PollBar, comment=CommentForm(), notification = notification), 200
     
 @app.route('/SearchOptions', methods=['POST'])
 def search_results():
@@ -386,3 +400,22 @@ def change_username():
 
     flash("You do not have permission to do this.")
     return redirect(url_for('account'))
+
+@app.route('/CreateComment', methods = ["POST"])
+@login_required
+def create_comment():
+    form = CommentForm()
+    if form.validate_on_submit and current_user.is_authenticated:
+        message = form.CommentContent.data
+        user_ID = form.CreatorID.data
+        poll_ID = form.PostID.data
+        print("hello", poll_ID)
+        comment = Comments(user_ID = user_ID, poll_ID = poll_ID, message = message)
+        db.session.add(comment)
+        db.session.commit()
+
+        flash("Comment was successfully created.")
+        return redirect(url_for('get_post', poll_id=int(poll_ID)))
+    
+    flash("Comment was too long. Please try again.")
+    return redirect(url_for('get_post', poll_id=int(poll_ID)))

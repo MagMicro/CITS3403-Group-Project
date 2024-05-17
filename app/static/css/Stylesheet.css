@@ -208,7 +208,7 @@ a{
 #AccountUsername{
     display: inline;
     height: 60px;
-    width: 15ch;
+    width: 30ch;
     background-color: white;
     border: none;
 }
@@ -251,6 +251,7 @@ a{
 .header{
     height:50px;
     background-color: rgb(100, 104, 122);
+    text-align: center;
     color:white;
     font-size: 30px;
     box-shadow: 0px 10px rgba(0, 0, 0, 0.2);
@@ -328,12 +329,12 @@ a{
     font-size: xx-large;
 }
 
-.postDelete{
+.deleteItem, #accountDelete{
     position:absolute;
-    font-size: 20px;
     top:10px;
     right:10px;
 }
+
 .fa-xmark:hover{
     color:red;
 }
@@ -348,7 +349,7 @@ a{
     box-shadow: 2px 2px grey;
 }
 
-#postConfirmMsg, #accountConfirmMsg{
+.deletionConfirmation{
     display:none;
     margin:auto;
     text-align: center;
@@ -360,24 +361,12 @@ a{
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-#accountConfirmMsg > .board{
+#accountDeletionBoard{
     position: relative;
     height:300px;
 }
 
-#postConfirmMsg > .board{
-    position: relative;
-    height:200px;
-}
-
-#confirm{
-    display:block;
-    position:absolute;
-    bottom:10px;
-    left:25%;
-}
-
-#postNotificationClose, #accountNotificationClose{
+.close{
     position:absolute;
     top:10px;
     right:20px;
@@ -385,10 +374,11 @@ a{
 }
 
 #accountDelete{
-    position: absolute;
-    top: 10px;
-    right: 15px;
     font-size: 30px;
+}
+
+#postDeletion{
+    font-size: 20px;
 }
 
 #vote-page .board {
@@ -688,6 +678,7 @@ a{
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Home Page */
 .homepage-container {
     max-width: 1200px;
@@ -984,3 +975,112 @@ a{
 }
 =======
 >>>>>>> f62f3260c50af771256885637d4a0607a5015115
+=======
+#CreatorID, #PostID{
+    display: none;
+}
+#CommentContent{
+    resize: none;
+    height: 140px;
+    border-radius: 10px;
+    padding:10px;
+}
+#userCommentProfilePic{
+    width:100%;
+    height:100%;
+}
+
+.profileContainer{
+    overflow:hidden;
+    float:left;
+    margin-right: 10px;
+    border: 1px solid black;
+}
+
+.profileContainer#currentUserContainer{
+    width:100px;
+    height:100px;
+    border-radius: 15px;
+}
+
+.profileContainer.smallContainer{
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+}
+
+#commentCreationBoard{
+    display:flex;
+    overflow:hidden;
+    flex-direction: column;
+    padding-bottom: 10px;
+}
+#currentUserProfile{
+    margin-bottom: 10px;
+    height: 100px;
+}
+
+.userProfile{
+    height: 50px;
+    margin-bottom: 5px;
+}
+
+#newCommentHeader{
+    text-align: center;
+}
+
+#newCommentBody{
+    padding-left:40px;
+    padding-right:40px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+#userCommentsBoard{
+    height: 600px;
+    overflow: hidden;
+    padding-bottom: 10px;
+}
+
+#commentProfilePic{
+    width:100%;
+    height: 100%;
+}
+
+.userCommentsContainer{
+    display: flex;
+    height: 500px;
+    text-align: left;
+    flex-direction: column;
+    overflow-y:auto;
+}
+.userComment{
+    display: flex;
+    position: relative;
+    flex-direction:column;
+    border-bottom: 1px solid black;
+    padding-bottom: 20px;
+    padding-top: 10px;
+    padding-left:40px;
+    padding-right:40px;
+    height: 200px;
+}
+#commentCreationButtons{
+    text-align: right;
+    display: none;
+}
+
+.userCommentText{
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap:break-word;
+    height: 80px;
+}
+
+.userCommentField{
+    border: 1px solid lightgray;
+    border-radius: 15px;
+    padding-left: 10px;
+}
+>>>>>>> 24adbb9b818674981238b3a8ce808f22f21e57d7

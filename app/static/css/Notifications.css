@@ -1,0 +1,11 @@
+#notificationBoard{
+    position: relative;
+    height:200px;
+}
+
+#confirm{
+    display:block;
+    position:absolute;
+    bottom:10px;
+    left:25%;
+}

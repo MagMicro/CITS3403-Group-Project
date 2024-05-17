@@ -83,11 +83,11 @@ function verifyPassword(id){
 }
 
 $(document).ready( () =>{
-    $("#email").keydown(() => {verifyEmail("#email")});
+    $("#email").keyup(() => {verifyEmail("#email")});
     $("#email").blur(() => {verifyEmail("#email")});
-    $("#password").keydown(() => {verifyPassword("#password")});
+    $("#password").keyup(() => {verifyPassword("#password")});
     $("#password").blur(() => {verifyPassword("#password")});
-    $("#username").keydown(() => {verifyUsername("#username")});
+    $("#username").keyup(() => {verifyUsername("#username")});
     $("#username").blur(() => {verifyUsername("#username")});
     $("#creationForm").submit((event) => {if(!(
         checkUsername($("#username").val()) == "Valid username." && 
