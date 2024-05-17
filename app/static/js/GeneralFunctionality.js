@@ -37,40 +37,46 @@ function makeWord(){
 function init_dropdowns() {
     $("#home").hover(
         function() {
-            $("#homeDropdown").stop(true, true).slideDown();
+            toggle("#homeDropdown");
             untoggle("#SearchDropdown");
         },
         function() {
-            $("#homeDropdown").stop(true, true).slideUp();
+            untoggle("#homeDropdown");
         }
     );
 
     $("#account").hover(
         function() {
-            $("#accountDropdown").stop(true, true).slideDown();
+            toggle("#accountDropdown");
             untoggle("#SearchDropdown");
         },
         function() {
-            $("#accountDropdown").stop(true, true).slideUp();
+            untoggle("#accountDropdown");
         }
     );
 
     $("#SearchBar").focus(function() {
         if ($("#SearchDropdown").css("display") == "none") {
-            $("#SearchDropdown").stop(true, true).slideDown();
+            toggle("#SearchDropdown");
         }
     });
 
     $("body").click(function(event) {
         const target = $(event.target);
         if($("#SearchDropdown").css("display") != "none" && target.closest("#search").length === 0){
-            $("#SearchDropdown").stop(true, true).slideUp();
+            untoggle("#SearchDropdown");
         }
     });
 
     function untoggle(selector) {
         if ($(selector).css("display") != "none") {
-            $(selector).stop(true, true).slideUp();
+            $(selector).animate({height:"toggle"});
+        }
+    }
+
+    function toggle(selector) {
+        if ($(selector).css("display") == "none") {
+            $(selector).animate({height:"toggle"});
         }
     }
 }

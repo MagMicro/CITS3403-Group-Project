@@ -681,7 +681,7 @@ a{
 .homepage-intro {
     text-align: center;
     padding: 60px 20px;
-    background-color: rgb(62, 64, 76);
+    background-color: rgb(100, 104, 122);
     border-radius: 15px;
     margin-bottom: 40px;
 }
@@ -786,9 +786,9 @@ a{
     max-width: 900px;
     margin: 60px auto;
     padding: 40px;
-    background-color: rgb(62, 64, 76);
+    background-color: white;
     border-radius: 15px;
-    color: #ffffff;
+    color: black;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
@@ -800,13 +800,13 @@ a{
 .about-header h1 {
     font-size: 36px;
     margin-bottom: 10px;
-    color: #ffffff;
+    color: black;
 }
 
 .about-header .divider {
     width: 80%;
     margin: 10px auto;
-    border-top: 2px solid #ffffff;
+    border-top: 2px solid black;
 }
 
 .about-content {
@@ -816,7 +816,7 @@ a{
 }
 
 .about-logo {
-    margin-bottom: 20px;
+    margin: 30px;
 }
 
 .about-logo img {
@@ -832,24 +832,23 @@ a{
 .about-text h2 {
     font-size: 28px;
     margin-bottom: 15px;
-    color: #ffffff;
+    color: black;
 }
 
 .about-text p {
     font-size: 18px;
     line-height: 1.6;
     margin-bottom: 10px;
-    color: #f1f1f1;
+    color: black;
 }
 
 .about-text a {
-    color: #f1f1f1;
     text-decoration: none;
     font-weight: bold;
 }
 
 .about-text a:hover {
-    color: #ffffff;
+    color: black;
     text-decoration: underline;
 }
 

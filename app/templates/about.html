@@ -12,10 +12,51 @@
         </div>
         <div class="about-text">
             <h2>What is SplitDif?</h2>
-            <p>SplitDif is a site where users can create and vote on polls. The more <b>divisive</b> a poll is, the better.</p>
-            <p><b>Divisiveness</b> is measured by how close a poll achieves a <u>50/50 split.</u></p>
-            <p>Points are awarded corresponding to the <u>amount of votes</u> and the <u>difference between votes.</u></p>
-            <p>Users need an <a href="{{ url_for('login') }}">account</a> to create and vote on polls.</p>
+            <section> 
+                <h5>SplitDif is a website dedicated to user created polls:</h5>
+                Users can <b>create</b> polls, with a comparable pair of topics and a prompt. <br>
+                Other users can then <b>vote</b> on their polls with which option they believe best suits the given prompt.<br>
+                <br>
+                <b>Important: </b> Users need an <a href="{{ url_for('login') }}">account</a> to create and vote on polls.<br>
+                (However, they can still search polls look at other users posts)<br>
+                <br>
+                <b>Users can search for polls based on different filters:</b>
+                <ul>
+                    <li>Most popular (within different timespans)</li>
+                    <li>Most recently created</li>
+                    <li>Most divisive</li>
+                    <li>Particular prompt</li>
+                    <li>Particular option/s</li>
+                    <li>Based on topics (grouped by tags)</li>
+                    <li>Based on a given user</li>
+                </ul>
+                <b>Or a combination of all of the above!</b><br>
+                <br>
+                Users can also provide their opinion about a given poll within the <b>comment section</b><br>
+                Where they can write new comments for the poll and see what other users had to say and interact with their comments.<br>
+                (Or debate with them about their decision!)<br>
+            </section>
+            <br>
+            <section>
+                <h5> Nobody likes definitive answers:</h5>
+                The goal is to make the most <b>Divisive</b> polls possible. <br>
+                That make people really have to think aout their given choice!<br>
+                Polls that create interaction between users (or arguments...)
+            </section>
+            <br>
+            <p><b>Divisiveness</b> is measured by how close a poll achieves a <u>50/50 split</u></p>
+            <br>
+            <section>
+                <h5>Compete with other users: </h5>
+                Users are ranked against eachother based on how divisive their posts and how much interaction they are able to get.<br>
+                The overall ranking for a user is dependant on the amount of <b>points</b> they have accumilated. <br>
+                <br>
+                <b>Points are awarded by:</b>
+                <ul>
+                    <li>The amount of votes</li>
+                    <li>The difference between votes</li>
+                <ul>
+            </section>
         </div>
     </div>
 </div>
