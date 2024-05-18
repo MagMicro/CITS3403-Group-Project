@@ -272,7 +272,7 @@ def random_poll():
         random_poll = random.choice(available_polls)
         PollBar = render_template('PollBar.html', bar = bar_init(random_poll))
         notification = render_template("Notification.html", item = "comment")
-        return render_template('RandomPoll.html', form=PollSubmissionForm(), poll = random_poll, search=PollSearch(), PollBar = PollBar, comment=CommentForm(), notification = notification), 200
+        return render_template('RandomPoll.html', submission=PollSubmissionForm(), poll = random_poll, search=PollSearch(), PollBar = PollBar, comment=CommentForm(), notification = notification), 200
 
 @app.route('/api/poll/vote', methods=['POST'])
 def cast_vote():
@@ -319,7 +319,7 @@ def get_post(poll_id):
 
     PollBar = render_template('PollBar.html', bar = bar_init(poll))
     notification = render_template("Notification.html", item = "comment")
-    return render_template("IndividualPost.html", search=PollSearch() , form=PollSubmissionForm(), poll=poll, vote=vote, PollBar = PollBar, comment=CommentForm(), notification = notification), 200
+    return render_template("IndividualPost.html", search=PollSearch() , submission=PollSubmissionForm(), poll=poll, vote=vote, PollBar = PollBar, comment=CommentForm(), notification = notification), 200
     
 @app.route('/SearchOptions', methods=['POST'])
 def search_results():

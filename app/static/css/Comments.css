@@ -105,3 +105,10 @@
     border-radius: 15px;
     padding-left: 10px;
 }
+
+#emptyCommentsMessage{
+    position: absolute;
+    bottom: 40%;
+    left: 25%;
+    right:25%;
+}

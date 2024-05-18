@@ -9,9 +9,8 @@
             <div class="poll" id="{{poll.poll_ID}}">
                 <h3>{{poll.prompt}}</h3>
                 <form id="poll-form">
-                    {{form.hidden_tag()}}
                     <section class="poll-options">
-                            {% for option in form.SubmissionOptions %}
+                            {% for option in submission.SubmissionOptions %}
                                 {%if loop.index == 1 %}
                                 {{option.label(id = "option1Label", class = 'selectionOption', text = poll.Option1)}}
                                 {% else %}
@@ -20,7 +19,7 @@
                                 {{option}}
                             {% endfor %}
                     </section>
-                    {{form.SubmissionSubmit(class="btn-vote col-6 col-md-4")}}
+                    {{submission.SubmissionSubmit(class="btn-vote col-6 col-md-4")}}
                 </form>
                 <div id="results" {%if not vote%} style="display: none;"{% endif %}>
                     <h4><u>Results:</u></h4>
@@ -76,6 +75,13 @@
         </div>
         {% endfor %}
     </div>
+    {% if not poll.comments %}
+    <div id = "emptyCommentsMessage">
+        <h2>No Comments</h2>
+        <img id = "logo" src="{{url_for('static', filename='Images/icon.png')}}">
+        <p>Looks like there aren't any comments. <b>Be the first to write something.</b></p>
+    </div>
+    {% endif %}
 </div>
 {{notification |safe }}
 {% endif %}
