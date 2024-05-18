@@ -98,6 +98,8 @@ class Polls(db.Model):
     def wipe_poll(self):
         Comments.query.filter_by(poll_ID = self.poll_ID).delete()
         VotePoll.query.filter_by(poll_ID = self.poll_ID).delete()
+        db.session.delete(self)
+        db.session.commit()
 
     # Adds tags to Polls model instance based on how many tags it received, default is N/A
     def add_tags(self, tags):

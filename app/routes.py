@@ -21,7 +21,6 @@ def login():
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-        print(f"User attempted login with username: {username}, password: {password}")
 
         # Check if username matches a user in the database
         user = Users.query.filter_by(username=username).first()
@@ -29,16 +28,20 @@ def login():
             flash("Username does not exist. Please try again.", "error")
             return render_template('loginPage.html', search=PollSearch(), form=form)
         
+        # Check to see if the correct password, corresponding to the username, is provided
         elif user.check_password(password) == False:
-            flash("Invalid password. Please try again.", "error")
+            flash("Incorrect password. Please try again.", "error")
             return render_template('loginPage.html', search=PollSearch(), form=form)
         
+        # If a valid username and password is provided, user is logged in
         else:
             flash("Login Successful: Welcome " + user.username)
             login_user(user, remember = form.remember.data)
             return redirect(url_for('home'))
-
-    print("User accessed the login page")
+    
+    # Check if user has bypassed validation.
+    check_validation_bypass()
+    
     return render_template('loginPage.html', search=PollSearch(), form=form, title="Login")
 
 @app.route('/create_account', methods=['POST', 'GET'])
@@ -49,36 +52,36 @@ def create_account():
         email = form.email.data
         password = form.password.data
 
-        print(f"User attempting account creation with username: {username}, email: {email}, password: {password}")
-
         user = Users.query.filter_by(username=username).first()
+        # Case that the username used in creation is already taken.
         if user is not None:
-            flash("Username is already taken.", "error")
+            flash("Username is already taken. Please use a different one", "error")
             return render_template('accountCreationPage.html', search=PollSearch(), form=form, title = "Account Creation")
 
+        # Case that the email used in creation is already taken.
         user = Users.query.filter_by(email=email).first()
         if user is not None:
-            flash("Email is already taken.", "error")
+            flash("Email is already taken. Please use a different one", "error")
             return render_template('accountCreationPage.html', search=PollSearch(), form=form, title = "Account Creation")
 
-        new_user = Users(username=username, email=email)
-        new_user.set_password(password)
-        db.session.add(new_user)
-        db.session.commit()
-        print("Account created")
-        form = LoginForm()
-        flash("Account created successfully.")
-        return render_template('loginPage.html', search=PollSearch(), form=form, title = "Login")
+        # If a valid, unique username and password is provided, create the user account
+        create_account(username, email, password)
 
-    print("User accessed the Account Creation page")
+        flash("Account created successfully.")
+        return render_template('loginPage.html', search=PollSearch(), form=LoginForm(), title = "Login")
+    
+    # Check if user has bypassed validation.
+    check_validation_bypass()
     return render_template('accountCreationPage.html', search=PollSearch(), form=form, title="Account Creation")
 
 @app.route('/account', methods=['POST', 'GET'])
 def account():
+    # If the user is not logged in, redirect them to login page
     if current_user.is_anonymous:
         return redirect(url_for('login'))
     else:
-        user = Users.query.filter_by(user_ID=current_user.user_ID).first()
+        user = Users.query.get(current_user.user_ID)
+        # Render html for deletion notification and pass to account page.
         notification = render_template("Notification.html", item = "post")
         return render_template('account.html', search=PollSearch(), title = "account",  user=user, deletion=AccountDeletion(), filter=AccountPostFilter(), form=AccountUsername(), notification = notification)
 
@@ -87,7 +90,9 @@ def about():
     return render_template('about.html', search=PollSearch(), title="About")
 
 @app.route('/logout', methods=['GET'])
+@login_required
 def logout():
+    # If the requesting user is logged in, log their account out.
     logout_user()
     return redirect(url_for('home'))
 
@@ -97,12 +102,16 @@ def popular():
 
 @app.route('/ranking', methods=['GET'])
 def ranking():
+    # If the current user is not logged in, redirect them to login page.
     if current_user.is_anonymous:
+        flash("You must be logged in to access the leaderboard.")
         return redirect(url_for('login'))
     else:
-        user = Users.query.filter_by(user_ID=current_user.user_ID).first()
+        user = Users.query.get(current_user.user_ID)
         ranked = Users.get_ranks()
         rank_data = []
+
+        # Get the top 10 ranked users.
         for i in range(min(10, len(ranked.keys()))):
             key = list(ranked.keys())[i]
             user_rank = {
@@ -117,7 +126,9 @@ def ranking():
 
 @app.route('/create', methods=['POST', 'GET'])
 def create():
+    # If the current user is not logged in, redirect them to login page.
     if current_user.is_anonymous:
+        flash("You must be logged in to create posts.")
         return redirect(url_for('login'))
     
     tags = PollSearch().tags
@@ -126,99 +137,70 @@ def create():
 
     if form.validate_on_submit():
         userID = current_user.user_ID
+        # All post data normalised to prevent duplicate, capitalisation cases.
         prompt = form.prompt.data.capitalize()
         option1 = form.option1.data.capitalize()
         option2 = form.option2.data.capitalize()
+        
         form_tags = form.tags.data.split(',')
 
-        #Check that a valid prompt, and associated options are present
-        if prompt == "" or option1 == "" or option2 == "":
-                flash("Please make sure to fill in every field.", "error")
-                return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
-        
-        #Make sure all submitted tags are valid
-        for tag in form_tags:
-            if tag == "":
-                flash("Need to use one or more tags. Please try again.", "error")
-                return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
-            if tag not in tags:
-                flash("Unrecognised tag/s detected. Please try again.", "error")
-                return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
-        if option1 == option2:
-            flash("Options must be different. Please try again.", "error")
+        #Tags: Make sure all submitted tags are valid, and that there is atleast one
+        #Post: Make sure options are different from eachother, and that the overall poll is unique
+        if not (has_tags(form_tags) and valid_tags(tags, form_tags) and dif_options(option1, option2) and unique_post(option1, option2)):
             return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
-        #Make sure the post is unique
-        if (Polls.query.filter_by(Option1=option1, Option2=option2).first() is not None or Polls.query.filter_by(Option1=option2, Option2=option1).first() is not None):
-            flash("Post already exists. Please try something else.", "error")
-            return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
-
-        print(f"User attempting to create a poll with options:{prompt}, {option1}, {option2} and tags: {form_tags}")
         
         #Create new poll object
-        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID, prompt=prompt)
-        new_poll.add_tags(form_tags)
-
-        db.session.add(new_poll)
-        db.session.commit()
-        print("Poll created")
+        create_poll(option1, option2, userID, prompt, form_tags)
         flash("Poll has been created successfully.")
         return redirect(url_for('home'))
-    print("User accessed the create page")
+    
+    # Check if user has bypassed validation.
+    check_validation_bypass()
     return render_template('create.html', search=PollSearch(), form=form, title="Create", tags=tags, PollBar=PollBar)
 
 @app.route('/GetUserPosts/<option>/<order>', methods=["GET"])
+@login_required
 def generate_posts(option, order):
     posts = current_user.posts
-
-    if valid_choice(order, AccountPostFilter().SortOrder.choices):
-        mode = get_sort_order(order)
+    # Make sure the provided sorting options are valid
+    if valid_choice(order, AccountPostFilter().SortOrder.choices) and valid_choice(option, AccountPostFilter().SortOption.choices):
+        sort_by_option(option, get_sort_order(order), posts)
     else:
-        flash("Invalid sort order detected. Please try again.", "error")
-        return redirect(url_for("account"))
-
-    if valid_choice(option, AccountPostFilter().SortOption.choices):
-        sort_by_option(option, mode, posts)
-    else:
-        flash("Invalid sort option detected. Please try again.", "error")
         return redirect(url_for("account"))
         
-    return render_template("UserPosts.html", search=PollSearch(), posts = posts, url = url_for("home"))
+    return render_template("UserPosts.html", deletion = DeletionForm(), search=PollSearch(), posts = posts, url = url_for("home"))
 
-@app.route('/DeletePost/<int:id>', methods = ['GET'])
+@app.route('/DeletePost', methods = ['POST'])
 @login_required
-def delete_user_post(id):
-    deleted_post = Polls.query.get(id)
+def delete_user_post():
+    form = DeletionForm()
+    if form.validate_on_submit():
+        id = form.item_ID.data
+        deleted_post = Polls.query.get(id)
 
-    if deleted_post is None:
-        flash("Could not delete post. Post does not exist.")
-        
-    elif deleted_post.pollAuthor_ID != current_user.get_id():
-        flash("You are not authorized to delete someone elses post.")
+        # Checks if the post can / is allowed to be deleted
+        if verify_poll_deletion(deleted_post):
+            deleted_post.wipe_poll()
+            flash("Post was successfully deleted.")
 
-    else:
-        deleted_post.wipe_poll()
-        db.session.delete(deleted_post)
-        db.session.commit()
-        flash("Post was successfully deleted.")
-        return url_for("account")
+        return redirect(url_for("account"))
 
-@app.route('/DeleteComment/<int:id>', methods = ['GET'])
+@app.route('/DeleteComment', methods = ['POST'])
 @login_required
-def delete_user_comment(id):
-    deleted_comment = Comments.query.get(id)
-    poll_id = deleted_comment.poll_ID
+def delete_user_comment():
+    form = DeletionForm()
+    if form.validate_on_submit():
+        id = form.item_ID.data
+        poll_id = form.comment_post_ID.data
+        deleted_comment = Comments.query.get(id)
 
-    if deleted_comment is None:
-        flash("Could not delete post. Post does not exist.")
-        
-    elif deleted_comment.user_ID != current_user.get_id():
-        flash("You are not authorized to delete someone elses comment.")
+        # Checks if the comment can / is allowed to be deleted
+        if verify_comment_deletion(deleted_comment):
+            db.session.delete(deleted_comment)
+            db.session.commit()
+            flash("Comment was successfully deleted.")
 
-    else:
-        db.session.delete(deleted_comment)
-        db.session.commit()
-        flash("Comment was successfully deleted.")
-        return url_for('get_post', poll_id=int(poll_id))
+        return redirect(url_for('get_post', poll_id=int(poll_id)))
 
 @app.route("/DeleteAccount", methods = ["POST"])
 @login_required
@@ -319,7 +301,7 @@ def get_post(poll_id):
 
     PollBar = render_template('PollBar.html', bar = bar_init(poll))
     notification = render_template("Notification.html", item = "comment")
-    return render_template("IndividualPost.html", search=PollSearch() , submission=PollSubmissionForm(), poll=poll, vote=vote, PollBar = PollBar, comment=CommentForm(), notification = notification), 200
+    return render_template("IndividualPost.html", deletion = DeletionForm(), search=PollSearch() , submission=PollSubmissionForm(), poll=poll, vote=vote, PollBar = PollBar, comment=CommentForm(), notification = notification), 200
     
 @app.route('/SearchOptions', methods=['POST'])
 def search_results():

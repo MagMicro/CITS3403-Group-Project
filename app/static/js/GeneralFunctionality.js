@@ -96,5 +96,9 @@ function init(){
         event.preventDefault();
         $(".tagField option").prop("selected", false)
     })
+
+    $("#confirm").click(()=>{$("#deletionForm").submit()});
+    $(".deleteItem").click(function() {$("#itemDeletion").css("display", "block");});
+    $("#notificationClose").click(()=>{$("#itemDeletion").css("display", "none");});
 }
 $(document).ready(init);

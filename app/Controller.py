@@ -2,7 +2,55 @@ from .models import Users, Polls, VotePoll
 from app import db
 from datetime import datetime
 from flask_login import current_user, login_user, logout_user, login_required
-from flask import flash
+from flask import flash, request
+
+# Creates a new account with the provided details
+def create_account(username, email, password):
+        new_user = Users(username=username, email=email)
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+
+# Create a new poll with the provided details
+def create_poll(option1, option2, userID, prompt, form_tags):
+        new_poll = Polls(Option1=option1, Option2=option2, pollAuthor_ID=userID, prompt=prompt)
+        new_poll.add_tags(form_tags)
+        db.session.add(new_poll)
+        db.session.commit()
+
+# Check if provided lists contains tags
+def has_tags(tags):
+        if len(tags) == 0 or tags[0] == "":
+                flash("Need to use one or more tags. Please try again.", "error")
+                return False
+        return True
+
+# Check that all tags submitted are valid
+def valid_tags(tags, form_tags):
+        for tag in form_tags:
+            if tag not in tags:
+                flash("Unrecognised tag/s detected. Please try again.", "error")
+                return False
+        return True
+
+# Check that the options provided are diferrent
+def dif_options(option1, option2):
+        if option1 == option2:
+                flash("Options must be different. Please try again.", "error")
+                return False
+        return True
+
+# Make sure the overall post is unique
+def unique_post(option1, option2):
+        if (Polls.query.filter_by(Option1=option1, Option2=option2).first() is not None or Polls.query.filter_by(Option1=option2, Option2=option1).first() is not None):
+                flash("Post already exists. Please try something else.", "error")
+                return False
+        return True
+
+# Provides bypass message if validation fails (user tampering)
+def check_validation_bypass():
+        if request.method != "GET":
+                flash("Form validation bypass detected. Please fill form correctly.")
 
 # Initialises the display values for a given polls vote percentage bar
 def bar_init(poll):
@@ -34,7 +82,29 @@ def valid_choice(choice, choices):
         if choice in choices:
                 return True
         else:
+                flash("Invalid option detected. Please try again.", "error")
                 return False
+
+
+def verify_poll_deletion(poll):
+        if poll is None:
+                flash("Could not delete poll. poll does not exist.")
+        
+        elif poll.pollAuthor_ID != current_user.get_id():
+                flash("You are not authorized to delete someone elses poll.")
+        else:
+                return True
+        return False
+
+def verify_comment_deletion(comment):
+        if comment is None:
+                flash("Could not delete comment. comment does not exist.")
+        
+        elif comment.user_ID != current_user.get_id():
+                flash("You are not authorized to delete someone elses comment.")
+        else:
+                return True
+        return False
 
 def get_mode_list(mode, input, voted):
         if mode == "All":

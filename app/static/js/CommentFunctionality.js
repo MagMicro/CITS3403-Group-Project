@@ -14,20 +14,4 @@ $(document).ready(() =>{
         $("#CommentContent").val("");
         $("#commentCreationButtons").css("display", "none");
     })
-
-    function delete_comment(id){
-        $.get("/DeleteComment/" + id, function (data) {window.location.replace(data)});
-    };
-
-    let id;
-    $(".deleteItem").click(
-    function() 
-        {
-            id = $(this).parent().attr("id");
-            $("#itemDeletion").css("display", "block");
-        }
-    )
-
-    $("#notificationClose").click(()=>{$("#itemDeletion").css("display", "none");});
-    $("#confirm").click(()=>{delete_comment(id);});
 });

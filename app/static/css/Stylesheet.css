@@ -895,3 +895,7 @@ a{
     color:white;
     background-color:#007bff;
 }
+
+#deletionForm{
+    display:none;
+}
