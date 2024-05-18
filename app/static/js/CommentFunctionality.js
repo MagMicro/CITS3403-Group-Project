@@ -14,5 +14,4 @@ $(document).ready(() =>{
         $("#CommentContent").val("");
         $("#commentCreationButtons").css("display", "none");
     })
-    onclick = "window.open('/Poll/' + $(this).attr('id'))"
 });

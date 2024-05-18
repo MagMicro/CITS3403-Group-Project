@@ -269,14 +269,8 @@ def cast_vote():
         flash("Invalid voting option detected. Please try again.")
         return "", 400
 
-    # User cannot vote on the same post
-    user_vote = VotePoll.query.filter_by(user_ID=current_user.user_ID, poll_ID=poll_id).first()
-    if user_vote is not None:
-        flash("You have already voted.")
-        return "", 403
-    
-    if Polls.query.get(poll_id).pollAuthor_ID == current_user.user_ID:
-        flash("You cannot vote on your own polls.")
+    # Check if the user is allowed to vote
+    if not vote_allowed(poll_id):
         return "", 403
 
     new_vote = VotePoll(user_ID=current_user.user_ID, poll_ID=poll_id, Vote_opt=int(option))
@@ -292,17 +286,9 @@ def get_post(poll_id):
         flash("Poll does not exist.")
         return redirect(url_for('main.home'))
     
-    # If the user is logged in, checks to see if they have already voted
-    if current_user.is_authenticated:
-        vote = VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = poll.poll_ID).first()
-        print(vote)
-    # Default no vote value of None, determines if poll results are shown when page is loaded
-    else:
-        vote = None
-
     PollBar = render_template('PollBar.html', bar = bar_init(poll))
     notification = render_template("Notification.html", item = "comment")
-    return render_template("IndividualPost.html",  deletion = DeletionForm(), search=PollSearch() , submission=PollSubmissionForm(), poll=poll, vote=vote, PollBar = PollBar, comment=CommentForm(), notification = notification), 200
+    return render_template("IndividualPost.html",  deletion = DeletionForm(), search=PollSearch() , submission=PollSubmissionForm(), poll=poll, show_results=show_results(poll), PollBar = PollBar, comment=CommentForm(), notification = notification), 200
     
 @main.route('/SearchOptions', methods=['POST'])
 def search_results():

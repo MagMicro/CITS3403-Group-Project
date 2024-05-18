@@ -46,12 +46,31 @@ def unique_post(option1, option2):
                 flash("Post already exists. Please try something else.", "error")
                 return False
         return True
+# Checks if the user submitting the vote is allowed to vote
+def vote_allowed(poll_id):
+        if VotePoll.query.filter_by(user_ID=current_user.user_ID, poll_ID=poll_id).first() is not None:
+                flash("You have already voted.")
+                return False
+        elif Polls.query.get(poll_id).pollAuthor_ID == current_user.user_ID:
+                flash("You cannot vote on your own polls.")
+                return False
+        else:
+                return True
 
 # Provides bypass message if validation fails (user tampering)
 def check_validation_bypass():
         if request.method != "GET":
                 flash("Form validation bypass detected. Please fill form correctly.")
 
+
+def show_results(poll):
+        # If the user is logged in, checks to see if they have already voted
+        if current_user.is_authenticated:
+                return VotePoll.query.filter_by(user_ID = current_user.user_ID, poll_ID = poll.poll_ID).first() is not None or poll.pollAuthor_ID == current_user.user_ID
+        
+        # Default no vote value of None, determines if poll results are shown when page is loaded
+        else:
+                return False
 # Initialises the display values for a given polls vote percentage bar
 def bar_init(poll):
         bar = {}

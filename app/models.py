@@ -95,6 +95,11 @@ class Polls(db.Model):
     votes = db.relationship('VotePoll', back_populates = 'poll')
     comments = db.relationship('Comments')
     
+    # Checks if a poll has votes or not
+    def no_votes(self):
+        return len(self.votes) == 0
+    
+    # Clears all data about a given poll
     def wipe_poll(self):
         Comments.query.filter_by(poll_ID = self.poll_ID).delete()
         VotePoll.query.filter_by(poll_ID = self.poll_ID).delete()
