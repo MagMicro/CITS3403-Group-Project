@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, EmailField, BooleanField, SelectField, IntegerField, TextAreaField
+from wtforms import StringField, SubmitField, PasswordField, EmailField, BooleanField, SelectField, IntegerField, TextAreaField, RadioField
 from wtforms.validators import DataRequired, Length
 
 class LoginForm(FlaskForm):
@@ -21,6 +21,9 @@ class PollForm(FlaskForm):
     tags = StringField("Tags:")
     submit = SubmitField("Submit")
 
+class PollSubmissionForm(FlaskForm):
+    SubmissionOptions = RadioField(choices=[('1','option'),('2','option')])
+    SubmissionSubmit = SubmitField("Vote")
     
 class AccountDeletion(FlaskForm):
     password = PasswordField("Password:", validators = [DataRequired()])

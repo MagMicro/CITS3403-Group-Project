@@ -386,6 +386,13 @@ a{
     font-size: 20px;
 }
 
+#SubmissionOptions{
+    list-style: none;
+}
+#SubmissionOptions-0, #SubmissionOptions-1{
+    display: none;
+}
+
 #vote-page .board {
     background-color: #ffffff;
     border-radius: 8px;
