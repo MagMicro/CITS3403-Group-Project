@@ -1,21 +1,22 @@
-from app import app
-from flask import request, render_template, g, session, redirect, url_for, jsonify, abort, flash
+from app import db, bcrypt
+from flask import request, render_template, g, session, redirect, url_for, jsonify, abort, flash, Blueprint
 from app.forms import *
 from .models import Users, Polls, VotePoll, Comments
-from app import db
 from datetime import date, datetime
-
 from app.Controller import *
 import random
+from flask_login import current_user, login_user, logout_user, login_required
+
+main = Blueprint('main', __name__)
 
 
 from flask_login import current_user, login_user, logout_user, login_required
 
-@app.route('/')
+@main.route('/')
 def home():
     return render_template('home.html', search=PollSearch(), title="Home")
 
-@app.route('/login', methods=['POST', 'GET'])
+@main.route('/login', methods=['POST', 'GET'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -37,14 +38,14 @@ def login():
         else:
             flash("Login Successful: Welcome " + user.username)
             login_user(user, remember = form.remember.data)
-            return redirect(url_for('home'))
+            return redirect(url_for('main.home'))
     
     # Check if user has bypassed validation.
     check_validation_bypass()
     
     return render_template('loginPage.html', search=PollSearch(), form=form, title="Login")
 
-@app.route('/create_account', methods=['POST', 'GET'])
+@main.route('/create_account', methods=['POST', 'GET'])
 def create_account():
     form = CreationForm()
     if form.validate_on_submit():
@@ -65,7 +66,7 @@ def create_account():
             return render_template('accountCreationPage.html', search=PollSearch(), form=form, title = "Account Creation")
 
         # If a valid, unique username and password is provided, create the user account
-        create_account(username, email, password)
+        register_account(username, email, password)
 
         flash("Account created successfully.")
         return render_template('loginPage.html', search=PollSearch(), form=LoginForm(), title = "Login")
@@ -74,38 +75,38 @@ def create_account():
     check_validation_bypass()
     return render_template('accountCreationPage.html', search=PollSearch(), form=form, title="Account Creation")
 
-@app.route('/account', methods=['POST', 'GET'])
+@main.route('/account', methods=['POST', 'GET'])
 def account():
     # If the user is not logged in, redirect them to login page
     if current_user.is_anonymous:
-        return redirect(url_for('login'))
+        return redirect(url_for('main.login'))
     else:
         user = Users.query.get(current_user.user_ID)
         # Render html for deletion notification and pass to account page.
         notification = render_template("Notification.html", item = "post")
         return render_template('account.html', search=PollSearch(), title = "account",  user=user, deletion=AccountDeletion(), filter=AccountPostFilter(), form=AccountUsername(), notification = notification)
 
-@app.route('/about', methods=['GET'])
+@main.route('/about', methods=['GET'])
 def about():
     return render_template('about.html', search=PollSearch(), title="About")
 
-@app.route('/logout', methods=['GET'])
+@main.route('/logout', methods=['GET'])
 @login_required
 def logout():
     # If the requesting user is logged in, log their account out.
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for('main.home'))
 
-@app.route('/popular', methods=['GET'])
+@main.route('/popular', methods=['GET'])
 def popular():
     return render_template('popular.html', search=PollSearch(), title="Popular")
 
-@app.route('/ranking', methods=['GET'])
+@main.route('/ranking', methods=['GET'])
 def ranking():
     # If the current user is not logged in, redirect them to login page.
     if current_user.is_anonymous:
         flash("You must be logged in to access the leaderboard.")
-        return redirect(url_for('login'))
+        return redirect(url_for('main.login'))
     else:
         user = Users.query.get(current_user.user_ID)
         ranked = Users.get_ranks()
@@ -124,12 +125,12 @@ def ranking():
             
         return render_template('ranking.html', search=PollSearch(), title="Ranking", user=user, rank_data=rank_data)
 
-@app.route('/create', methods=['POST', 'GET'])
+@main.route('/create', methods=['POST', 'GET'])
 def create():
     # If the current user is not logged in, redirect them to login page.
     if current_user.is_anonymous:
         flash("You must be logged in to create posts.")
-        return redirect(url_for('login'))
+        return redirect(url_for('main.login'))
     
     tags = PollSearch().tags
     form = PollForm()
@@ -152,13 +153,13 @@ def create():
         #Create new poll object
         create_poll(option1, option2, userID, prompt, form_tags)
         flash("Poll has been created successfully.")
-        return redirect(url_for('home'))
+        return redirect(url_for('main.home'))
     
     # Check if user has bypassed validation.
     check_validation_bypass()
     return render_template('create.html', search=PollSearch(), form=form, title="Create", tags=tags, PollBar=PollBar)
 
-@app.route('/GetUserPosts/<option>/<order>', methods=["GET"])
+@main.route('/GetUserPosts/<option>/<order>', methods=["GET"])
 @login_required
 def generate_posts(option, order):
     posts = current_user.posts
@@ -166,11 +167,11 @@ def generate_posts(option, order):
     if valid_choice(order, AccountPostFilter().SortOrder.choices) and valid_choice(option, AccountPostFilter().SortOption.choices):
         sort_by_option(option, get_sort_order(order), posts)
     else:
-        return redirect(url_for("account"))
+        return redirect(url_for("main.account"))
         
     return render_template("UserPosts.html", deletion = DeletionForm(), search=PollSearch(), posts = posts, url = url_for("home"))
 
-@app.route('/DeletePost', methods = ['POST'])
+@main.route('/DeletePost', methods = ['POST'])
 @login_required
 def delete_user_post():
     form = DeletionForm()
@@ -183,9 +184,9 @@ def delete_user_post():
             deleted_post.wipe_poll()
             flash("Post was successfully deleted.")
 
-        return redirect(url_for("account"))
+        return redirect(url_for("main.account"))
 
-@app.route('/DeleteComment', methods = ['POST'])
+@main.route('/DeleteComment', methods = ['POST'])
 @login_required
 def delete_user_comment():
     form = DeletionForm()
@@ -200,9 +201,9 @@ def delete_user_comment():
             db.session.commit()
             flash("Comment was successfully deleted.")
 
-        return redirect(url_for('get_post', poll_id=int(poll_id)))
+        return redirect(url_for('main.get_post', poll_id=int(poll_id)))
 
-@app.route("/DeleteAccount", methods = ["POST"])
+@main.route("/DeleteAccount", methods = ["POST"])
 @login_required
 def delete_account():
     form = AccountDeletion()
@@ -220,21 +221,21 @@ def delete_account():
             db.session.delete(current)
             db.session.commit()
             flash("Account Successfully Deleted.")
-            return redirect(url_for("login"))
+            return redirect(url_for("main.login"))
         
         #Incorrect password provided
         else:
             flash("Invalid password. Please try again", "error")
-            return redirect(url_for("account"))
+            return redirect(url_for("main.account"))
         
     flash("Something went wrong. Please try again", "error")
-    return redirect(url_for("account"))
+    return redirect(url_for("main.account"))
 
-@app.route('/random', methods=['GET'])
+@main.route('/random', methods=['GET'])
 def get_random_poll():
     return redirect
 
-@app.route('/api/poll/random', methods=['GET'])
+@main.route('/api/poll/random', methods=['GET'])
 def random_poll():
     notification = render_template("Notification.html", item = "comment")
     if current_user.is_anonymous:
@@ -249,14 +250,14 @@ def random_poll():
 
         if not available_polls:
             flash("No more random polls available. Please try again later.")
-            return redirect(url_for("home"))
+            return redirect(url_for("main.home"))
 
         random_poll = random.choice(available_polls)
         PollBar = render_template('PollBar.html', bar = bar_init(random_poll))
         notification = render_template("Notification.html", item = "comment")
         return render_template('RandomPoll.html', submission=PollSubmissionForm(), poll = random_poll, search=PollSearch(), PollBar = PollBar, comment=CommentForm(), notification = notification), 200
 
-@app.route('/api/poll/vote', methods=['POST'])
+@main.route('/api/poll/vote', methods=['POST'])
 def cast_vote():
     # redirect anonymous users to the login page
     if current_user.is_anonymous:
@@ -283,13 +284,13 @@ def cast_vote():
     db.session.commit()
     return "", 200
 
-@app.route('/Poll/<int:poll_id>', methods=['GET', 'POST'])
+@main.route('/Poll/<int:poll_id>', methods=['GET', 'POST'])
 def get_post(poll_id):
     poll = Polls.query.get(poll_id)
     # Case that the user attempts to look for a pollID that currently doesnt exist
     if(poll is None):
         flash("Poll does not exist.")
-        return redirect(url_for('home'))
+        return redirect(url_for('main.home'))
     
     # If the user is logged in, checks to see if they have already voted
     if current_user.is_authenticated:
@@ -303,7 +304,7 @@ def get_post(poll_id):
     notification = render_template("Notification.html", item = "comment")
     return render_template("IndividualPost.html", deletion = DeletionForm(), search=PollSearch() , submission=PollSubmissionForm(), poll=poll, vote=vote, PollBar = PollBar, comment=CommentForm(), notification = notification), 200
     
-@app.route('/SearchOptions', methods=['POST'])
+@main.route('/SearchOptions', methods=['POST'])
 def search_results():
     form = PollSearch()
 
@@ -327,7 +328,7 @@ def search_results():
     else:
         # Invalid search mode was submitted
         flash("Invalid mode detected. Please try again.")
-        return redirect(url_for("home"))
+        return redirect(url_for("main.home"))
 
     # Returns posts whose prompt/choices contain a certain string (if the fields weren't empty)
     posts = filter_by_prompt(prompt, posts)
@@ -344,7 +345,7 @@ def search_results():
     else:
         # Invalid filter order was submitted
         flash("Invalid sort order detected. Please try again.", "error")
-        return redirect(url_for("home"))
+        return redirect(url_for("main.home"))
 
     # Validate the sort option (what to sort by)
     if valid_choice(option, PollSearch().SearchOption.choices):
@@ -353,11 +354,11 @@ def search_results():
     else:
         # Invalid filter option was submitted
         flash("Invalid sort option detected. Please try again.", "error")
-        return redirect(url_for("home"))
+        return redirect(url_for("main.home"))
 
     return render_template("SearchResults.html", search=PollSearch(), posts=posts)
 
-@app.route('/ChangeUsername', methods = ['POST'])
+@main.route('/ChangeUsername', methods = ['POST'])
 @login_required
 def change_username():
     form = AccountUsername()
@@ -366,19 +367,19 @@ def change_username():
         username = form.AccountUsername.data
         if current_user.is_authenticated and current_user.user_ID == id:
             if not valid_username(username) or not available_username(username):
-                return redirect(url_for('account'))
+                return redirect(url_for('main.account'))
             
             user = Users.query.get(id)
             user.username = username
             db.session.add(user)
             db.session.commit()
             flash("Username was successfully changed.")
-            return redirect(url_for('account'))
+            return redirect(url_for('main.account'))
 
     flash("You do not have permission to do this.")
-    return redirect(url_for('account'))
+    return redirect(url_for('main.account'))
 
-@app.route('/CreateComment', methods = ["POST"])
+@main.route('/CreateComment', methods = ["POST"])
 @login_required
 def create_comment():
     form = CommentForm()
@@ -392,17 +393,17 @@ def create_comment():
         db.session.commit()
 
         flash("Comment was successfully created.")
-        return redirect(url_for('get_post', poll_id=int(poll_ID)))
+        return redirect(url_for('main.get_post', poll_id=int(poll_ID)))
     
     flash("Comment was too long. Please try again.")
-    return redirect(url_for('get_post', poll_id=int(poll_ID)))
+    return redirect(url_for('main.get_post', poll_id=int(poll_ID)))
 
-@app.route('/GetMostPopular/<choice>', methods=['GET'])
+@main.route('/GetMostPopular/<choice>', methods=['GET'])
 def popular_polls(choice):
     print(choice)
     if choice not in ["Daily", "Weekly", "Monthly"]:
         flash("Invalid option detected. Please try again.")
-        return redirect(url_for("popular"))
+        return redirect(url_for("main.popular"))
     
     polls = get_timed_posts(choice)
     return render_template("PopularPolls.html", polls = polls)

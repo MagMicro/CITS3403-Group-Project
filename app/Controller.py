@@ -5,7 +5,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from flask import flash, request
 
 # Creates a new account with the provided details
-def create_account(username, email, password):
+def register_account(username, email, password):
         new_user = Users(username=username, email=email)
         new_user.set_password(password)
         db.session.add(new_user)

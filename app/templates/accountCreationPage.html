@@ -8,7 +8,7 @@
 
     <img id = "logo" src="{{url_for('static', filename='Images/icon.png')}}">
 
-    <form id = "creationForm" class = "inputFields" method="POST" action="{{url_for('create_account')}}">
+    <form id = "creationForm" class = "inputFields" method="POST" action="{{url_for('main.create_account')}}">
         {{form.hidden_tag()}}
         <p style="color: red;">{{ message }}</p>
 
@@ -28,7 +28,7 @@
     </form>
 
     <hr class = "col-9">
-    <p id = "redirectionPrompt">Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+    <p id = "redirectionPrompt">Already have an account? <a href="{{ url_for('main.login') }}">Login here</a></p>
     <hr class = "col-9"><br>
     <script src="{{ url_for('static', filename='js/AccountValidation.js') }}"></script>
 </div>
