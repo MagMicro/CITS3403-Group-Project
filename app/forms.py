@@ -4,14 +4,14 @@ from wtforms.validators import DataRequired, Length
 
 class LoginForm(FlaskForm):
     username = StringField("Username:", validators = [DataRequired(), Length(min=5, max=15)])
-    password = PasswordField("Password:", validators = [DataRequired()])
+    password = PasswordField("Password:", validators = [DataRequired(), Length(min=12)])
     remember = BooleanField("Stay signed in: ")
     submit = SubmitField("Submit")
 
 class CreationForm(FlaskForm):
     username = StringField("Username:", validators = [DataRequired(), Length(min=5, max=15)])
     email = EmailField("Email:", validators = [DataRequired()])
-    password = PasswordField("Password:", validators = [DataRequired()])
+    password = PasswordField("Password:", validators = [DataRequired(), Length(min=12)])
     submit = SubmitField("Submit")
 
 class PollForm(FlaskForm):
@@ -31,7 +31,7 @@ class DeletionForm(FlaskForm):
     comment_post_ID = IntegerField()
     
 class AccountDeletion(FlaskForm):
-    password = PasswordField("Password:", validators = [DataRequired()])
+    password = PasswordField("Password:", validators = [DataRequired(), Length(min=12)])
     submit = SubmitField("Submit")
     
 class PollSearch(FlaskForm):

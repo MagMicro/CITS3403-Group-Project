@@ -22,23 +22,15 @@ def login():
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-
-        # Check if username matches a user in the database
-        user = Users.query.filter_by(username=username).first()
-        if user is None:
-            flash("Username does not exist. Please try again.", "error")
-            return render_template('loginPage.html', search=PollSearch(), form=form)
-        
-        # Check to see if the correct password, corresponding to the username, is provided
-        elif user.check_password(password) == False:
-            flash("Incorrect password. Please try again.", "error")
+        # Check if username exists & correct password is provided.
+        if not valid_login(username, password):
             return render_template('loginPage.html', search=PollSearch(), form=form)
         
         # If a valid username and password is provided, user is logged in
-        else:
-            flash("Login Successful: Welcome " + user.username)
-            login_user(user, remember = form.remember.data)
-            return redirect(url_for('main.home'))
+        user = Users.query.filter_by(username=username).first()
+        flash("Login Successful: Welcome " + user.username)
+        login_user(user, remember = form.remember.data)
+        return redirect(url_for('main.home'))
     
     # Check if user has bypassed validation.
     check_validation_bypass()
@@ -53,16 +45,8 @@ def create_account():
         email = form.email.data
         password = form.password.data
 
-        user = Users.query.filter_by(username=username).first()
-        # Case that the username used in creation is already taken.
-        if user is not None:
-            flash("Username is already taken. Please use a different one", "error")
-            return render_template('accountCreationPage.html', search=PollSearch(), form=form, title = "Account Creation")
-
-        # Case that the email used in creation is already taken.
-        user = Users.query.filter_by(email=email).first()
-        if user is not None:
-            flash("Email is already taken. Please use a different one", "error")
+        # Checks if provided account details are unique
+        if not unique_username(username) or not unique_email(email) or not valid_password(password):
             return render_template('accountCreationPage.html', search=PollSearch(), form=form, title = "Account Creation")
 
         # If a valid, unique username and password is provided, create the user account

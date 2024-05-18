@@ -3,6 +3,46 @@ from app import db
 from datetime import datetime
 from flask_login import current_user, login_user, logout_user, login_required
 from flask import flash, request
+import re
+
+# Checks if an account has the corresponding details provided
+def valid_login(username, password):
+        # Check if username matches a user in the database
+        user = Users.query.filter_by(username=username).first()
+        if user is None:
+            flash("Username does not exist. Please try again.", "error")
+        
+        # Check to see if the correct password, corresponding to the username, is provided
+        elif user.check_password(password) == False:
+            flash("Incorrect password. Please try again.", "error")
+            
+        else:
+                return True
+        return False
+
+# Checks if the password is valid
+def valid_password(password):
+        if re.search(r"[a-z]+", password) and re.search(r"[A-Z]+",password) and re.search(r"[0-9]+", password) and re.search(r"[-~`!@#\$%\^&\*()\+=|,<>\?/\\\.\'\"\_]+", password):
+                return True
+        #flash("Invalid password provided. Please try again.")
+        return False
+
+# Checks if the given username is unique
+def unique_username(username):
+        user = Users.query.filter_by(username=username).first()
+        # Case that the username used in creation is already taken.
+        if user is not None:
+            flash("Username is already taken. Please use a different one", "error")
+            return False
+        return True
+
+# Checks if the given email is unique
+def unique_email(email):
+        user = Users.query.filter_by(email=email).first()
+        if user is not None:
+            flash("Email is already taken. Please use a different one", "error")
+            return False
+        return True
 
 # Creates a new account with the provided details
 def register_account(username, email, password):
