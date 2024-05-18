@@ -25,10 +25,11 @@ body{
     height:700px;
 }
 #Creation{
-    height: 820px;
+    height: 850px;
 }
-#postCreate{
-    height:700px;
+#postCreateBoard{
+    height: 800px;
+    padding: 20px;
 }
 #About{
     height:700px;
@@ -57,11 +58,15 @@ body{
     border-radius: 15px;
     border-width:2px;
     padding:10px;
-    margin-bottom:10px;
-    box-shadow: 2px 2px grey;
+    margin-bottom:20px;
+    box-shadow: 6px 6px rgba(0, 0, 0, 0.2);
 }
 #username:hover, #password:hover{
     border-color: aqua;
+}
+#creationUsernameLabel, #creationEmailLabel, #creationPasswordLabel{
+    position: relative;
+    left: 50px;
 }
 .fieldName{
     display: block;
@@ -79,7 +84,6 @@ body{
 #redirectionPrompt{
     display: inline-block;
     border: none;
-    width: 350px;
     margin-top:10px;
     margin-bottom:10px;
 }
@@ -206,9 +210,10 @@ a{
 }
 
 #AccountUsername{
+    font-size: 100%;
     display: inline;
     height: 60px;
-    width: 30ch;
+    width: 50%;
     background-color: white;
     border: none;
 }
@@ -379,6 +384,13 @@ a{
 
 #postDeletion{
     font-size: 20px;
+}
+
+#SubmissionOptions{
+    list-style: none;
+}
+#SubmissionOptions-0, #SubmissionOptions-1{
+    display: none;
 }
 
 #vote-page .board {
@@ -677,8 +689,6 @@ a{
     top:-8px;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 /* Home Page */
 .homepage-container {
     max-width: 1200px;
@@ -790,100 +800,6 @@ a{
     }
 }
 
-/* About Page */
-.about-container {
-    max-width: 900px;
-    margin: 60px auto;
-    padding: 40px;
-    background-color: white;
-    border-radius: 15px;
-    color: black;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.about-header {
-    margin-bottom: 30px;
-}
-
-.about-header h1 {
-    font-size: 36px;
-    margin-bottom: 10px;
-    color: black;
-}
-
-.about-header .divider {
-    width: 80%;
-    margin: 10px auto;
-    border-top: 2px solid black;
-}
-
-.about-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.about-logo {
-    margin: 30px;
-}
-
-.about-logo img {
-    width: 200px;
-    height: auto;
-}
-
-.about-text {
-    max-width: 700px;
-    text-align: left;
-}
-
-.about-text h2 {
-    font-size: 28px;
-    margin-bottom: 15px;
-    color: black;
-}
-
-.about-text p {
-    font-size: 18px;
-    line-height: 1.6;
-    margin-bottom: 10px;
-    color: black;
-}
-
-.about-text a {
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.about-text a:hover {
-    color: black;
-    text-decoration: underline;
-}
-
-@media (max-width: 768px) {
-    .about-container {
-        padding: 20px;
-        margin: 40px auto;
-    }
-
-    .about-header h1 {
-        font-size: 28px;
-    }
-
-    .about-logo {
-        width: 160px;
-    }
-
-    .about-text h2 {
-        font-size: 24px;
-    }
-
-    .about-text p {
-        font-size: 16px;
-    }
-}
-
 /* Ranking Page */
 .ranking-container {
     max-width: 1000px;
@@ -974,110 +890,8 @@ a{
     }
 }
 
-#CreatorID, #PostID{
-    display: none;
-}
-#CommentContent{
-    resize: none;
-    height: 140px;
-    border-radius: 10px;
-    padding:10px;
-}
-#userCommentProfilePic{
-    width:100%;
-    height:100%;
-}
-
-.profileContainer{
-    overflow:hidden;
-    float:left;
-    margin-right: 10px;
-    border: 1px solid black;
-}
-
-.profileContainer#currentUserContainer{
-    width:100px;
-    height:100px;
-    border-radius: 15px;
-}
-
-.profileContainer.smallContainer{
-    width: 50px;
-    height: 50px;
-    border-radius: 10px;
-}
-
-#commentCreationBoard{
-    display:flex;
-    overflow:hidden;
-    flex-direction: column;
-    padding-bottom: 10px;
-}
-#currentUserProfile{
-    margin-bottom: 10px;
-    height: 100px;
-}
-
-.userProfile{
-    height: 50px;
-    margin-bottom: 5px;
-}
-
-#newCommentHeader{
-    text-align: center;
-}
-
-#newCommentBody{
-    padding-left:40px;
-    padding-right:40px;
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-}
-
-#userCommentsBoard{
-    height: 600px;
-    overflow: hidden;
-    padding-bottom: 10px;
-}
-
-#commentProfilePic{
-    width:100%;
-    height: 100%;
-}
-
-.userCommentsContainer{
-    display: flex;
-    height: 500px;
-    text-align: left;
-    flex-direction: column;
-    overflow-y:auto;
-}
-.userComment{
-    display: flex;
-    position: relative;
-    flex-direction:column;
-    border-bottom: 1px solid black;
-    padding-bottom: 20px;
-    padding-top: 10px;
-    padding-left:40px;
-    padding-right:40px;
-    height: 200px;
-}
-#commentCreationButtons{
-    text-align: right;
-    display: none;
-}
-
-.userCommentText{
-    overflow-y: auto;
-    white-space: pre-wrap;
-    word-wrap:break-word;
-    height: 80px;
-}
-
-.userCommentField{
-    border: 1px solid lightgray;
-    border-radius: 15px;
-    padding-left: 10px;
+.rank{
+    font-size: 20px;
+    color:white;
+    background-color:#007bff;
 }

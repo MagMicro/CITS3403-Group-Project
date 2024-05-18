@@ -13,7 +13,6 @@ from flask_login import current_user, login_user, logout_user, login_required
 
 @app.route('/')
 def home():
-    print(PollSearch().SearchOption.choices)
     return render_template('home.html', search=PollSearch(), title="Home")
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -121,7 +120,7 @@ def create():
     if current_user.is_anonymous:
         return redirect(url_for('login'))
     
-    tags = ["Food", "Drink", "Sports", "Fashion", "Makeup", "Subject", "Video Games", "Anime", "Board Games" , "Animals", "People", "Places", "City", "Country", "Film", "TV", "Novels", "Abilities", "Historical", "Superheroes"]
+    tags = PollSearch().tags
     form = PollForm()
     PollBar = render_template('PollBar.html')
 
@@ -145,12 +144,13 @@ def create():
             if tag not in tags:
                 flash("Unrecognised tag/s detected. Please try again.", "error")
                 return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
-        
+        if option1 == option2:
+            flash("Options must be different. Please try again.", "error")
+            return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
         #Make sure the post is unique
-        for post in Polls.query.filter_by(prompt=prompt):
-            if (post.Option1 == option1 and post.Option2 == option2) or (post.Option1 == option2 and post.Option2 == option1):
-                flash("Post already exists. Please try something else.", "error")
-                return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
+        if (Polls.query.filter_by(Option1=option1, Option2=option2).first() is not None or Polls.query.filter_by(Option1=option2, Option2=option1).first() is not None):
+            flash("Post already exists. Please try something else.", "error")
+            return render_template('create.html', search=PollSearch(), form=form, title = "Create", tags=tags, PollBar=PollBar)
 
         print(f"User attempting to create a poll with options:{prompt}, {option1}, {option2} and tags: {form_tags}")
         
@@ -196,9 +196,7 @@ def delete_user_post(id):
         flash("You are not authorized to delete someone elses post.")
 
     else:
-        deleted_post.delete_votes()
-        deleted_post.delete_comments()
-
+        deleted_post.wipe_poll()
         db.session.delete(deleted_post)
         db.session.commit()
         flash("Post was successfully deleted.")
@@ -229,13 +227,10 @@ def delete_account():
     if(form.validate_on_submit()):
         password = form.password.data
 
-        #Verify the user's provided password
+        #Verify the password provided
         if(current_user.check_password(password)):
             #Delete all content associated with a user and their posts
-            for post in current_user.posts:
-                post.delete_votes()
-                post.delete_comments()
-                db.session.delete(post)
+            current_user.wipe_account()
     
             current = Users.query.get(current_user.user_ID)
             logout_user()
@@ -255,24 +250,29 @@ def delete_account():
 
 @app.route('/random', methods=['GET'])
 def get_random_poll():
-    return render_template('RandomPoll.html', search=PollSearch())
+    return redirect
 
 @app.route('/api/poll/random', methods=['GET'])
 def random_poll():
+    notification = render_template("Notification.html", item = "comment")
     if current_user.is_anonymous:
         available_polls = Polls.query.all()
         random_poll = random.choice(available_polls)
-        return render_template('poll.html', poll = random_poll), 200
+        PollBar = render_template('PollBar.html', bar = bar_init(random_poll))
+        return render_template('RandomPoll.html', poll = random_poll, search=PollSearch(), PollBar = PollBar, comment=CommentForm(), notification = notification), 200
 
     else:
         voted_polls = [vote.poll_ID for vote in VotePoll.query.filter_by(user_ID=current_user.user_ID).all()]
         available_polls = Polls.query.filter(Polls.poll_ID.notin_(voted_polls)).filter(Polls.pollAuthor_ID.notin_([current_user.user_ID])).all()
 
         if not available_polls:
-            return render_template('NoPolls.html'), 404
+            flash("No more random polls available. Please try again later.")
+            return redirect(url_for("home"))
 
         random_poll = random.choice(available_polls)
-        return render_template('poll.html', poll = random_poll), 200
+        PollBar = render_template('PollBar.html', bar = bar_init(random_poll))
+        notification = render_template("Notification.html", item = "comment")
+        return render_template('RandomPoll.html', submission=PollSubmissionForm(), poll = random_poll, search=PollSearch(), PollBar = PollBar, comment=CommentForm(), notification = notification), 200
 
 @app.route('/api/poll/vote', methods=['POST'])
 def cast_vote():
@@ -299,12 +299,7 @@ def cast_vote():
     new_vote = VotePoll(user_ID=current_user.user_ID, poll_ID=poll_id, Vote_opt=int(option))
     db.session.add(new_vote)
     db.session.commit()
-
-    poll = Polls.query.filter_by(poll_ID=poll_id).first()
-    if not poll:
-        abort(404)
-    PollBar = render_template('PollBar.html', bar = bar_init(poll))
-    return render_template('PollResults.html', poll = poll, PollBar = PollBar), 200
+    return "", 200
 
 @app.route('/Poll/<int:poll_id>', methods=['GET', 'POST'])
 def get_post(poll_id):
@@ -324,7 +319,7 @@ def get_post(poll_id):
 
     PollBar = render_template('PollBar.html', bar = bar_init(poll))
     notification = render_template("Notification.html", item = "comment")
-    return render_template("IndividualPost.html", search=PollSearch() , poll=poll, vote=vote, PollBar = PollBar, comment=CommentForm(), notification = notification), 200
+    return render_template("IndividualPost.html", search=PollSearch() , submission=PollSubmissionForm(), poll=poll, vote=vote, PollBar = PollBar, comment=CommentForm(), notification = notification), 200
     
 @app.route('/SearchOptions', methods=['POST'])
 def search_results():
@@ -419,3 +414,13 @@ def create_comment():
     
     flash("Comment was too long. Please try again.")
     return redirect(url_for('get_post', poll_id=int(poll_ID)))
+
+@app.route('/GetMostPopular/<choice>', methods=['GET'])
+def popular_polls(choice):
+    print(choice)
+    if choice not in ["Daily", "Weekly", "Monthly"]:
+        flash("Invalid option detected. Please try again.")
+        return redirect(url_for("popular"))
+    
+    polls = get_timed_posts(choice)
+    return render_template("PopularPolls.html", polls = polls)

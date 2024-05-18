@@ -1,6 +1,6 @@
 {% extends "defaultFormat.html" %}
 {%block content%}
-<div id = "Creation" class="board col-8 col-m-6 col-lg-4">
+<div id = "Creation" class="board col-10 col-sm-8 col-m-6 col-lg-5">
     <h1>Create new account:</h1>
     <p>(Please fill out the following details)</p>
 
@@ -8,28 +8,28 @@
 
     <img id = "logo" src="{{url_for('static', filename='Images/icon.png')}}">
 
-    <form id = "creationForm" class = "inputFields" method="POST" action="/create_account">
+    <form id = "creationForm" class = "inputFields" method="POST" action="{{url_for('create_account')}}">
         {{form.hidden_tag()}}
         <p style="color: red;">{{ message }}</p>
 
-        <label class = "fieldName" for = username>New Username: <span class = "fas fa-user"></span></label>
-        {{form.username(class = "inputBox col-12", placeholder = "Username")}}
+        <label id = "creationUsernameLabel" class = "fieldName" for = username>New Username: <span class = "fas fa-user"></span></label>
+        {{form.username(class = "inputBox col-10", placeholder = "Username")}}
         <p id = "usernameNotification"></p>
 
-        <label class = "fieldName" for = email>Register Email: <span class = "fas fa-envelope"></span></label>
-        {{form.email(class = "inputBox col-12", placeholder = "someone@email.com")}}
+        <label id = "creationEmailLabel" class = "fieldName" for = email>Register Email: <span class = "fas fa-envelope"></span></label>
+        {{form.email(class = "inputBox col-10", placeholder = "someone@email.com")}}
         <p id = "emailNotification"></p>
 
-        <label class = "fieldName" for = password>New Password: <span  id = "visibility" class="fas fa-eye-slash" title = "View" onclick = changeVisibilty()></span></label>
-        {{form.password(class = "inputBox col-12", placeholder = "Password")}}
+        <label id = "creationPasswordLabel" class = "fieldName" for = password>New Password: <span  id = "visibility" class="fas fa-eye-slash" title = "View" onclick = changeVisibilty()></span></label>
+        {{form.password(class = "inputBox col-10", placeholder = "Password")}}
         <p id = "passwordNotification"></p>
 
         {{form.submit(class = "btn btn-primary col-9")}}
     </form>
 
-    <hr class = "col-sm-9">
+    <hr class = "col-9">
     <p id = "redirectionPrompt">Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
-    <hr class = "col-sm-9"><br>
+    <hr class = "col-9"><br>
     <script src="{{ url_for('static', filename='js/AccountValidation.js') }}"></script>
 </div>
 {% endblock %}

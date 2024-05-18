@@ -17,11 +17,10 @@ class Users(UserMixin, db.Model):
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String(128))
     creation_date = db.Column(db.DateTime, default=datetime.datetime.now())
-    
-    # Gets all user posts
+
     posts = db.relationship('Polls', back_populates = 'author')
-    # Gets all user votes
     votes = db.relationship('VotePoll', back_populates = 'voter')
+    comments = db.relationship('Comments', back_populates = 'user')
 
     #Override for finding the user ID
     def get_id(self):
@@ -34,6 +33,11 @@ class Users(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
     
+    def wipe_account(self):
+        Polls.query.filter_by(pollAuthor_ID = self.user_ID).delete()
+        VotePoll.query.filter_by(user_ID = self.user_ID).delete()
+        Comments.query.filter_by(user_ID = self.user_ID).delete()
+
     def voted_polls(self):
         voted_polls = []
         for vote in self.votes:
@@ -91,15 +95,9 @@ class Polls(db.Model):
     votes = db.relationship('VotePoll', back_populates = 'poll')
     comments = db.relationship('Comments')
     
-    #Deleted all votes associated with a given poll
-    def delete_votes(self):
-        for vote in self.votes:
-            db.session.delete(vote)
-
-    #Deleted all comments associated with a given poll
-    def delete_comments(self):
-        for comment in self.comments:
-            db.session.delete(comment)
+    def wipe_poll(self):
+        Comments.query.filter_by(poll_ID = self.poll_ID).delete()
+        VotePoll.query.filter_by(poll_ID = self.poll_ID).delete()
 
     # Adds tags to Polls model instance based on how many tags it received, default is N/A
     def add_tags(self, tags):
@@ -116,7 +114,7 @@ class Polls(db.Model):
     
     # Creates a human readable date for a given post
     def readable_date(self):
-        return self.creation_date.strftime('%d/%m/%Y') + self.creation_date.strftime(' %I:%M %p').replace("0", "")
+        return self.creation_date.strftime('%d/%m/%Y %-I:%M %p')
 
     # Functions to calcuate the proportion of votes for each given poll instance
     def total_left(self):
@@ -126,7 +124,7 @@ class Polls(db.Model):
         return VotePoll.query.filter_by(poll_ID = self.poll_ID, Vote_opt = 2).count()
 
     def total_votes(self):
-        return self.total_left() + self.total_right()
+        return len(self.votes)
 
     def left_percentage(self):
         if self.total_left() != 0:
@@ -160,7 +158,7 @@ class Comments(db.Model):
     message = db.Column(db.String(500))
     creation_date = db.Column(db.DateTime, default=datetime.datetime.now())
 
-    user = db.relationship('Users')
+    user = db.relationship('Users', back_populates = 'comments')
 
     def readable_date(self):
         return self.creation_date.strftime('%d/%m/%Y') + self.creation_date.strftime(' %I:%M %p').replace("0", "")

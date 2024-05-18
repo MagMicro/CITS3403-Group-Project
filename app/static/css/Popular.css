@@ -1,0 +1,51 @@
+.popularPoll:nth-child(2) > .rank{
+    background-color: gold;
+    margin: 5px;
+}
+
+.popularPoll:nth-child(3) > .rank{
+    background-color: silver;
+}
+
+.popularPoll:nth-child(4) > .rank{
+    background-color: #CD7F32;
+}
+
+.popularPoll:hover *:not(.rank){
+    background-color:lightgray;
+}
+
+#popularPollsBoard{
+    overflow: hidden;
+}
+
+#rankingPageHeader{
+    display: block;
+    font-size: 40px;
+    height: 80px;
+    padding:20px;
+}
+
+#popularPollsContent{
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.popularPoll{
+    height: 100px;
+}
+
+#popularTimePeriod{
+    padding: 5px;
+    border-radius: 20px;
+    text-align: center;
+    font-size: 20px;
+}
+
+#popularTimePeriod option{
+    font-size: 15px;
+}
+
+#popularHeading{
+    font-size: 20px;
+    border: 1px solid black;
+}

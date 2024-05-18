@@ -14,8 +14,9 @@
             <h2>What is SplitDif?</h2>
             <section> 
                 <h5>SplitDif is a website dedicated to user created polls:</h5>
-                Users can <b>create</b> polls, with a comparable pair of topics and a prompt. <br>
-                Other users can then <b>vote</b> on their polls with which option they believe best suits the given prompt.<br>
+                Users can <b>create</b> polls, with a comparable pair of topics, prompt and related tags. <br>
+                Other users can then <b>vote</b> on their polls with which option they believe best suits the given prompt. 
+                They can then see how many people agree with their decision.<br>
                 <br>
                 <b>Important: </b> Users need an <a href="{{ url_for('login') }}">account</a> to create and vote on polls.<br>
                 (However, they can still search polls look at other users posts)<br>
@@ -48,16 +49,23 @@
             <br>
             <section>
                 <h5>Compete with other users: </h5>
-                Users are ranked against eachother based on how divisive their posts and how much interaction they are able to get.<br>
+                Users are ranked against eachother based on how divisive their posts are and how much interaction they are able to get.<br>
                 The overall ranking for a user is dependant on the amount of <b>points</b> they have accumilated. <br>
                 <br>
                 <b>Points are awarded by:</b>
                 <ul>
                     <li>The amount of votes</li>
                     <li>The difference between votes</li>
-                <ul>
+                </ul>
+            <br>
+            Only the Top 10 users get displayed on the leaderboard page, representing the highest ranked creators. 
+            Getting displayed on the leaderboard is an acheivement for only the best creators.<br>
+            <br>
+            Can you make the most divisive posts?
+                
             </section>
         </div>
     </div>
 </div>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/About.css') }}">
 {% endblock %}

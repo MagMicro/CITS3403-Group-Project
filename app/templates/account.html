@@ -1,6 +1,6 @@
 {% extends "defaultFormat.html" %}
 {%block content%}
-<div id = "accountHeader" class="board col-8 col-m-6" >
+<div id = "accountHeader" class="board col-sm-12 col-m-10 col-lg-8" >
     <div class ="fas fa-xmark" id = "accountDelete"></div>
     <div id = "profileHeader" class = "header col-12"> User Profile: <div class = "fas fa-id-card"></div></div>
     <div id = "userDetails">
@@ -27,7 +27,7 @@
 
 
 
-<div id="accountPosts" class="board col-8 col-m-6">
+<div id="accountPosts" class="board col-sm-12 col-m-10 col-lg-8">
     <div id="postHeader" class="header col-12">Posts: 
         <div class="fas fa-folder"></div>
     </div>
@@ -45,7 +45,7 @@
 
 <div id = "accountConfirmMsg" class = "deletionConfirmation">
     <div class = "board col-4" id = "accountDeletionBoard">
-        <form method="post" action="/DeleteAccount">
+        <form method="post" action="{{url_for('delete_account')}}">
             {{deletion.hidden_tag()}}
             <h3>Confirmation:</h3>
             <div class="fas fa-xmark close" id="accountNotificationClose"></div>

@@ -1,26 +1,26 @@
 {% extends "defaultFormat.html" %}
 {% block content %}
-<div id="postCreate" class="board col-10 col-m-8 col-lg-6">
+<div id="postCreateBoard" class="board col-10 col-sm-8 col-m-6">
     <h1>Post Creation:</h1>
 
     <hr class="col-sm-9">
 
-    <form id="newPoll" class="inputFields col-sm-10" method="post" action="/create">
+    <form id="newPoll" class="inputFields col-sm-10" method="post" action="{{url_for('create')}}">
         {{form.hidden_tag()}}
         
         <div id = "promptContainer">
             {{form.prompt.label(class = "inputLabel")}}
-            {{form.prompt(class = "inputBox col-sm-12", placeholder = "Enter your prompt here:")}}
+            {{form.prompt(class = "inputBox col-12", placeholder = "Enter your prompt here:")}}
         </div>
         
         <div id = "choices">
-            <div class = "col-sm-5">
+            <div class = "col-6 col-sm-5">
                 {{form.option1.label(class = "inputLabel")}}
-                {{form.option1(class = "inputBox col-sm-12", placeholder = "Enter option here:")}}
+                {{form.option1(class = "inputBox col-12", placeholder = "Enter option here:")}}
             </div>
-            <div class = "col-sm-5">
+            <div class = "col-6 col-sm-5">
                 {{form.option2.label(class = "inputLabel")}}
-                {{form.option2(class = "inputBox col-sm-12", placeholder = "Enter option here:")}}
+                {{form.option2(class = "inputBox col-12", placeholder = "Enter option here:")}}
             </div>
         </div>
         

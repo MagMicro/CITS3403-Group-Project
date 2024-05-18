@@ -18,17 +18,17 @@
                     <a href="{{ url_for('home') }}"><div class = "fas fa-home"></div> Home</a>
                     <div id = "homeDropdown" class = "dropdown col-12">
                         <span><a href="{{ url_for('about') }}"><div class = "fas fa-lightbulb"></div> About</span></a><br>
-                        <span><a href="{{ url_for('get_random_poll') }}"><div class = "fas fa-dice"></div> Random</span></a><br>
+                        <span><a href="{{ url_for('random_poll') }}"><div class = "fas fa-dice"></div> Random</span></a><br>
                         <span><a href="{{ url_for('popular') }}"><div class = "fas fa-arrow-trend-up"></div> Most Popular</span></a><br>
                         <span><a href="{{ url_for('ranking') }}"><div class = "fas fa-ranking-star"></div> User Rankings</span></a><br>
                     </div>
                 </td>
                 <td id = "create" class = "entry col-2"><a href="{{ url_for('create') }}"><div class = "fas fa-pen"></div> Create</a></td>
                 <search>
-                    <form id = "postSearchForm" method="post" action="/SearchOptions">
+                    <form id = "postSearchForm" method="post" action="{{url_for('search_results')}}">
                         <td id = "search" class = "entry col-4"> 
-                            {{search.SearchBar(placeholder = "Search", class = "col-10")}}
-                            <button id = "searchButton" class = 'entry btn btn-primary col-1'><div class = "fas fa-search"></div></button>
+                            {{search.SearchBar(placeholder = "Search", class = "col-6 col-md-8")}}
+                            <button id = "searchButton" class = 'entry btn btn-primary col-4 col-md-3 col-lg-2'><div class = "fas fa-search"></div></button>
                             <div id = "SearchDropdown" class = "container dropdown">
                                 <span class = "searchField">
                                     <label>{{search.SearchMode.label}}<br>(Optional)</label>
