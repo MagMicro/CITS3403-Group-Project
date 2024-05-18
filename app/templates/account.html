@@ -6,7 +6,7 @@
     <div id = "userDetails">
         <img id = "profilePic" src = "{{url_for('static', filename='Images/DefaultProfile.png')}}">
         <h1 id = "name">
-            <form id = "usernameForm" method="post" action="{{url_for('change_username')}}">
+            <form id = "usernameForm" method="post" action="{{url_for('main.change_username')}}">
                 <div id="renameIcon" class = "fas fa-pencil"></div> 
                 #{{user.user_ID}}
                 {{form.hidden_tag()}}
@@ -45,7 +45,7 @@
 
 <div id = "accountConfirmMsg" class = "deletionConfirmation">
     <div class = "board col-4" id = "accountDeletionBoard">
-        <form method="post" action="{{url_for('delete_account')}}">
+        <form method="post" action="{{url_for('main.delete_account')}}">
             {{deletion.hidden_tag()}}
             <h3>Confirmation:</h3>
             <div class="fas fa-xmark close" id="accountNotificationClose"></div>

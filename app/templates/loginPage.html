@@ -7,7 +7,7 @@
 
     <img id = "logo" src="{{url_for('static', filename='Images/icon.png')}}">
 
-    <form  id = "loginForm" class = "inputFields col-sm-10" method="post" action="{{url_for('login')}}">
+    <form  id = "loginForm" class = "inputFields col-sm-10" method="post" action="{{url_for('main.login')}}">
         {{form.hidden_tag()}}
         <label class = "fieldName" for = username>Username: <span class = "fas fa-user"></span></label>
         {{form.username(class = "inputBox col-12", placeholder = "Username")}}
@@ -24,7 +24,7 @@
     </form>
     
     <hr class = "col-9">
-    <p id = "redirectionPrompt" class = "col-8 col-md-9"> Don't have an account? <a href = "{{ url_for('create_account') }}">Create new account</a></p>
+    <p id = "redirectionPrompt" class = "col-8 col-md-9"> Don't have an account? <a href = "{{ url_for('main.create_account') }}">Create new account</a></p>
     <hr class = "col-9"><br>
     <script src="{{ url_for('static', filename='js/LoginFunctionality.js') }}"></script>
 </div>

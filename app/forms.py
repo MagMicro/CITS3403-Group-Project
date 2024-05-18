@@ -24,6 +24,11 @@ class PollForm(FlaskForm):
 class PollSubmissionForm(FlaskForm):
     SubmissionOptions = RadioField(choices=[('1','option'),('2','option')])
     SubmissionSubmit = SubmitField("Vote")
+
+class DeletionForm(FlaskForm):
+    item_ID = IntegerField(validators = [DataRequired()])
+    # Required by comments field
+    comment_post_ID = IntegerField(validators = [DataRequired()])
     
 class AccountDeletion(FlaskForm):
     password = PasswordField("Password:", validators = [DataRequired()])

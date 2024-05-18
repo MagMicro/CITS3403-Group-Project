@@ -11,20 +11,20 @@
     <main class="homepage-card-container">
         <section class="homepage-card">
             <h2>Start Creating Polls!</h2>
-            <a class="homepage-btn homepage-btn-primary" href="{{ url_for('create') }}">Create Polls</a>
-            <a class="homepage-btn homepage-btn-primary" href="{{ url_for('random_poll') }}">Vote Now</a>
+            <a class="homepage-btn homepage-btn-primary" href="{{ url_for('main.create') }}">Create Polls</a>
+            <a class="homepage-btn homepage-btn-primary" href="{{ url_for('main.random_poll') }}">Vote Now</a>
         </section>
 
         <section class="homepage-card">
             <h2>Most Popular Polls</h2>
             <p>Check out the polls that have been most popular among users.</p>
-            <a class="homepage-btn homepage-btn-info" href="{{ url_for('popular') }}">View Polls</a>
+            <a class="homepage-btn homepage-btn-info" href="{{ url_for('main.popular') }}">View Polls</a>
         </section>
 
         <section class="homepage-card">
             <h2>User Rankings</h2>
             <p>Explore the top-ranked users and see who stands out in the SplitDif community.</p>
-            <a class="homepage-btn homepage-btn-success" href="{{ url_for('ranking') }}">View Rankings</a>
+            <a class="homepage-btn homepage-btn-success" href="{{ url_for('main.ranking') }}">View Rankings</a>
         </section>
     </main>
 </div>

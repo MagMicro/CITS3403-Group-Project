@@ -43,7 +43,7 @@
             <h1>{{current_user.user_ID}}# {{current_user.username}}</h1>
         </div>
         <h5>Create a new comment: <div class = "fas fa-pencil"></div></h5>
-        <form id = "commentCreation" class= "col-12" method = 'post' action = "{{url_for('create_comment')}}">
+        <form id = "commentCreation" class= "col-12" method = 'post' action = "{{url_for('main.create_comment')}}">
             {{comment.hidden_tag()}}
             {{comment.CreatorID(value = current_user.user_ID)}}
             {{comment.PostID(value = poll.poll_ID)}}
@@ -60,7 +60,12 @@
     <div class = "userCommentsContainer">
         {% for comment in poll.comments %}
         <div class = "userComment">
-            <div class = "userProfile" id = "{{comment.comment_ID}}">
+            <form id = "deletionForm" method = "post" action = "{{url_for('main.delete_user_comment')}}">
+                {{deletion.hidden_tag()}}
+                {{deletion.item_ID(value = comment.comment_ID)}}
+                {{deletion.comment_post_ID(value = comment.poll_ID)}}
+            </form>
+            <div class = "userProfile">
                 {% if comment.user.user_ID == current_user.user_ID %}<div id = "deleteComment" class ="fas fa-xmark deleteItem"></div>{% endif %}
                 <div class = "profileContainer smallContainer">
                     <img id = "commentProfilePic" src="{{url_for('static', filename='Images/DefaultProfile.png')}}">
