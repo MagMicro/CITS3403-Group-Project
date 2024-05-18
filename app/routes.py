@@ -185,6 +185,8 @@ def delete_user_post():
             flash("Post was successfully deleted.")
 
         return redirect(url_for("main.account"))
+    flash("Something went wrong. Please try again.")
+    return redirect(url_for("main.account"))
 
 @main.route('/DeleteComment', methods = ['POST'])
 @login_required
@@ -231,18 +233,11 @@ def delete_account():
     flash("Something went wrong. Please try again", "error")
     return redirect(url_for("main.account"))
 
-@main.route('/random', methods=['GET'])
-def get_random_poll():
-    return redirect
-
 @main.route('/api/poll/random', methods=['GET'])
 def random_poll():
-    notification = render_template("Notification.html", item = "comment")
     if current_user.is_anonymous:
         available_polls = Polls.query.all()
         random_poll = random.choice(available_polls)
-        PollBar = render_template('PollBar.html', bar = bar_init(random_poll))
-        return render_template('RandomPoll.html', poll = random_poll, search=PollSearch(), PollBar = PollBar, comment=CommentForm(), notification = notification), 200
 
     else:
         voted_polls = [vote.poll_ID for vote in VotePoll.query.filter_by(user_ID=current_user.user_ID).all()]
@@ -253,9 +248,10 @@ def random_poll():
             return redirect(url_for("main.home"))
 
         random_poll = random.choice(available_polls)
-        PollBar = render_template('PollBar.html', bar = bar_init(random_poll))
-        notification = render_template("Notification.html", item = "comment")
-        return render_template('RandomPoll.html', submission=PollSubmissionForm(), poll = random_poll, search=PollSearch(), PollBar = PollBar, comment=CommentForm(), notification = notification), 200
+        
+    notification = render_template("Notification.html", item = "comment")
+    PollBar = render_template('PollBar.html', bar = bar_init(random_poll))
+    return render_template('RandomPoll.html', submission=PollSubmissionForm(), poll = random_poll, search=PollSearch(), PollBar = PollBar, comment=CommentForm(), notification = notification), 200
 
 @main.route('/api/poll/vote', methods=['POST'])
 def cast_vote():
@@ -302,7 +298,7 @@ def get_post(poll_id):
 
     PollBar = render_template('PollBar.html', bar = bar_init(poll))
     notification = render_template("Notification.html", item = "comment")
-    return render_template("IndividualPost.html", deletion = DeletionForm(), search=PollSearch() , submission=PollSubmissionForm(), poll=poll, vote=vote, PollBar = PollBar, comment=CommentForm(), notification = notification), 200
+    return render_template("IndividualPost.html",  deletion = DeletionForm(), search=PollSearch() , submission=PollSubmissionForm(), poll=poll, vote=vote, PollBar = PollBar, comment=CommentForm(), notification = notification), 200
     
 @main.route('/SearchOptions', methods=['POST'])
 def search_results():

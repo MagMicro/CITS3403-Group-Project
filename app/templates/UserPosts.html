@@ -4,8 +4,8 @@
         {{deletion.hidden_tag()}}
         {{deletion.item_ID(value = post.poll_ID)}}
     </form>
-    <div id = "deletePost" class = "fas fa-xmark deleteItem"></div>
-    <div class = "postContent">
+    <div id = "deletePost" class = "fas fa-xmark deleteItem" onclick = "$('#itemDeletion').css('display', 'block');"></div>
+    <div class = "postContent" onclick = "window.open('/Poll/' + $('#item_ID').val())">
         <p><span class="post-subheading">ID: </span>{{post.poll_ID}}</p>
 
         <p>
@@ -37,4 +37,3 @@
     </div>
 </div>
 {% endfor %}
-<script src="{{ url_for('static', filename='js/PostManagementFunctionality.js') }}"></script>

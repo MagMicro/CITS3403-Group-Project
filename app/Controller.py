@@ -62,6 +62,9 @@ def bar_init(poll):
                 bar["ShowDivider"] = False
         else:
                 bar["ShowDivider"] = True
+        
+        if poll.total_votes() == 0:
+                bar["default"] = "background-color:black"
         return bar
 
 def get_sort_order(order):

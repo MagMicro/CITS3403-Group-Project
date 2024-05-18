@@ -98,7 +98,7 @@ function init(){
     })
 
     $("#confirm").click(()=>{$("#deletionForm").submit()});
-    $(".deleteItem").click(function() {$("#itemDeletion").css("display", "block");});
     $("#notificationClose").click(()=>{$("#itemDeletion").css("display", "none");});
+    $(".deleteItem").click(function() {alert("hello"); $("#itemDeletion").css("display", "block");});
 }
 $(document).ready(init);

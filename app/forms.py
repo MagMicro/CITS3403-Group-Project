@@ -26,9 +26,9 @@ class PollSubmissionForm(FlaskForm):
     SubmissionSubmit = SubmitField("Vote")
 
 class DeletionForm(FlaskForm):
-    item_ID = IntegerField(validators = [DataRequired()])
+    item_ID = IntegerField()
     # Required by comments field
-    comment_post_ID = IntegerField(validators = [DataRequired()])
+    comment_post_ID = IntegerField()
     
 class AccountDeletion(FlaskForm):
     password = PasswordField("Password:", validators = [DataRequired()])

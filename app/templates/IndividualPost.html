@@ -21,7 +21,7 @@
                     </section>
                     {{submission.SubmissionSubmit(class="btn-vote col-6 col-md-4")}}
                 </form>
-                <div id="results" {%if not vote%} style="display: none;"{% endif %}>
+                <div id="results" {% if (vote == 'None' or poll.pollAuthor_ID != current_user.user_ID) %} style="display: none;"{% endif %}>
                     <h4><u>Results:</u></h4>
                     <p><b>Option A:</b> {{poll.Option1}} <br> {{poll.total_left()}} {% if poll.total_left() == 1 %} vote {% else %}votes{% endif %} ({{poll.left_percentage()}}%)</p>
                     <p><b>Option B:</b> {{poll.Option2}} <br> {{poll.total_right()}} {% if poll.total_right() == 1 %} vote {% else %}votes{% endif %} ({{poll.right_percentage()}}%)</p>
@@ -66,7 +66,7 @@
                 {{deletion.comment_post_ID(value = comment.poll_ID)}}
             </form>
             <div class = "userProfile">
-                {% if comment.user.user_ID == current_user.user_ID %}<div id = "deleteComment" class ="fas fa-xmark deleteItem"></div>{% endif %}
+                {% if comment.user.user_ID == current_user.user_ID %}<div id = "deleteComment" class ="fas fa-xmark deleteItem" onclick = "$('#itemDeletion').css('display', 'block');"></div>{% endif %}
                 <div class = "profileContainer smallContainer">
                     <img id = "commentProfilePic" src="{{url_for('static', filename='Images/DefaultProfile.png')}}">
                 </div>
