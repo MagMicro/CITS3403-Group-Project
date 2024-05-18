@@ -1,6 +1,6 @@
 {% for post in posts %}
 <div class="userPost">
-    <form id = "deletionForm" method = "post" action = "{{url_for('delete_user_post')}}">
+    <form id = "deletionForm" method = "post" action = "{{url_for('main.delete_user_post')}}">
         {{deletion.hidden_tag()}}
         {{deletion.item_ID(value = post.poll_ID)}}
     </form>

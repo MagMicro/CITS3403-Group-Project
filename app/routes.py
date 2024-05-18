@@ -169,7 +169,7 @@ def generate_posts(option, order):
     else:
         return redirect(url_for("main.account"))
         
-    return render_template("UserPosts.html", deletion = DeletionForm(), search=PollSearch(), posts = posts, url = url_for("home"))
+    return render_template("UserPosts.html", deletion = DeletionForm(), search=PollSearch(), posts = posts, url = url_for("main.home"))
 
 @main.route('/DeletePost', methods = ['POST'])
 @login_required
@@ -262,7 +262,7 @@ def cast_vote():
     # redirect anonymous users to the login page
     if current_user.is_anonymous:
         flash("You need to log in to vote.")
-        return url_for("login"), 404
+        return url_for("main.login"), 404
     
     data = request.get_json()
     poll_id = data.get('poll_id')
