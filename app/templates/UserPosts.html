@@ -5,7 +5,7 @@
         {{deletion.item_ID(value = post.poll_ID)}}
     </form>
     <div id = "deletePost" class = "fas fa-xmark deleteItem" onclick = "$('#itemDeletion').css('display', 'block');"></div>
-    <div class = "postContent" onclick = "window.open('/Poll/' + $('#item_ID').val())">
+    <div class = "postContent" id = {{post.poll_ID}} onclick = "window.open('/Poll/' + $(this).attr('id'))">
         <p><span class="post-subheading">ID: </span>{{post.poll_ID}}</p>
 
         <p>

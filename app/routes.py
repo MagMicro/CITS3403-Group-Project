@@ -274,6 +274,10 @@ def cast_vote():
     if user_vote is not None:
         flash("You have already voted.")
         return "", 403
+    
+    if Polls.query.get(poll_id).pollAuthor_ID == current_user.user_ID:
+        flash("You cannot vote on your own polls.")
+        return "", 403
 
     new_vote = VotePoll(user_ID=current_user.user_ID, poll_ID=poll_id, Vote_opt=int(option))
     db.session.add(new_vote)
