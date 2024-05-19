@@ -25,5 +25,5 @@ Set up:
 6. Run the web application using { python3 SplitDif.py }
 
 Testing:
-To run tests, navigate to the root directory of the project and run the command:
-{ python3 -m unittest tests/run_tests.py }
+To run tests, navigate to the root directory of the project and run the command: { python3 -m unittest tests/run_tests.py }
+For controller testing, remove flash messages from controller.py and run the command { python3 -m unittest tests/ControllerTests.py }
