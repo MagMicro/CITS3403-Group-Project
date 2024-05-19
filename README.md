@@ -15,3 +15,14 @@ As for the user interaction, this is provided via polls comment sections and the
 #Objective of the website:
 As the name SplitDif suggests (based on split the difference), the goal of poll creation is to create polls with the smallest difference between voting options. Polls are ranked according to how indecisive they are when it comes to who voted for what. However, for this idea to be executed, the amount of votes must also be taken into account. A poll with a 40/60 split between 1000 votes is more impressive than a poll of 10 votes with a 50/50 split. Because of this, users are ranked according to our ranking system where we use points. A users points are calculated by (1 - overall difference) * total number of votes. This makes users also consider getting as many votes as possible.
 Another ranking system provided is our poll ranking system "Most popular", which ranks polls based on how many votes they have received within a given timeframe (day/week/month). This adds another means of making users attempt to make polls people actually want to vote on, rather than random gibberish.
+
+Set up:
+1. Unzip the zip file
+2. Create a new python virtual environment
+3. Activate the virtual environment
+4. Install the packages from requirements.txt using { pip install -r requirements.txt }
+5. Run the web application using { python3 SplitDif.py }
+
+Testing:
+To run tests, navigate to the root directory of the project and run the command:
+{ python3 -m unittest tests/run_tests.py }
