@@ -306,11 +306,13 @@ def get_timed_posts(choice):
         return results
 
 def test_data():
-      for i in range(100):
-            username = "user" + str(i)
-            password = "Some-thing1" + str(i)
-            email = "someone" + str(i) + "@email.com"
-            user = Users(username=username, password=password, email=email)
-            db.session.add(user)
-            db.session.commit()
-            
+    users = []
+    # Create basic test users
+    for i in range(100):
+        username = "user" + str(i)
+        password = "Something-1" + str(i)
+        email = "default" + str(i) + "@email.com"
+        user = Users(username=username, email=email, password=password)
+
+    db.session.add_all(users)
+    db.session.commit()
