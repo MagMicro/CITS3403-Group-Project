@@ -102,7 +102,7 @@ def check_validation_bypass():
         if request.method != "GET":
                 flash("Form validation bypass detected. Please fill form correctly.")
 
-
+# Determines if the poll results should be shown to the user
 def show_results(poll):
         # If the user is logged in, checks to see if they have already voted
         if current_user.is_authenticated:
@@ -111,6 +111,7 @@ def show_results(poll):
         # Default no vote value of None, determines if poll results are shown when page is loaded
         else:
                 return False
+        
 # Initialises the display values for a given polls vote percentage bar
 def bar_init(poll):
         bar = {}
@@ -126,12 +127,14 @@ def bar_init(poll):
                 bar["default"] = "background-color:black"
         return bar
 
+# Returns a boolean for the reverse property of sort
 def get_sort_order(order):
         if order == "Ascending":
                 return False
         else:
                 return True
-        
+
+# Sorts the post by the given order and mode       
 def sort_by_option(option, mode, posts):
         if option == "Popularity":
                 posts.sort(reverse=mode, key = lambda user_post: user_post.total_votes() )
@@ -139,7 +142,8 @@ def sort_by_option(option, mode, posts):
                 posts.sort(reverse=mode, key = lambda user_post: abs(user_post.left_percentage() - user_post.right_percentage()))
         elif option == "Date":
                 posts.sort(reverse=mode, key = lambda user_post: datetime.timestamp(user_post.creation_date))
-        
+
+# Checks if the option provided is within the list of allowed options   
 def valid_choice(choice, choices):
         if choice in choices:
                 return True
@@ -147,7 +151,7 @@ def valid_choice(choice, choices):
                 flash("Invalid option detected. Please try again.", "error")
                 return False
 
-
+# Checks if a poll is allowed to be deleted
 def verify_poll_deletion(poll):
         if poll is None:
                 flash("Could not delete poll. poll does not exist.")
@@ -158,6 +162,7 @@ def verify_poll_deletion(poll):
                 return True
         return False
 
+# Checks if a comment is allowed to be deleted
 def verify_comment_deletion(comment):
         if comment is None:
                 flash("Could not delete comment. comment does not exist.")
@@ -168,6 +173,7 @@ def verify_comment_deletion(comment):
                 return True
         return False
 
+# Returns list of users based on the search parameter
 def get_mode_list(mode, input, voted):
         if mode == "All":
                 polls = Polls.query.all()
@@ -200,6 +206,7 @@ def get_mode_list(mode, input, voted):
         elif voted == "No":
                 return list(polls.difference(voted_polls))
         
+ # See if a given string includes another noramlised string   
 def contains_string(string, search):
         string = string.lower()
         search = search.lower()
@@ -207,7 +214,8 @@ def contains_string(string, search):
                 return False
         else:
                 return True
-        
+
+#The following remove elements that dont match a given prompt, option or tag. Bypassed if field was left empty
 def filter_by_prompt(prompt, posts):
         if prompt != "":
                 final = []
@@ -235,12 +243,14 @@ def filter_by_tag(tag, posts):
                 return final
         return posts
 
+# Checks if the username a user wants is already taken
 def available_username(username):
         if not Users.query.filter_by(username=username).first() is None:
                 flash("Username is already taken. Please try again")
                 return False
         return True
 
+# Checks if a given username is valid
 def valid_username(username):
         if len(username) < 5:
                 flash("Username must be longer than 5 characters.")
@@ -250,10 +260,8 @@ def valid_username(username):
                 return False
         return True
 
+# Returns user posts that are within a certain timeframe
 def get_timed_posts(choice):
-        polls = Polls.query.all()
-        final = []
-
         # Time for daily in seconds
         time = (24*60*60)
 
@@ -283,9 +291,9 @@ def get_timed_posts(choice):
         length = len(sorted_list)
         index = 0
 
-        # Grabs the first 10 polls or less using the poll ID from each count
+        # Grabs the first 10 polls or less using the poll ID from each count, along with the recent vote count
         while index < 10 and index < length:
-                results.append(Polls.query.get(sorted_list[index][0]))
+                results.append((Polls.query.get(sorted_list[index][0]), sorted_list[index][1]))
                 index += 1
 
         return results

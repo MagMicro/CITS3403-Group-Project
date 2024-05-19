@@ -359,7 +359,6 @@ def create_comment():
         message = form.CommentContent.data
         user_ID = form.CreatorID.data
         poll_ID = form.PostID.data
-        print("hello", poll_ID)
         comment = Comments(user_ID = user_ID, poll_ID = poll_ID, message = message)
         db.session.add(comment)
         db.session.commit()
@@ -372,7 +371,6 @@ def create_comment():
 
 @main.route('/GetMostPopular/<choice>', methods=['GET'])
 def popular_polls(choice):
-    print(choice)
     if choice not in ["Daily", "Weekly", "Monthly"]:
         flash("Invalid option detected. Please try again.")
         return redirect(url_for("main.popular"))
