@@ -20,7 +20,6 @@ class ControllerTests(unittest.TestCase):
         self.app = create_app(TestingConfig)
         self.app_context = self.app.app_context()
         self.app_context.push()
-        self.client = self.app.test_client()
         db.init_app(self.app)
         db.create_all()
         test_data()
@@ -52,3 +51,29 @@ def test_valid_login(self):
                 self.assertTrue(valid_login("user5", "Some-thing15"))
                 self.assertTrue(valid_login("user9","Some-thing19"))
                 self.assertTrue(valid_login("user27","Some-thing127"))
+
+def test_valid_password(self):
+        self.assertFalse(valid_password("Something11"))
+        self.assertFalse(valid_password("password-c"))
+        self.assertFalse(valid_password("Password-a"))
+        self.assertFalse(valid_password("something-11"))
+        self.assertTrue(valid_password("Some-thing11"))
+        self.assertTrue(valid_password("Password-thing99"))
+
+
+def test_unique_username(self):
+        self.assertFalse(unique_username("someone1"))
+        self.assertFalse(unique_username("someone23"))
+        self.assertFalse(unique_username("someone99"))
+        self.assertTrue(unique_username("Cool_username99"))
+        self.assertTrue(unique_username("MagMicro"))
+        self.assertTrue(unique_username("Jamie99"))
+        self.assertTrue(unique_username("jeremy66"))
+
+def test_unique_email(self):
+        self.assertFalse(unique_username("someone1@email.com"))
+        self.assertFalse(unique_username("someone22@email.com"))
+        self.assertFalse(unique_username("someone93@email.com"))
+        self.assertTrue(unique_username("someone101@gmail.com"))
+        self.assertTrue(unique_username("username@gmail.com"))
+        self.assertTrue(unique_username("user232@gmail.com"))
