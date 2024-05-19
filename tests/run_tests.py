@@ -280,5 +280,16 @@ class BasicTests(unittest.TestCase):
             comment = Comments.query.filter_by(message='This is a test comment').first()
             self.assertIsNotNone(comment)
 
+            # Delete the comment
+            response = self.client.post(url_for('main.delete_user_comment'), data={
+                'item_ID': comment.comment_ID,
+                'comment_post_ID': comment.poll_ID
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+
+            # Verify the comment was deleted
+            deleted_comment = Comments.query.get(comment.comment_ID)
+            self.assertIsNone(deleted_comment)
+
 if __name__ == '__main__':
     unittest.main()
