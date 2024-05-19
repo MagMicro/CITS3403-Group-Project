@@ -46,7 +46,7 @@ def create_account():
         password = form.password.data
 
         # Checks if provided account details are unique
-        if not unique_username(username) or not unique_email(email) or not valid_password(password):
+        if not unique_username(username) or not unique_email(email) or not valid_email(email) or not valid_password(password):
             return render_template('accountCreationPage.html', search=PollSearch(), form=form, title = "Account Creation")
 
         # If a valid, unique username and password is provided, create the user account
