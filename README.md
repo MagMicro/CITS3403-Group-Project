@@ -21,7 +21,8 @@ Set up:
 2. Create a new python virtual environment
 3. Activate the virtual environment
 4. Install the packages from requirements.txt using { pip install -r requirements.txt }
-5. Run the web application using { python3 SplitDif.py }
+5. Set environment variable for secret key using { export FLASK_SECRET_KEY=zyx }
+6. Run the web application using { python3 SplitDif.py }
 
 Testing:
 To run tests, navigate to the root directory of the project and run the command:
