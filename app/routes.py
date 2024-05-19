@@ -145,7 +145,7 @@ def create():
     check_validation_bypass()
     return render_template('create.html', search=PollSearch(), form=form, title="Create", tags=tags, PollBar=PollBar)
 
-@main.route('/GetUserPosts/<option>/<order>/<id>', methods=["GET"])
+@main.route('/GetUserPosts/<option>/<order>/<int:id>', methods=["GET"])
 @login_required
 def generate_posts(option, order, id):
     posts = Users.query.get(id).posts
@@ -292,7 +292,6 @@ def search_results():
     tag3 = form.Tag3.data
     option = form.SearchOption.data
     order = form.SearchOrder.data
-
     # Validate the search mode used
     if valid_choice(mode, form.SearchMode.choices) and valid_choice(voted, form.Voted.choices):
         # Return a list with posts found via form input, mode & vote status
