@@ -41,8 +41,8 @@ class BasicTests(unittest.TestCase):
             # Create a test user account
             response = self.client.post(url_for('main.create_account'), data={
                 'username': 'testuser',
-                'email': 'test@example.com',
-                'password': 'testpassword'
+                'email': 'tests@example.com',
+                'password': 'Password12345!'
             }, follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             
@@ -52,8 +52,8 @@ class BasicTests(unittest.TestCase):
             
             # Log the test user in
             response = self.client.post(url_for('main.login'), data={
-                'username': 'testuser',  # Use username if that's how your form identifies
-                'password': 'testpassword'
+                'username': 'testuser', 
+                'password': 'Password12345!'
             }, follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             
@@ -92,7 +92,7 @@ class BasicTests(unittest.TestCase):
             response = self.client.post(url_for('main.create_account'), data={
                 'username': 'testuser',
                 'email': 'test@example.com',
-                'password': 'testpassword'
+                'password': 'Password12345!'
             }, follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             
@@ -103,7 +103,7 @@ class BasicTests(unittest.TestCase):
             # Log the test user in
             response = self.client.post(url_for('main.login'), data={
                 'username': 'testuser',  # Use username if that's how your form identifies
-                'password': 'testpassword'
+                'password': 'Password12345!'
             }, follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             
@@ -139,7 +139,7 @@ class BasicTests(unittest.TestCase):
             response = self.client.post(url_for('main.create_account'), data={
                 'username': 'testuser2',
                 'email': 'test2@mail.com',
-                'password': 'testpassword2'
+                'password': 'Password12345!'
             }, follow_redirects=True)
 
             # Verify the user was created
@@ -149,7 +149,7 @@ class BasicTests(unittest.TestCase):
             # Log the test user in
             response = self.client.post(url_for('main.login'), data={
                 'username': 'testuser2',
-                'password': 'testpassword2'
+                'password': 'Password12345!'
             }, follow_redirects=True)
 
             # Ensure the user is logged in
