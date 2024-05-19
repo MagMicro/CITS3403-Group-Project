@@ -267,7 +267,7 @@ def cast_vote():
 
 @main.route('/Poll/<int:poll_id>', methods=['GET', 'POST'])
 def get_post(poll_id):
-    poll = Polls.query.get(poll_id)
+    poll = db.session.get(Polls, poll_id)
     # Case that the user attempts to look for a pollID that currently doesnt exist
     if(poll is None):
         flash("Poll does not exist.")
