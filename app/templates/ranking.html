@@ -14,6 +14,7 @@
                     <th scope="col">Rank</th>
                     <th scope="col">Username</th>
                     <th scope="col">Average from 50-50</th>
+                    <th scope="'col">Points</th>
                     <th scope="col">Posts</th>
                 </tr>
             </thead>
@@ -23,6 +24,7 @@
                         <td class = "rank" scope="row">{{ user_data.rank }}#</td>
                         <td>{{ user_data.username }}</td>
                         <td>{{ user_data.average }}%</td>
+                        <td>{{ user_data.points }}</td>
                         <td>{{ user_data.posts }}</td>
                     </tr>
                 {% endfor %}

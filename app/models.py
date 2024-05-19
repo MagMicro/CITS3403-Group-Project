@@ -61,21 +61,42 @@ class Users(UserMixin, db.Model):
         else:
             return 100
         
+    def poll_points(self, post):
+        if post.total_votes() == 0:
+            return 0
+        poll_diff = abs(post.left_percentage() - post.right_percentage())
+        return (100 - poll_diff) * post.total_votes()
+
+    def total_points(self):
+        points = 0
+        for post in self.posts:
+            points += self.poll_points(post)
+        return points
+        
     def rank(self):
         ranked = Users.get_ranks()
         return ranked[self.user_ID]
 
     def get_ranks():
         users = Users.query.all()
-        users.sort(key=lambda x: x.average_dif(), reverse=False)
+        if not users:
+            return {}
+
+        # Precompute total points to avoid multiple calculations
+        user_points = {user: user.total_points() for user in users}
+        
+        # Sort users based on precomputed total points
+        sorted_users = sorted(users, key=lambda x: user_points[x], reverse=True)
+        
         ranks = {}
         rank = 1
-        prev_avg = users[0].average_dif() if users else None
-        for user in users:
-            if user.average_dif() != prev_avg:
+        prev_points = user_points[sorted_users[0]]
+        for user in sorted_users:
+            if user_points[user] != prev_points:
                 rank += 1
-                prev_avg = user.average_dif()
+                prev_points = user_points[user]
             ranks[user.user_ID] = rank
+
         return ranks
 
 class Polls(db.Model):
