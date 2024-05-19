@@ -154,7 +154,7 @@ def generate_posts(option, order, id):
     if valid_choice(order, AccountPostFilter().SortOrder.choices) and valid_choice(option, AccountPostFilter().SortOption.choices):
         sort_by_option(option, get_sort_order(order), posts)
     else:
-        return redirect(url_for("main.account"))
+        return redirect(url_for("main.account", id=id))
         
     return render_template("UserPosts.html", deletion = DeletionForm(), search=PollSearch(), posts = posts, url = url_for("main.home"))
 
@@ -215,10 +215,10 @@ def delete_account():
         #Incorrect password provided
         else:
             flash("Invalid password. Please try again", "error")
-            return redirect(url_for("main.account"))
+            return redirect(url_for('main.account', id=current_user.user_ID))
         
     flash("Something went wrong. Please try again", "error")
-    return redirect(url_for("main.account"))
+    return redirect(url_for('main.account', id=current_user.user_ID))
 
 @main.route('/api/poll/random', methods=['GET'])
 def random_poll():
@@ -339,17 +339,17 @@ def change_username():
         username = form.AccountUsername.data
         if current_user.is_authenticated and current_user.user_ID == id:
             if not valid_username(username) or not available_username(username):
-                return redirect(url_for('main.account'))
+                return redirect(url_for('main.account', id=id))
             
             user = Users.query.get(id)
             user.username = username
             db.session.add(user)
             db.session.commit()
             flash("Username was successfully changed.")
-            return redirect(url_for('main.account'))
+            return redirect(url_for('main.account', id=id))
 
     flash("You do not have permission to do this.")
-    return redirect(url_for('main.account'))
+    return redirect(url_for('main.account', id=id))
 
 @main.route('/CreateComment', methods = ["POST"])
 @login_required
