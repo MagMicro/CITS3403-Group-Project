@@ -2,17 +2,21 @@
     <th>Rank: </th>
     <th>Poll: </th>
     <th>Date: </th>
-    <th>All-time votes: </th>
+    <th>Recent votes: </th>
+    <th>Total votes: </th>
 </tr>
 {% for poll in polls %}
 <tr class = "popularPoll" id = "{{poll.poll_ID}}">
-    <td class = "rank col-sm-1 col-md-1 col-lg-1">{{loop.index}}#</td>
-    <td class = "col-sm-6 col-md-5 col-lg-4">
-        <h5>{{poll.prompt}}</h5>
-        <p>{{poll.Option1}} vs. {{poll.Option2}}</p>
+    <td class="rank col-sm-1 col-md-1 col-lg-1">
+        {{loop.index}}#
     </td>
-    <td class = "col-3">{{poll.readable_date()}}</td>
-    <td class = "col-2">{{poll.total_votes()}}</td>
+    <td class = "col-sm-5 col-lg-4">
+        <h5>{{poll[0].prompt}}</h5>
+        <p>{{poll[0].Option1}} vs. {{poll[0].Option2}}</p>
+    </td>
+    <td class = "col-3">{{poll[0].readable_date()}}</td>
+    <td class = "col-2">{{poll[1]}}</td>
+    <td class = "col-2">{{poll[0].total_votes()}}</td>
 </tr>
 {% endfor %}
 <script>

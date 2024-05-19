@@ -1,10 +1,10 @@
 {% extends "defaultFormat.html" %}
 {%block content%}
 <div id = "popularPollsBoard" class="board col-12 col-md-10 col-lg-8">
-    <h1 id = "rankingPageHeader" class = "header">Ranking Page <div class="fas fa-arrow-trend-up"></div></h1>
+    <h1 id = "rankingPageHeader" class = "header">Most Popular Polls <div class="fas fa-arrow-trend-up"></div></h1>
     <section id = "popularPollsContent" class="ranking-section">
-        <hr>
-        <h2>Top 10 Posts 
+        <h2 id = "popularPollsSortBox">
+            Sort By:
             <select id = "popularTimePeriod">
                 <option value = "Daily">Daily</option>
                 <option value = "Weekly">Weekly</option>
@@ -12,10 +12,12 @@
             </select>
             <div class = "fas fa-calendar-days"></div>
         </h2>
+        <hr class = "col-8">
         <table id = "popularPolls" class="table table-striped">
         </table>
     </section>
 </div>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/Popular.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/Ranking.css') }}">
 <script src="{{ url_for('static', filename='js/PopularPageFunctionality.js') }}"></script>
 {% endblock %}

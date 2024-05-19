@@ -1,14 +1,17 @@
+// Initialises listener for vote submission and ensuers options provided are valid
 function handle_submission(){
     document.getElementById("poll-form").addEventListener("submit", function (event) {
         event.preventDefault();
         poll_ID = document.getElementsByClassName("poll")[0].getAttribute("id");
 
+        // Make sure the option selected is valid
         if(option == '1' || option == '2') {
             voteOnPoll(poll_ID, option);
         }
     });
 }
 
+// Function responsible for sending a vote request to the server to be processed, acts corresponding to code returned
 function voteOnPoll(pollId, option) {
     const xhttp = new XMLHttpRequest();
     xhttp.open("POST", "/api/poll/vote");
@@ -39,9 +42,11 @@ function toggle_selected(current){
     $("label[for = " + $(current).attr('id') + "]").css("background-color", "rgb(232, 232, 232)");
     option = $(current).attr('value');
 }
+
 $(document).ready(() => {
     let option;
     handle_submission();
+    // Changes background colour on option selected
     $("#SubmissionOptions-0").click(function(){toggle_selected(this);});
     $("#SubmissionOptions-1").click(function(){toggle_selected(this);});
 });

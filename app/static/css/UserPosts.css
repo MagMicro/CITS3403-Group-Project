@@ -1,0 +1,22 @@
+#userPosts{
+    display:flex;
+    flex-direction: column;
+    overflow-y:auto;
+    text-align:left;
+    height: 50%;
+}
+
+#postHeader{
+    position:relative;
+    padding:10px;
+    height:60px;
+}
+
+#userPosts > div{
+    padding:20px;
+    border-bottom: 1px solid black;
+}
+
+#userPosts > div:hover{
+    background-color: rgba(0, 0, 0, 0.2);
+}

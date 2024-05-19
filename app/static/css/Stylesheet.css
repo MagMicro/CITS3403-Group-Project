@@ -50,6 +50,7 @@ body{
     height: 300px;
     overflow: hidden;
     padding-bottom: 20px;
+    margin-bottom: 50px;
 }
 
 .inputBox{
@@ -228,17 +229,23 @@ a{
 #profilePic{
     display:block;
     overflow:hidden;
-    width: 200px;
-    height: 200px;
     border-radius:15px;
     float:left;
     border: 2px solid black;
 }
-#name, #userContent{
+#name{
     text-align: left;
     position:relative;
     left:20px;
 }
+#userContent{
+    display:flex;
+    flex-direction: column;
+    text-align: left;
+    position:relative;
+    padding-left: 20px;
+}
+
 #userDetails{
     margin:10px;
     padding-bottom: 10px;
@@ -255,7 +262,7 @@ a{
 }
 .header{
     height:50px;
-    background-color: rgb(100, 104, 122);
+    background-color: #007bff;
     text-align: center;
     color:white;
     font-size: 30px;
@@ -291,12 +298,12 @@ a{
     height:60px;
 }
 
-#userPosts > div{
+.userPost{
     padding:20px;
     border-bottom: 1px solid black;
 }
 
-#userPosts > div:hover{
+.userPost:hover{
     background-color: rgba(0, 0, 0, 0.2);
 }
 
@@ -305,10 +312,6 @@ a{
     height: 10px;
     display: flex;
     flex-direction:row;
-}
-
-.post-subheading{
-    font-weight:bold;
 }
 
 #filterBox{
@@ -689,213 +692,14 @@ a{
     top:-8px;
 }
 
-/* Home Page */
-.homepage-container {
-    max-width: 1200px;
-    margin: auto;
-    padding: 20px;
-    color: #fff;
-}
-
-.homepage-intro {
-    text-align: center;
-    padding: 60px 20px;
-    background-color: rgb(100, 104, 122);
-    border-radius: 15px;
-    margin-bottom: 40px;
-}
-
-.homepage-intro h1 {
-    font-size: 36px;
-    margin-bottom: 10px;
-}
-
-.homepage-intro p {
-    font-size: 18px;
-}
-
-.homepage-card-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.homepage-card {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    padding: 40px;
-    margin: 20px;
-    width: 80%;
-    max-width: 500px;
-    text-align: center;
-    transition: transform 0.3s, box-shadow 0.3s;
-    color: #333;
-}
-
-.homepage-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-}
-
-.homepage-card h2 {
-    margin-bottom: 10px;
-}
-
-.homepage-card p {
-    font-size: 16px;
-    margin-bottom: 15px;
-}
-
-.homepage-btn {
-    display: inline-block;
-    margin: 10px 5px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 25px;
-    color: white;
-    text-decoration: none;
-    font-size: 14px;
-    transition: background-color 0.3s, box-shadow 0.3s;
-}
-
-.homepage-btn-primary {
-    background-color: #007bff;
-}
-
-.homepage-btn-primary:hover {
-    background-color: #0056b3;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.homepage-btn-info {
-    background-color: #17a2b8;
-}
-
-.homepage-btn-info:hover {
-    background-color: #138496;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.homepage-btn-success {
-    background-color: #28a745;
-}
-
-.homepage-btn-success:hover {
-    background-color: #218838;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-@media (max-width: 768px) {
-    .homepage-intro h1 {
-        font-size: 28px;
-    }
-
-    .homepage-intro p {
-        font-size: 16px;
-    }
-
-    .homepage-card {
-        width: 90%;
-    }
-}
-
-/* Ranking Page */
-.ranking-container {
-    max-width: 1000px;
-    margin: 50px auto;
-    padding: 20px;
-    background: rgb(62, 64, 76);
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    color: #fff;
-}
-
-.ranking-section {
-    text-align: center;
-}
-
-.ranking-section h1 {
-    font-size: 36px;
-    margin-bottom: 20px;
-    color: #fff;
-}
-
-.ranking-section hr {
-    margin: 20px auto;
-    width: 80%;
-    border-color: #555;
-}
-
-.ranking-section h2 {
-    font-size: 28px;
-    margin-bottom: 15px;
-    color: #ddd;
-}
-
-.ranking-section h3 {
-    font-size: 24px;
-    margin-bottom: 15px;
-    color: #ccc;
-}
-
-.ranking-section table {
-    width: 100%;
-    margin: 20px auto;
-    background: #fff;
-    color: #333;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.ranking-section th, .ranking-section td {
-    padding: 15px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-}
-
-.ranking-section th {
-    background: #007bff;
-    color: #fff;
-}
-
-.ranking-section .table-striped tbody tr:nth-of-type(odd) {
-    background-color: #f2f2f2;
-}
-
-.ranking-section .table-striped tbody tr:hover {
-    background-color: #e6e6e6;
-}
-
-@media (max-width: 768px) {
-    .ranking-container {
-        width: 90%;
-        padding: 15px;
-    }
-
-    .ranking-section h1 {
-        font-size: 28px;
-    }
-
-    .ranking-section h2 {
-        font-size: 24px;
-    }
-
-    .ranking-section h3 {
-        font-size: 20px;
-    }
-
-    .ranking-section th, .ranking-section td {
-        padding: 10px;
-    }
-}
-
-.rank{
-    font-size: 20px;
-    color:white;
-    background-color:#007bff;
-}
-
 #deletionForm{
     display:none;
+}
+
+#emptyMessage{
+    position: absolute;
+    text-align: center;
+    bottom: 40%;
+    left: 25%;
+    right:25%;
 }

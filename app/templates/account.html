@@ -1,10 +1,13 @@
 {% extends "defaultFormat.html" %}
 {%block content%}
 <div id = "accountHeader" class="board col-sm-12 col-m-10 col-lg-8" >
+    {% if user.user_ID == current_user.user_ID %}
     <div class ="fas fa-xmark" id = "accountDelete"></div>
+    {% endif %}
     <div id = "profileHeader" class = "header col-12"> User Profile: <div class = "fas fa-id-card"></div></div>
     <div id = "userDetails">
-        <img id = "profilePic" src = "{{url_for('static', filename='Images/DefaultProfile.png')}}">
+        <img class = "col-2" id = "profilePic" src = "{{url_for('static', filename='Images/DefaultProfile.png')}}">
+        {% if user.user_ID == current_user.user_ID %}
         <h1 id = "name">
             <form id = "usernameForm" method="post" action="{{url_for('main.change_username')}}">
                 <div id="renameIcon" class = "fas fa-pencil"></div> 
@@ -14,15 +17,19 @@
                 {{form.AccountID(style = "display:none", value = user.user_ID)}}
             </form>
         </h1>
-        <p id = "userContent">
-            <span class ="detailHeader">Email:</span> {{user.email}} <br> 
-            <span class ="detailHeader">Posts:</span> {{user.count_posts()}}<br>
-            <span class ="detailHeader">Average Percent from 50-50:</span> {{user.average_dif()}}%<br>
-            <span class ="detailHeader">Ranking:</span> {{user.rank()}}<br>
-            <span class ="detailHeader">Joined:</span> {{user.creation_date.strftime("%d/%m/%Y")}}
-        </p>
+        {% else %}
+        {{form.AccountID(style = "display:none", value = user.user_ID)}}
+        <h1 id = "name">{{user.username}}</h1>
+        {% endif %}
+        <hr class = "col-8">
+        <section id = "userContent">
+            {% if user.user_ID == current_user.user_ID %}<span><b>Email:</b> {{user.email}} </span> {% endif %}
+            <span><b>Posts:</b> {{user.count_posts()}}</span>
+            <span><b>Average Percent from 50-50:</b> {{user.average_dif()}}%</span>
+            <span><b>Ranking:</b> {{user.rank()}}</span>
+            <span><b>Joined:</b> {{user.creation_date.strftime("%d/%m/%Y")}}</span>
+        </section>
     </div>
-    <hr class = "col-11">
 </div>
 
 
@@ -42,7 +49,7 @@
 <script src="{{ url_for('static', filename='js/profilePageFunctionality.js') }}"></script>
 
 {{notification |safe }}
-
+{% if user.user_ID == current_user.user_ID %}
 <div id = "accountConfirmMsg" class = "deletionConfirmation">
     <div class = "board col-4" id = "accountDeletionBoard">
         <form method="post" action="{{url_for('main.delete_account')}}">
@@ -60,4 +67,5 @@
         </form>
     </div>
 </div>
+{% endif %}
 {% endblock %}

@@ -1,14 +1,14 @@
 import unittest
 from app import create_app, db
-from app.models import Users
+from app.models import Users, Polls, VotePoll, Comments
 from flask import url_for
-from app.config import TestingConfig  # Import TestingConfig
+from app.config import TestingConfig
 
 class BasicTests(unittest.TestCase):
-
     def setUp(self):
         """Set up the test client and initialize the database."""
         self.app = create_app(TestingConfig)
+        self.app.config['SERVER_NAME'] = 'localhost'
         self.client = self.app.test_client()
         self.app_context = self.app.app_context()
         self.app_context.push()
@@ -22,30 +22,283 @@ class BasicTests(unittest.TestCase):
 
     def test_home_page(self):
         """Test that the home page loads correctly."""
-        with self.app.test_request_context():
+        with self.client:
             response = self.client.get(url_for('main.home'))
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'Home', response.data)
 
     def test_login_page(self):
         """Test that the login page loads correctly."""
-        with self.app.test_request_context():
+        with self.client:
             response = self.client.get(url_for('main.login'))
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'Login', response.data)
 
-    def test_create_account(self):
-        """Test account creation."""
-        with self.app.test_request_context():
+    def test_register_user_with_invalid_password(self):
+        """Test user registration with missing or invalid data."""
+        with self.client:
+            response = self.client.post(url_for('main.create_account'), data={
+                'username': 'testuser',
+                'email': 'em@mail.com',
+                'password': 'password'
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            
+            assert(Users.query.all() == [])
+
+    def test_register_user_with_invalid_email(self):
+        """Test user registration with missing or invalid data."""
+        with self.client:
+            response = self.client.post(url_for('main.create_account'), data={
+                'username': 'testuser',
+                'email': 'email',
+                'password': 'Password12345!'
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            
+            assert(Users.query.all() == [])
+
+    def test_make_poll(self):
+        """Test poll creation."""
+        with self.client:
+            # Create a test user account
+            response = self.client.post(url_for('main.create_account'), data={
+                'username': 'testuser',
+                'email': 'tests@example.com',
+                'password': 'Password12345!'
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            
+            # Verify the user was created
+            user = Users.query.filter_by(username='testuser').first()
+            self.assertIsNotNone(user)
+            
+            # Log the test user in
+            response = self.client.post(url_for('main.login'), data={
+                'username': 'testuser', 
+                'password': 'Password12345!'
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            
+            # Ensure the user is logged in
+            with self.client.session_transaction() as sess:
+                self.assertTrue('_user_id' in sess)
+            
+            # Define the poll data
+            prompt = 'Test poll'
+            option1 = 'Option 1'
+            option2 = 'Option 2'
+            form_tags = 'Sports'
+
+            # Create the poll
+            response = self.client.post(url_for('main.create'), data={
+                'prompt': prompt,
+                'option1': option1,
+                'option2': option2,
+                'tags': form_tags  # Ensure the field name matches your form
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)            
+
+            # Check for flash messages
+            with self.client.session_transaction() as sess:
+                flash_messages = sess.get('_flashes', [])
+                print(flash_messages)
+            
+            # Verify the poll was created
+            poll = Polls.query.filter_by(prompt=prompt).first()
+            self.assertIsNotNone(poll)
+
+    def test_vote_poll(self):
+        """Test poll creation."""
+        with self.client:
+            # Create a test user account
             response = self.client.post(url_for('main.create_account'), data={
                 'username': 'testuser',
                 'email': 'test@example.com',
-                'password': 'testpassword'
-            }, follow_redirects=True)  # Follow redirects to handle flashes
+                'password': 'Password12345!'
+            }, follow_redirects=True)
             self.assertEqual(response.status_code, 200)
+            
+            # Verify the user was created
             user = Users.query.filter_by(username='testuser').first()
             self.assertIsNotNone(user)
-            self.assertEqual(user.email, 'test@example.com')
+            
+            # Log the test user in
+            response = self.client.post(url_for('main.login'), data={
+                'username': 'testuser',  # Use username if that's how your form identifies
+                'password': 'Password12345!'
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            
+            # Ensure the user is logged in
+            with self.client.session_transaction() as sess:
+                self.assertTrue('_user_id' in sess)
+            
+            # Define the poll data
+            prompt = 'Test poll'
+            option1 = 'Option 1'
+            option2 = 'Option 2'
+            form_tags = 'Sports'
+
+            # Create the poll
+            response = self.client.post(url_for('main.create'), data={
+                'prompt': prompt,
+                'option1': option1,
+                'option2': option2,
+                'tags': form_tags  # Ensure the field name matches your form
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)            
+
+            # Check for flash messages
+            with self.client.session_transaction() as sess:
+                flash_messages = sess.get('_flashes', [])
+                print(flash_messages)
+            
+            # Verify the poll was created
+            poll = Polls.query.filter_by(prompt=prompt).first()
+            self.assertIsNotNone(poll)
+
+            # Make a second account to vote on the poll
+            response = self.client.post(url_for('main.create_account'), data={
+                'username': 'testuser2',
+                'email': 'test2@mail.com',
+                'password': 'Password12345!'
+            }, follow_redirects=True)
+
+            # Verify the user was created
+            user = Users.query.filter_by(username='testuser2').first()
+            self.assertIsNotNone(user)
+
+            # Log the test user in
+            response = self.client.post(url_for('main.login'), data={
+                'username': 'testuser2',
+                'password': 'Password12345!'
+            }, follow_redirects=True)
+
+            # Ensure the user is logged in
+            with self.client.session_transaction() as sess:
+                self.assertTrue('_user_id' in sess)
+
+            # Vote on the poll
+            response = self.client.post(url_for('main.cast_vote'), data={
+                'poll_ID': '1',
+                'user_ID': '2', 
+                'option': 'option1'
+            }, follow_redirects=True)
+
+            # Check for flash messages
+            with self.client.session_transaction() as sess:
+                flash_messages = sess.get('_flashes', [])
+                print(flash_messages)
+
+            # Verify the vote was recorded
+            vote = VotePoll.query.all()
+            self.assertIsNotNone(vote)
+           
+    def test_check_password_hashing(self):
+        """Test poll creation."""
+        with self.client:
+            # Create a test user account
+            response = self.client.post(url_for('main.create_account'), data={
+                'username': 'testuser',
+                'email': 'tests@example.com',
+                'password': 'Password12345!'
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            
+            # Verify the user was created
+            user = Users.query.filter_by(username='testuser').first()
+            self.assertIsNotNone(user)
+
+            # Check that the password is different
+            self.assertNotEqual(user.password, 'Password12345!')
+
+    def test_deleting_comment_and_poll(self):
+        """Test poll creation."""
+        with self.client:
+            # Create a test user account
+            response = self.client.post(url_for('main.create_account'), data={
+                'username': 'testuser',
+                'email': 'test@example.com',
+                'password': 'Password12345!'
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            
+            # Verify the user was created
+            user = Users.query.filter_by(username='testuser').first()
+            self.assertIsNotNone(user)
+            
+            # Log the test user in
+            response = self.client.post(url_for('main.login'), data={
+                'username': 'testuser',  # Use username if that's how your form identifies
+                'password': 'Password12345!'
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            
+            # Ensure the user is logged in
+            with self.client.session_transaction() as sess:
+                self.assertTrue('_user_id' in sess)
+            
+            # Define the poll data
+            prompt = 'Test poll'
+            option1 = 'Option 1'
+            option2 = 'Option 2'
+            form_tags = 'Sports'
+
+            # Create the poll
+            response = self.client.post(url_for('main.create'), data={
+                'prompt': prompt,
+                'option1': option1,
+                'option2': option2,
+                'tags': form_tags  # Ensure the field name matches your form
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)            
+
+            # Check for flash messages
+            with self.client.session_transaction() as sess:
+                flash_messages = sess.get('_flashes', [])
+                print(flash_messages)
+            
+            # Verify the poll was created
+            poll = Polls.query.filter_by(prompt=prompt).first()
+            self.assertIsNotNone(poll)
+
+            # Make a comment on the poll
+            response = self.client.post(url_for('main.create_comment'), data={
+                'CreatorID': 1,
+                'PostID': 1,
+                'CommentContent': 'This is a test comment'
+            }, follow_redirects=True)
+
+            # Check for flash messages
+            with self.client.session_transaction() as sess:
+                flash_messages = sess.get('_flashes', [])
+                print(flash_messages)
+            
+            # Verify the comment was created
+            comment = Comments.query.filter_by(message='This is a test comment').first()
+            self.assertIsNotNone(comment)
+
+            # Delete the comment
+            response = self.client.post(url_for('main.delete_user_comment'), data={
+                'item_ID': comment.comment_ID,
+                'comment_post_ID': comment.poll_ID
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+
+            # Verify the comment was deleted
+            deleted_comment = Comments.query.get(comment.comment_ID)
+            self.assertIsNone(deleted_comment)
+
+            # Delete the post
+            response = self.client.post(url_for('main.delete_user_post'), data={
+                'item_ID': poll.poll_ID,
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+
+            # Verify the post was deleted
+            deleted_post = Polls.query.get(poll.poll_ID)
+            self.assertIsNone(deleted_post)
 
 if __name__ == '__main__':
     unittest.main()

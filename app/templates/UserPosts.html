@@ -1,40 +1,50 @@
-{% for post in posts %}
-<div class="userPost">
-    <form id = "deletionForm" method = "post" action = "{{url_for('main.delete_user_post')}}">
-        {{deletion.hidden_tag()}}
-        {{deletion.item_ID(value = post.poll_ID)}}
-    </form>
-    <div id = "deletePost" class = "fas fa-xmark deleteItem"></div>
-    <div class = "postContent">
-        <p><span class="post-subheading">ID: </span>{{post.poll_ID}}</p>
+{% if posts %}
+    {% for post in posts %}
+    <div class="userPost">
+        {% if current_user.user_ID == post.pollAuthor_ID %}
+        <form id = "deletionForm" method = "post" action = "{{url_for('main.delete_user_post')}}">
+            {{deletion.hidden_tag()}}
+            {{deletion.item_ID(value = post.poll_ID)}}
+        </form>
+        <div id = "deletePost" class = "fas fa-xmark deleteItem" onclick = "$('#itemDeletion').css('display', 'block');"></div>
+        {% endif %}
+        <div class = "postContent" id = {{post.poll_ID}} onclick = "window.open('/Poll/' + $(this).attr('id'))">
+            <section><b>ID: </b>{{post.poll_ID}}</section>
 
-        <p>
-            <span class="post-subheading">Prompt:</span> {{ post.prompt }} 
+            <section>
+                <b>Prompt:</b> {{ post.prompt }} 
+                <br>
+                <b>Options:</b> {{ post.Option1 }} ({{ post.left_percentage() }}%) vs {{ post.Option2 }} ({{ post.right_percentage() }}%)
+            </section>
+
+            <div class="small-bar">
+                {%if post.left_percentage() == 0 and post.right_percentage() == 0 %}
+                <div style="width: 100%; background-color:lightgrey;"></div>
+                {%elif post.left_percentage() == 100 %}
+                <div style="width: 100%; background-color:blue;"></div>
+                {%elif post.left_percentage() == 0 %}
+                <div style="width: 100%; background-color:red;"></div>
+                {% else %}
+                <div style="width: {{ post.left_percentage() }}%; background-color:blue;"></div>
+                <div style="width: {{ post.right_percentage()}}%; background-color:red;"></div>
+                {% endif %}
+            </div>
             <br>
-            <span class="post-subheading">Options:</span> {{ post.Option1 }} ({{ post.left_percentage() }}%) vs {{ post.Option2 }} ({{ post.right_percentage() }}%)
-        </p>
-
-        <div class="small-bar">
-            {%if post.left_percentage() == 0 and post.right_percentage() == 0 %}
-            <div style="width: 100%; background-color:lightgrey;"></div>
-            {%elif post.left_percentage() == 100 %}
-            <div style="width: 100%; background-color:red;"></div>
-            {%elif post.left_percentage() == 0 %}
-            <div style="width: 100%; background-color:blue;"></div>
-            {% else %}
-            <div style="width: {{ post.left_percentage() }}%; background-color:red;"></div>
-            <div style="width: {{ post.right_percentage()}}%; background-color:blue;"></div>
-            {% endif %}
+            <section>
+                <b>Tags:</b> {{ post.tag1 }} {% if post.tag2 != None %} , {{ post.tag2}} {% endif %} {% if post.tag3 != None %} , {{ post.tag3 }} {% endif %}
+                <br>
+                <b>Total Votes:</b> {{post.total_votes()}}
+                <br>
+                <b>Posted on: </b><date>{{ post.readable_date() }}</date>
+            </section>
         </div>
-        <br>
-        <p>
-            <span class="post-subheading">Tags:</span> {{ post.tag1 }} {% if post.tag2 != None %} , {{ post.tag2}} {% endif %} {% if post.tag3 != None %} , {{ post.tag3 }} {% endif %}
-            <br>
-            <span class="post-subheading">Total Votes:</span> {{post.total_votes()}}
-            <br>
-            <span class="post-subheading">Posted on: </span><date>{{ post.readable_date() }}</date>
-        </p>
     </div>
+    {% endfor %}
+
+{% else %}
+<div id = "emptyMessage">
+    <h2>No Posts Found</h2>
+    <img id = "logo" src="{{url_for('static', filename='Images/icon.png')}}">
+    <p>Looks like there aren't any Posts. <b>Start creating some.</b></p>
 </div>
-{% endfor %}
-<script src="{{ url_for('static', filename='js/PostManagementFunctionality.js') }}"></script>
+{% endif %}

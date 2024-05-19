@@ -1,0 +1,134 @@
+/* Home Page */
+.homepage-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    color: #333;
+}
+
+.homepage-intro {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: white;
+    border-radius: 15px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+.homepage-intro h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.homepage-intro .divider {
+    width: 80%;
+    margin: 10px auto;
+    border-top: 2px solid #333;
+}
+
+.homepage-intro .homepage-logo {
+    margin: 20px auto;
+}
+
+.homepage-intro .homepage-logo img {
+    width: 150px;
+    height: auto;
+}
+
+.homepage-intro p {
+    font-size: 18px;
+}
+
+.homepage-card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 20px;
+    justify-content: center;
+}
+
+.homepage-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 40px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    color: #333;
+}
+
+.homepage-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.homepage-card h2 {
+    margin-bottom: 10px;
+}
+
+.homepage-card p {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.homepage-btn {
+    display: inline-block;
+    margin: 10px 5px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.homepage-btn-primary {
+    background-color: #007bff;
+}
+
+.homepage-btn-primary:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.homepage-btn-info {
+    background-color: #17a2b8;
+}
+
+.homepage-btn-info:hover {
+    background-color: #138496;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.homepage-btn-success {
+    background-color: #28a745;
+}
+
+.homepage-btn-success:hover {
+    background-color: #218838;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.homepage-btn-secondary {
+    background-color: #6c757d;
+}
+
+.homepage-btn-secondary:hover {
+    background-color: #5a6268;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 768px) {
+    .homepage-intro h1 {
+        font-size: 28px;
+    }
+
+    .homepage-intro p {
+        font-size: 16px;
+    }
+
+    .homepage-card {
+        width: 100%;
+    }
+}
