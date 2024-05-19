@@ -301,5 +301,36 @@ class BasicTests(unittest.TestCase):
             deleted_post = Polls.query.get(poll.poll_ID)
             self.assertIsNone(deleted_post)
 
+    def test_logout(self):
+        """Test that the user can logout."""
+        with self.client:
+            # Create a test user account
+            response = self.client.post(url_for('main.create_account'), data={
+                'username': 'testuser',
+                'email': 'test@mail.com',
+                'password': 'Password12345!'
+            }, follow_redirects=True)
+
+            # Verify the user was created
+            user = Users.query.filter_by(username='testuser').first()
+            self.assertIsNotNone(user)
+
+            # Log the test user in
+            response = self.client.post(url_for('main.login'), data={
+                'username': 'testuser',
+                'password': 'Password12345!'
+            }, follow_redirects=True)
+
+            # Ensure the user is logged in
+            with self.client.session_transaction() as sess:
+                self.assertTrue('_user_id' in sess)
+
+            # Log the user out
+            response = self.client.get(url_for('main.logout'), follow_redirects=True)
+
+            # Ensure the user is logged out
+            with self.client.session_transaction() as sess:
+                self.assertFalse('_user_id' in sess)
+
 if __name__ == '__main__':
     unittest.main()
