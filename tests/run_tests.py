@@ -291,5 +291,15 @@ class BasicTests(unittest.TestCase):
             deleted_comment = Comments.query.get(comment.comment_ID)
             self.assertIsNone(deleted_comment)
 
+            # Delete the post
+            response = self.client.post(url_for('main.delete_user_post'), data={
+                'item_ID': poll.poll_ID,
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+
+            # Verify the post was deleted
+            deleted_post = Polls.query.get(poll.poll_ID)
+            self.assertIsNone(deleted_post)
+
 if __name__ == '__main__':
     unittest.main()
