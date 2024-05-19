@@ -6,7 +6,10 @@
 </tr>
 {% for poll in polls %}
 <tr class = "ranked popularPoll" id = "{{poll.poll_ID}}">
-    <td class = "rank col-sm-1 col-md-1 col-lg-1">{{loop.index}}#</td>
+    <td class="rank col-sm-1 col-md-1 col-lg-1" 
+        {% if loop.index == 1 %}style="background-color: gold;"{% elif loop.index == 2 %}style="background-color: silver;"{% elif loop.index == 3 %}style="background-color: #CD7F32;"{% endif %}>
+        {{loop.index}}#
+    </td>
     <td class = "col-sm-6 col-md-5 col-lg-4">
         <h5>{{poll.prompt}}</h5>
         <p>{{poll.Option1}} vs. {{poll.Option2}}</p>
