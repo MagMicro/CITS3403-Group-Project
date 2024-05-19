@@ -255,7 +255,7 @@ a{
 }
 .header{
     height:50px;
-    background-color: rgb(100, 104, 122);
+    background-color: #007bff;
     text-align: center;
     color:white;
     font-size: 30px;
@@ -305,10 +305,6 @@ a{
     height: 10px;
     display: flex;
     flex-direction:row;
-}
-
-.post-subheading{
-    font-weight:bold;
 }
 
 #filterBox{
