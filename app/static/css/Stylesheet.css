@@ -47,7 +47,7 @@ body{
     position:relative;
 }
 #accountHeader{
-    height: 300px;
+    height: 350px;
     overflow: hidden;
     padding-bottom: 20px;
 }
@@ -228,16 +228,23 @@ a{
 #profilePic{
     display:block;
     overflow:hidden;
-    width: 200px;
-    height: 200px;
     border-radius:15px;
     float:left;
     border: 2px solid black;
 }
-#name, #userContent{
+#name{
     text-align: left;
     position:relative;
     left:20px;
+}
+#userContent{
+    display:flex;
+    flex-direction: column;
+    left:50%;
+    text-align: left;
+    position:relative;
+    right:50%;
+    top:60px;
 }
 #userDetails{
     margin:10px;

@@ -19,7 +19,7 @@
             </thead>
             <tbody>
                 {% for user_data in rank_data %}
-                    <tr>
+                    <tr id = "{{user_data.user_ID}}" onclick = "window.open('/account/' + $(this).attr('id'))">
                         <th scope="row">{{ user_data.rank }}</th>
                         <td>{{ user_data.username }}</td>
                         <td>{{ user_data.average }}%</td>

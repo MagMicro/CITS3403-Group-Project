@@ -59,13 +59,14 @@ def create_account():
     check_validation_bypass()
     return render_template('accountCreationPage.html', search=PollSearch(), form=form, title="Account Creation")
 
-@main.route('/account', methods=['POST', 'GET'])
-def account():
+@main.route('/account/<int:id>', methods=['GET'])
+@login_required
+def account(id):
     # If the user is not logged in, redirect them to login page
     if current_user.is_anonymous:
         return redirect(url_for('main.login'))
     else:
-        user = Users.query.get(current_user.user_ID)
+        user = Users.query.get(id)
         # Render html for deletion notification and pass to account page.
         notification = render_template("Notification.html", item = "post")
         return render_template('account.html', search=PollSearch(), title = "account",  user=user, deletion=AccountDeletion(), filter=AccountPostFilter(), form=AccountUsername(), notification = notification)
@@ -100,6 +101,7 @@ def ranking():
         for i in range(min(10, len(ranked.keys()))):
             key = list(ranked.keys())[i]
             user_rank = {
+                'user_ID': key,
                 'username': Users.query.filter_by(user_ID=key).first().username,
                 'rank': ranked[key],
                 'average': Users.query.filter_by(user_ID=key).first().average_dif(),
@@ -143,10 +145,10 @@ def create():
     check_validation_bypass()
     return render_template('create.html', search=PollSearch(), form=form, title="Create", tags=tags, PollBar=PollBar)
 
-@main.route('/GetUserPosts/<option>/<order>', methods=["GET"])
+@main.route('/GetUserPosts/<option>/<order>/<id>', methods=["GET"])
 @login_required
-def generate_posts(option, order):
-    posts = current_user.posts
+def generate_posts(option, order, id):
+    posts = Users.query.get(id).posts
     # Make sure the provided sorting options are valid
     if valid_choice(order, AccountPostFilter().SortOrder.choices) and valid_choice(option, AccountPostFilter().SortOption.choices):
         sort_by_option(option, get_sort_order(order), posts)
@@ -168,9 +170,9 @@ def delete_user_post():
             deleted_post.wipe_poll()
             flash("Post was successfully deleted.")
 
-        return redirect(url_for("main.account"))
+        return redirect(url_for("main.account",id=current_user.user_ID))
     flash("Something went wrong. Please try again.")
-    return redirect(url_for("main.account"))
+    return redirect(url_for("main.account",id=current_user.user_ID))
 
 @main.route('/DeleteComment', methods = ['POST'])
 @login_required

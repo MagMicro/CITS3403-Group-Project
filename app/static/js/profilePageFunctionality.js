@@ -1,8 +1,9 @@
 let original;
 function init(){
-    $("#userPosts").load("/GetUserPosts/" + $("#SortOption").val() + "/" + $("#SortOrder").val());
-    $("#SortOption").change(() => {$("#userPosts").load("/GetUserPosts/" + $("#SortOption").val() + "/" + $("#SortOrder").val());});
-    $("#SortOrder").change(() => {$("#userPosts").load("/GetUserPosts/" + $("#SortOption").val() + "/" + $("#SortOrder").val());});
+    search = "/GetUserPosts/" + $("#SortOption").val() + "/" + $("#SortOrder").val() + "/" + $("#AccountID").val()
+    $("#userPosts").load(search);
+    $("#SortOption").change(() => {$("#userPosts").load(search)});
+    $("#SortOrder").change(() => {$("#userPosts").load(search)});
     $("#accountDelete").click(() => {$("#accountConfirmMsg").css("display", "block")});
     $("#accountNotificationClose").click(() => {$("#accountConfirmMsg").css("display", "none");});
     $("#renameIcon").click(() => {

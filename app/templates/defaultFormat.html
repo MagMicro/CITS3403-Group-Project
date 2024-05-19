@@ -77,7 +77,7 @@
                     {% if current_user.is_authenticated %}
                         <div class = "fas fa-user"></div> Account 
                         <div id = "accountDropdown" class = "dropdown col-12">
-                            <span><a href="{{ url_for('main.account') }}"><div class = "fas fa-id-card"></div> Profile</span></a><br>
+                            <span><a href="{{ url_for('main.account', id = current_user.user_ID) }}"><div class = "fas fa-id-card"></div> Profile</span></a><br>
                             <span><a href="{{ url_for('main.logout') }}"><div class = "fas fa-arrow-right-from-bracket"></div> Log-out</span></a><br>
                         </div>
                     {% else %}
