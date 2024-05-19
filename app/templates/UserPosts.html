@@ -21,12 +21,12 @@
                 {%if post.left_percentage() == 0 and post.right_percentage() == 0 %}
                 <div style="width: 100%; background-color:lightgrey;"></div>
                 {%elif post.left_percentage() == 100 %}
-                <div style="width: 100%; background-color:red;"></div>
-                {%elif post.left_percentage() == 0 %}
                 <div style="width: 100%; background-color:blue;"></div>
+                {%elif post.left_percentage() == 0 %}
+                <div style="width: 100%; background-color:red;"></div>
                 {% else %}
-                <div style="width: {{ post.left_percentage() }}%; background-color:red;"></div>
-                <div style="width: {{ post.right_percentage()}}%; background-color:blue;"></div>
+                <div style="width: {{ post.left_percentage() }}%; background-color:blue;"></div>
+                <div style="width: {{ post.right_percentage()}}%; background-color:red;"></div>
                 {% endif %}
             </div>
             <br>

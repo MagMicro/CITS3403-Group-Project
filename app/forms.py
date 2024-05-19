@@ -37,7 +37,7 @@ class AccountDeletion(FlaskForm):
 class PollSearch(FlaskForm):
     tags = ["Food", "Drink", "Sports", "Fashion", "Makeup", "Subject", "Video Games", "Anime", "Board Games" , "Card Games",
             "Animals", "Insects", "People", "Places", "City", "Country", "Film", "TV", "Novels", "Abilities", "Historical", 
-            "Superheroes", "Villans", "Fiction", "Non-Fiction", "Sci-Fi", "Crime", "Horror", "Comedy" "Fantasy", "Cars",
+            "Superheroes", "Villans", "Fiction", "Non-Fiction", "Sci-Fi", "Crime", "Horror", "Comedy", "Fantasy", "Cars",
             "Military", "Romance", "Franchise", "Corporation", "Transport", "Aviation", "Navel", "Colour", "Programming"]
     SearchBar = StringField()
     SearchPrompt = StringField("Prompt: ")
