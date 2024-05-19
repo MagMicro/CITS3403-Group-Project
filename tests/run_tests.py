@@ -35,6 +35,30 @@ class BasicTests(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'Login', response.data)
 
+    def test_register_user_with_invalid_password(self):
+        """Test user registration with missing or invalid data."""
+        with self.client:
+            response = self.client.post(url_for('main.create_account'), data={
+                'username': 'testuser',
+                'email': 'em@mail.com',
+                'password': 'password'
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            
+            assert(Users.query.all() == [])
+
+    def test_register_user_with_invalid_email(self):
+        """Test user registration with missing or invalid data."""
+        with self.client:
+            response = self.client.post(url_for('main.create_account'), data={
+                'username': 'testuser',
+                'email': 'email',
+                'password': 'Password12345!'
+            }, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            
+            assert(Users.query.all() == [])
+
     def test_make_poll(self):
         """Test poll creation."""
         with self.client:

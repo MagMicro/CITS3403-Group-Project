@@ -44,6 +44,13 @@ def unique_email(email):
             return False
         return True
 
+# Checks if the email is valid
+def valid_email(email):
+        if re.search(r"[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+", email):
+                return True
+        flash("Invalid email provided. Please try again.", "error")
+        return False
+
 # Creates a new account with the provided details
 def register_account(username, email, password):
         new_user = Users(username=username, email=email)
