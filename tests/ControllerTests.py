@@ -5,22 +5,12 @@ from flask import url_for
 from app.config import TestingConfig
 from app.Controller import *
 
-def test_data():
-      for i in range(100):
-            username = "user" + str(i)
-            password = "Some-thing1" + str(i)
-            email = "someone" + str(i) + "@email.com"
-            user = Users(username=username, password=password, email=email)
-            db.session.add(user)
-            db.session.commit(user)
-
 class ControllerTests(unittest.TestCase):
     def setUp(self):
         """Set up the test client and initialize the database."""
         self.app = create_app(TestingConfig)
         self.app_context = self.app.app_context()
         self.app_context.push()
-        db.init_app(self.app)
         db.create_all()
         test_data()
         
@@ -63,9 +53,9 @@ class ControllerTests(unittest.TestCase):
 
 
     def test_unique_username(self):
-            self.assertFalse(unique_username("someone1"))
-            self.assertFalse(unique_username("someone23"))
-            self.assertFalse(unique_username("someone99"))
+            self.assertFalse(unique_username("user1"))
+            self.assertFalse(unique_username("user23"))
+            self.assertFalse(unique_username("user99"))
             self.assertTrue(unique_username("Cool_username99"))
             self.assertTrue(unique_username("MagMicro"))
             self.assertTrue(unique_username("Jamie99"))

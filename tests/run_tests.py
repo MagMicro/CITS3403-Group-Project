@@ -5,7 +5,6 @@ from flask import url_for
 from app.config import TestingConfig
 
 class BasicTests(unittest.TestCase):
-
     def setUp(self):
         """Set up the test client and initialize the database."""
         self.app = create_app(TestingConfig)

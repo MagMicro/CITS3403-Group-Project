@@ -304,3 +304,13 @@ def get_timed_posts(choice):
                 index += 1
 
         return results
+
+def test_data():
+      for i in range(100):
+            username = "user" + str(i)
+            password = "Some-thing1" + str(i)
+            email = "someone" + str(i) + "@email.com"
+            user = Users(username=username, password=password, email=email)
+            db.session.add(user)
+            db.session.commit()
+            
