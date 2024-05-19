@@ -5,7 +5,7 @@
     <th>All-time votes: </th>
 </tr>
 {% for poll in polls %}
-<tr class = "popularPoll" id = "{{poll.poll_ID}}">
+<tr class = "ranked popularPoll" id = "{{poll.poll_ID}}">
     <td class = "rank col-sm-1 col-md-1 col-lg-1">{{loop.index}}#</td>
     <td class = "col-sm-6 col-md-5 col-lg-4">
         <h5>{{poll.prompt}}</h5>

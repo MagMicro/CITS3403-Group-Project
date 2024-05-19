@@ -807,21 +807,24 @@ a{
 .ranking-container {
     max-width: 1000px;
     margin: 50px auto;
-    padding: 20px;
-    background: rgb(62, 64, 76);
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    color: #fff;
+    background: white;
+    overflow: hidden;
+}
+#leaderboardHeader{
+    display: block;
+    font-size: 40px;
+    height: 80px;
+    padding:20px;
 }
 
 .ranking-section {
     text-align: center;
+    padding: 20px;
 }
 
 .ranking-section h1 {
     font-size: 36px;
     margin-bottom: 20px;
-    color: #fff;
 }
 
 .ranking-section hr {
@@ -833,13 +836,11 @@ a{
 .ranking-section h2 {
     font-size: 28px;
     margin-bottom: 15px;
-    color: #ddd;
 }
 
 .ranking-section h3 {
     font-size: 24px;
     margin-bottom: 15px;
-    color: #ccc;
 }
 
 .ranking-section table {
@@ -870,6 +871,28 @@ a{
     background-color: #e6e6e6;
 }
 
+.ranked > .rank{
+    font-size: 20px;
+    color:white;
+    background-color:#007bff;
+}
+
+.ranked:nth-child(1) > .rank{
+    background-color: gold;
+}
+
+.ranked:nth-child(2) > .rank{
+    background-color: silver;
+}
+
+.ranked:nth-child(3) > .rank{
+    background-color: #CD7F32;
+}
+
+.ranked:hover *:not(.rank){
+    background-color:lightgray;
+}
+
 @media (max-width: 768px) {
     .ranking-container {
         width: 90%;
@@ -891,12 +914,6 @@ a{
     .ranking-section th, .ranking-section td {
         padding: 10px;
     }
-}
-
-.rank{
-    font-size: 20px;
-    color:white;
-    background-color:#007bff;
 }
 
 #deletionForm{
