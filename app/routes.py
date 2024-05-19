@@ -105,6 +105,7 @@ def ranking():
                 'username': Users.query.filter_by(user_ID=key).first().username,
                 'rank': ranked[key],
                 'average': Users.query.filter_by(user_ID=key).first().average_dif(),
+                'points': Users.query.filter_by(user_ID=key).first().total_points(),
                 'posts': Users.query.filter_by(user_ID=key).first().count_posts()
             }
             rank_data.append(user_rank)
