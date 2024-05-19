@@ -7,21 +7,21 @@
         {% for post in posts %}
         <div class="searchPost col-12" id = "{{ post.poll_ID }}">
             <p>
-                <span class="post-subheading">Post ID: </span>{{ post.poll_ID }}
+                <b>Post ID: </b>{{ post.poll_ID }}
                 <br>
-                <span class="post-subheading">Author:</span> <a href = "{{url_for('main.account', id = post.pollAuthor_ID)}}">{{ post.get_author() }}</a>
+                <b>Author:</b> <a href = "{{url_for('main.account', id = post.pollAuthor_ID)}}">{{ post.get_author() }}</a>
             </p>
             <p>
-                <span class="post-subheading">Prompt:</span> {{ post.prompt }} 
+                <b>Prompt:</b> {{ post.prompt }} 
                 <br>
-                <span class="post-subheading">Options:</span> {{ post.Option1 }} vs {{ post.Option2 }}
+                <b>Options:</b> {{ post.Option1 }} vs {{ post.Option2 }}
                 <br>
-                <span class="post-subheading">Tags:</span> {{ post.tag1 }} {% if post.tag2 != None %} , {{ post.tag2}} {% endif %} {% if post.tag3 != None %} , {{ post.tag3 }} {% endif %}
+                <b>Tags:</b> {{ post.tag1 }} {% if post.tag2 != None %} , {{ post.tag2}} {% endif %} {% if post.tag3 != None %} , {{ post.tag3 }} {% endif %}
             </p>
             <p>
-                <span class="post-subheading">Total Votes:</span> {{post.total_votes()}}
+                <b>Total Votes:</b> {{post.total_votes()}}
                 <br>
-                <span class="post-subheading">Posted on: </span><date>{{ post.readable_date() }}</date>
+                <b>Posted on: </b><date>{{ post.readable_date() }}</date>
             </p>
             <button class = 'btn btn-primary postRedirect'>Open</button>
         </div>
