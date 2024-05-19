@@ -9,7 +9,7 @@
             <p>
                 <span class="post-subheading">Post ID: </span>{{ post.poll_ID }}
                 <br>
-                <span class="post-subheading">Author:</span> {{ post.get_author() }}
+                <span class="post-subheading">Author:</span> <a href = "{{url_for('main.account', id = post.pollAuthor_ID)}}">{{ post.get_author() }}</a>
             </p>
             <p>
                 <span class="post-subheading">Prompt:</span> {{ post.prompt }} 

@@ -298,12 +298,12 @@ a{
     height:60px;
 }
 
-#userPosts > div{
+.userPost{
     padding:20px;
     border-bottom: 1px solid black;
 }
 
-#userPosts > div:hover{
+.userPost:hover{
     background-color: rgba(0, 0, 0, 0.2);
 }
 
@@ -918,4 +918,12 @@ a{
 
 #deletionForm{
     display:none;
+}
+
+#emptyMessage{
+    position: absolute;
+    text-align: center;
+    bottom: 40%;
+    left: 25%;
+    right:25%;
 }
