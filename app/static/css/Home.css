@@ -3,15 +3,17 @@
     max-width: 1200px;
     margin: auto;
     padding: 20px;
-    color: #fff;
+    color: #333;
 }
 
 .homepage-intro {
     text-align: center;
     padding: 60px 20px;
-    background-color: rgb(100, 104, 122);
+    background-color: white;
     border-radius: 15px;
     margin-bottom: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #333;
 }
 
 .homepage-intro h1 {
@@ -19,14 +21,30 @@
     margin-bottom: 10px;
 }
 
+.homepage-intro .divider {
+    width: 80%;
+    margin: 10px auto;
+    border-top: 2px solid #333;
+}
+
+.homepage-intro .homepage-logo {
+    margin: 20px auto;
+}
+
+.homepage-intro .homepage-logo img {
+    width: 150px;
+    height: auto;
+}
+
 .homepage-intro p {
     font-size: 18px;
 }
 
 .homepage-card-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 20px;
+    justify-content: center;
 }
 
 .homepage-card {
@@ -34,9 +52,6 @@
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     padding: 40px;
-    margin: 20px;
-    width: 80%;
-    max-width: 500px;
     text-align: center;
     transition: transform 0.3s, box-shadow 0.3s;
     color: #333;
@@ -95,6 +110,15 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
+.homepage-btn-secondary {
+    background-color: #6c757d;
+}
+
+.homepage-btn-secondary:hover {
+    background-color: #5a6268;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
 @media (max-width: 768px) {
     .homepage-intro h1 {
         font-size: 28px;
@@ -105,6 +129,6 @@
     }
 
     .homepage-card {
-        width: 90%;
+        width: 100%;
     }
 }

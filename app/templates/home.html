@@ -5,6 +5,10 @@
 <div class="homepage-container">
     <section class="homepage-intro">
         <h1>Welcome to SplitDif</h1>
+        <hr class="divider">
+        <div class="homepage-logo">
+            <img src="{{ url_for('static', filename='Images/icon.png') }}" alt="SplitDif Logo">
+        </div>
         <p>Discover diverse opinions, create engaging polls, and share your unique perspective with the community!</p>
     </section>
 
@@ -25,6 +29,12 @@
             <h2>User Rankings</h2>
             <p>Explore the top-ranked users and see who stands out in the SplitDif community.</p>
             <a class="homepage-btn homepage-btn-success" href="{{ url_for('main.ranking') }}">View Rankings</a>
+        </section>
+
+        <section class="homepage-card">
+            <h2>About SplitDif</h2>
+            <p>Learn more about SplitDif, and our unique philosophy.</p>
+            <a class="homepage-btn homepage-btn-secondary" href="{{ url_for('main.about') }}">About Us</a>
         </section>
     </main>
 </div>
