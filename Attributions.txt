@@ -1,10 +1,13 @@
 External Libraries used:
-CSS / HTML:
-    - Bootstrap 5.3.3
-    - fontawesome.com (used for glyphicons)
-JavaScript:
-    - jquery-3.7.1
-Python:
+    CSS / HTML:
+        - Bootstrap 5.3.3
+        - fontawesome.com (used for glyphicons)
 
-Images:
-    - all images used were created us (using adobe express)
+    JavaScript:
+        - jquery-3.7.1
+        
+    Python:
+        - See the requriements.txt
+
+    Images:
+        - all images used were created us (using adobe express)

@@ -305,3 +305,25 @@ def get_timed_posts(choice):
 
         return results
 
+
+def test_valid_login(self):
+        users = Users.query.all()
+
+        # Checks if all logins are valid
+        for user in users:
+                self.assertTrue(valid_login(user.username, user.password))
+
+                # Case user doesnt exist
+                self.assertFalse(valid_login("Somebody11", "randompassword"))
+                self.assertFalse(valid_login("random11", "PASS-word11"))
+                self.assertFalse(valid_login("user101", "Some-thing1101"))
+
+                # Case user exists, but wrong password
+                self.assertFalse(valid_login("user5", "some_random_PASSWORD11"))
+                self.assertFalse(valid_login("user9","Something-17"))
+                self.assertFalse(valid_login("user27","Something-128"))
+
+                # Case the the user does exist
+                self.assertTrue(valid_login("user5", "Some-thing15"))
+                self.assertTrue(valid_login("user9","Some-thing19"))
+                self.assertTrue(valid_login("user27","Some-thing127"))
