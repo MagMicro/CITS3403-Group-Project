@@ -47,9 +47,10 @@ body{
     position:relative;
 }
 #accountHeader{
-    height: 350px;
+    height: 300px;
     overflow: hidden;
     padding-bottom: 20px;
+    margin-bottom: 50px;
 }
 
 .inputBox{
@@ -240,12 +241,11 @@ a{
 #userContent{
     display:flex;
     flex-direction: column;
-    left:50%;
     text-align: left;
     position:relative;
-    right:50%;
-    top:60px;
+    padding-left: 20px;
 }
+
 #userDetails{
     margin:10px;
     padding-bottom: 10px;

@@ -23,11 +23,11 @@
         {% endif %}
         <hr class = "col-8">
         <section id = "userContent">
-            {% if user.user_ID == current_user.user_ID %}<p><b>Email:</b> {{user.email}} </p> {% endif %}
-            <p><b>Posts:</b> {{user.count_posts()}}</p>
-            <p><b>Average Percent from 50-50:</b> {{user.average_dif()}}%</p>
-            <p><b>Ranking:</b> {{user.rank()}}</p>
-            <p><b>Joined:</b> {{user.creation_date.strftime("%d/%m/%Y")}}</p>
+            {% if user.user_ID == current_user.user_ID %}<span><b>Email:</b> {{user.email}} </span> {% endif %}
+            <span><b>Posts:</b> {{user.count_posts()}}</span>
+            <span><b>Average Percent from 50-50:</b> {{user.average_dif()}}%</span>
+            <span><b>Ranking:</b> {{user.rank()}}</span>
+            <span><b>Joined:</b> {{user.creation_date.strftime("%d/%m/%Y")}}</span>
         </section>
     </div>
 </div>
